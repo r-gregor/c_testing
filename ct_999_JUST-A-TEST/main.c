@@ -4,7 +4,7 @@
 
 int main(void) {
 
-	printf("JUST-A-TET 20231129\n");
+	printf("JUST-A-TEST 20231129 !!\n");
 
 
 	return 0;
