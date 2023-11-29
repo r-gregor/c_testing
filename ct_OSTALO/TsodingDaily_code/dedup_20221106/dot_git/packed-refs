@@ -1,0 +1,3 @@
+# pack-refs with: peeled fully-peeled sorted 
+b8a4c566f1237dd64d4c3b3647618a67d3b8add7 refs/remotes/origin/bench-hash-of-file
+b28f1735580ae60e7f75a3016ff18c8d66121f54 refs/remotes/origin/master

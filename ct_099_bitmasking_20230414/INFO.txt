@@ -1,0 +1,11 @@
+20230414
+
+Getting a char as parameter to main:
+
+Since argv is not a one-dimensional array but two-dimensional char array:
+
+    - argv[1] returns char* -- which is a string (a char array)
+    - argv[1][0] returns the first char in in argv[1] !!
+
+---
+

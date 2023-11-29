@@ -1,0 +1,31 @@
+0 > Huckleberry
+  1 > Cherimoya
+    2 > Pomelo
+      3 > Miracle fruit
+        4 > Nance
+        4 > Tamarind
+      3 > Ugli fruit
+        4 > Pomelo
+        4 > Elderberry
+    2 > Strawberry
+      3 > Mulberry
+        4 > Plumcot
+        4 > Grapefruit
+      3 > Rambutan
+        4 > Lime
+        4 > Honeyberry
+  1 > Lemon
+    2 > Grapefruit
+      3 > Tangerine
+        4 > Pear
+        4 > Star fruit
+      3 > Solanum quitoense
+        4 > Peach
+        4 > Tangerine
+    2 > Kiwano
+      3 > Peach
+        4 > Yuzu
+        4 > Pear
+      3 > Redcurrant
+        4 > Grapefruit
+        4 > Orange

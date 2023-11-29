@@ -1,0 +1,175 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+/**
+ * v9
+ * ydiff as pointer in a struct
+ * remove: display of current date and ask to continue ...
+ *
+ */
+
+/**
+ * v8 add release_ptr() function
+ * from sort-by-accdate_c.c (cd047)
+ */
+
+/**
+ * TODO:
+ * typedef struct Person {
+ * 	char *name;
+ * 	char *date_of_birth;
+ * 	char *curr_date; //??
+ * 	int  *age;
+ * 	int  *daydiff;
+ * } Person;
+ */
+
+time_t today;
+struct tm *today_ptr;
+
+typedef struct Newdate {
+	char day[3];
+	char month[3];
+	char year[5];
+} Newdate;
+
+typedef struct Record {
+	char *name;
+	char *new_date;
+	int *ydiff;                    /* v7 */
+} Record;
+
+const char *fname = "ROJSTNIDNEVI.txt";
+
+int getPositionOfDelim(char, char *);
+void displayRecordInfo(char *);
+void updateRecordInfo(char *, Record *);
+void printRecord(Record *);
+void freeRecord(Record *);
+void release_ptr(void *);            /* v8 */
+
+/** main */
+int main(int argc, char **argv) {
+
+	today = time(NULL);              /* v5 */
+	today_ptr = localtime(&today);   /* v6 */
+	printf("Today: %d-%02d-%02d\n", today_ptr->tm_year + 1900, today_ptr->tm_mon + 1, today_ptr->tm_mday);
+	// v9 removed:
+	// printf("Press any key to continue ...\n");
+	// getchar();
+
+	FILE *fp = fopen(fname, "r");
+	if(!fp) {
+		perror("ERROR");
+		return EXIT_FAILURE;
+	}
+
+	char *line = NULL;
+	size_t n = 0;
+	size_t nLines = 0;
+	ssize_t line_len = 0; // it can be -1 !
+
+	while ((line_len = getline(&line, &n, fp)) != -1) {
+		nLines += 1;
+		// Remove \n from the line.
+		line[strcspn(line, "\n")] = 0;
+		displayRecordInfo(line);
+	}
+	free(line); // because of getline()!!
+	fclose(fp);
+
+	return 0;
+} /* end main */
+
+/**
+ * Returns the position of the delimiter in a string
+ */
+int getPositionOfDelim(char delim, char *line) {
+	int pos = 0;
+	int j = 0;
+	while (line[j] != '\0') {
+		if (line[j] == delim) {
+			pos = j;
+			break;
+		} else {
+			j++;
+		}
+	}
+	return pos;
+}
+
+/**
+ * Displays info [Name, BDate] for a line from file:
+ * stores data from line into temporary struct person with
+ * function updateRecordInfo() and prints it with
+ * function printRecord().
+ */
+void displayRecordInfo(char *line) {
+	Record *person = malloc(sizeof(Record));
+	updateRecordInfo(line, person);
+	printRecord(person);
+	freeRecord(person);
+}
+
+/**
+ * Mallocs the new 'record' struct and populates it
+ * with values in line. Frees malloc-ed newdate after
+ * updating record's field new_date.
+ */
+void updateRecordInfo(char *line, Record *record) {
+	int curryear = today_ptr->tm_year + 1900;
+	int pos = getPositionOfDelim(',', line);
+	Newdate *newdate = malloc(sizeof(Newdate));
+	record->name = malloc(sizeof(char) * (pos + 1));
+	record->new_date = malloc(sizeof(char) * 11);
+
+	/**
+	 * v6
+	 */
+	strcpy(record->name, strtok(line, ","));
+	strcpy(newdate->day, strtok(NULL, "."));
+	strcpy(newdate->month, strtok(NULL, "."));
+	strcpy(newdate->year, strtok(NULL, "."));
+	line = NULL;
+
+	sprintf(record->new_date, "%s/%s/%s", newdate->day, newdate->month, newdate->year);
+	record->ydiff = malloc(sizeof(int *));
+	*(record->ydiff) = curryear - (atoi(newdate->year)); /* v7 */
+	free(newdate);
+}
+
+/**
+ * Prints formated contents of updated record.
+ */
+void printRecord(Record *record) {
+	printf("Name: %s\n", record->name);
+	printf("Birthday: %s\n", record->new_date);
+	printf("Age: %d\n---\n", *(record->ydiff)); /* v7 */
+}
+
+/**
+ * Frees malloc-ed contents of 'record' struct.
+ */
+void freeRecord(Record *record) {
+	release_ptr(record->name);
+	release_ptr(record->new_date);
+	release_ptr(record->ydiff);
+	release_ptr(record);
+
+}
+
+void release_ptr(void *ptr) {
+	if (ptr == NULL) {
+		printf("Already free!");
+		exit(EXIT_SUCCESS);
+	}
+
+	free(ptr);
+	ptr = NULL;
+}
+

@@ -1,0 +1,12 @@
+digraph {
+	Mike -> Jane;
+	Jane -> Steve;
+	Susan -> Carey;
+	Josey -> John;
+	John -> Mike;
+	John -> Jane;
+}
+
+// comand:
+//		$> dot example.dot -Tpdf > example.pdf
+

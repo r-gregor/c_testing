@@ -1,0 +1,2 @@
+for CPP in $(ls -1 *.cpp); do g++ -g -Wall -o bin/${CPP//.cpp/} $CPP -lncurses; done
+

@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "c:/Users/gregor.redelonghi/myprogs/cygwin64/home/gregor.redelonghi/majstaf/coding/C_Cpp_en/c_en_testing/cn053_BrthReminder_20220416/bin",
+      "environment": [],
+      "program": "c:/Users/gregor.redelonghi/myprogs/cygwin64/home/gregor.redelonghi/majstaf/coding/C_Cpp_en/c_en_testing/cn053_BrthReminder_20220416/bin/build/Debug/outDebug",
+      "internalConsoleOptions": "openOnSessionStart",
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/Users/gregor.redelonghi/myprogs/cygwin64/bin/gdb.exe",
+      "console": "integratedTerminal",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

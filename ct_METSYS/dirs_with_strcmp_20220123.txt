@@ -1,0 +1,8 @@
+./cd025_dirlist_20211126
+./cd017_dirslist-test_20211028
+./cd043_dirlist_abs_20220123
+./cd_OSTALO
+./cd042_dirs-to-list_20220123
+./cd026_filelist_20211126
+./cd029_sorting-strings_20211128
+./test_files

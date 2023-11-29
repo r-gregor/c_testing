@@ -1,0 +1,2 @@
+g++ -g -Wall -o ncursestest ncursestest.cpp -lncurses
+

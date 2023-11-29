@@ -1,0 +1,8 @@
+CC = gcc
+CFLAGS = -g -Wall
+
+all: main
+
+main: cd_pointers_test.c
+	${CC} ${CFLAGS} -o cd_pointers_test cd_pointers_test.c
+

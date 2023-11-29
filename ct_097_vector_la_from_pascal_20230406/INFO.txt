@@ -1,0 +1,18 @@
+Work flow:
+- first construct everything for 2D,
+- then rearange everything for 3D:
+- then copy everything as 3D (copy and rename Vec2_ to Vec3, ...),
+- then update 3D constructors to accept third parameter 'z', and
+- everything else (all the functions returning a vector) stays the same!
+- Then rearange everything for 4D (same as rearanging for 3D):
+- then update 4D constructors to accept fourth parameter 'w',
+- everything else (all the functions returning a vector) stays the same!
+- ... possible because vector components initialized as lists and operated on with for loop ...
+- Then construct main entry point: main.c,
+- ...
+
+---
+$> wget https://raw.githubusercontent.com/tsoding/nobuild/master/nobuild.h
+$> vim nobuild.c ...
+---
+

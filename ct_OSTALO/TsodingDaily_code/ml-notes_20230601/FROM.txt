@@ -1,0 +1,5 @@
+from:	Machine Learning in C (Episode 1)
+		Tsoding Daily
+		https://www.youtube.com/watch?v=PGSba51aRYU&t=3475s
+---
+

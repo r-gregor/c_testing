@@ -1,0 +1,34 @@
+{
+  "C_Cpp_Runner.cCompilerPath": "C:/Users/gregor.redelonghi/myprogs/cygwin64/bin/gcc.exe",
+  "C_Cpp_Runner.cppCompilerPath": "C:/Users/gregor.redelonghi/myprogs/cygwin64/bin/g++.exe",
+  "C_Cpp_Runner.debuggerPath": "C:/Users/gregor.redelonghi/myprogs/cygwin64/bin/gdb.exe",
+  "C_Cpp_Runner.cStandard": "c11",
+  "C_Cpp_Runner.cppStandard": "",
+  "C_Cpp_Runner.msvcBatchPath": "",
+  "C_Cpp_Runner.warnings": [
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic"
+  ],
+  "C_Cpp_Runner.enableWarnings": true,
+  "C_Cpp_Runner.warningsAsError": false,
+  "C_Cpp_Runner.compilerArgs": [
+    "-g"
+  ],
+  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.includePaths": [
+    "C:/Users/gregor.redelonghi/myprogs/cygwin64/usr/include/c++/v1"
+  ],
+  "C_Cpp_Runner.includeSearch": [
+    "*",
+    "**/*"
+  ],
+  "C_Cpp_Runner.excludeSearch": [
+    "**/build",
+    "**/build/**",
+    "**/.*",
+    "**/.*/**",
+    "**/.vscode",
+    "**/.vscode/**"
+  ]
+}

@@ -1,0 +1,129 @@
+filename: c_generic-print-array-function_20221011.txt
+https://stackoverflow.com/questions/41802339/c-generic-print-array-function-printing-string-array
+
+C Generic Print Array function - printing String Array
+
+   I'm trying to write a generic printing arrays function in C and somehow it doesn't work well with a
+   String array. Here's the main:
+#define LEN 20
+
+typedef struct {
+	char name[LEN]; // worker's name
+	int salary; // worker's salary
+	char **childArr; // array of children names
+	int numChildren; // number of children
+} Worker;
+
+void printArray(void* arr, int size, int typeSize,  void (*print)(void*));
+void printString(void* s);
+void printWorker(void* worker);
+
+void main() {
+	// arrays of children's names
+	char *chBamba[] = { "Bambale1", "Bamb2", "Bamb3", "Bambook4", "Bambookle5" };
+	char *chBisli[] = { "Bislile1", "Bischick2", "Bislile3", "Bis4"};
+	int nBamba = sizeof(chBamba) / sizeof(*chBamba);
+	int nBisli = sizeof(chBisli) / sizeof(*chBisli);
+
+	// array of workers
+	Worker a[] = { {"Printf", 10, NULL, 0}, {"Bisli", 20, chBisli, nBisli},
+{"TapooChips", 3, chBamba, nBamba}, {"Bamba", 19, chBamba, nBamba} };
+
+	printArray(a, sizeof(a)/sizeof(Worker), sizeof(Worker), printWorker);
+
+}
+
+   And the functions:
+void printArray(void* arr, int size, int typeSize,  void (*print)(void*)) {
+	int i;
+	for (i = 0; i < size; i++) {
+		print((char*)arr+i *typeSize);
+	}
+	printf("\n");
+}
+
+void printString(void* s) {
+	char* str = (char*)s;
+	printf("[ %s ]", *str);
+}
+
+void printWorker(void* worker) {
+	Worker* w = (Worker*)worker;
+	printf("%s\t %d...(%d) ", w->name, w->salary, w->numChildren);
+	if (w->numChildren != 0)
+		printArray(w->childArr, w->numChildren, LEN, printString);
+
+	printf("\n");
+}
+
+   After printing the data of the second worker and going to the "children" array, the code breaks...
+
+   any idea why? and how can i fix it?
+
+   after editing this: printArray(w->childArr,w->numChildren,sizeof(w->childArr[0]),printString);
+
+   and this: printf("[ %s ]",str);
+
+   i now have the following print: img1
+
+***
+   This line here:
+printArray(w->childArr,w->numChildren,LEN,printString);
+
+   You pass LEN as the size of the element in the array, which is probably way bigger than the size of
+   an array element. This makes the loop in printArray go outside the array boundaries, where any access
+   is undefined behavior.
+
+   Your array contains pointers to strings. You need to pass sizeof(char*). Or, in a more D.R.Y
+   manner:
+printArray(w->childArr, w->numChildren, sizeof w->childArr[0], printString);
+     ________________________________________________________________________________________________
+
+   Your printString function does the wrong type conversion. You must remember that printArray passes a
+   pointer to the current element into the callback. Since your iterate over an array of char*, it will
+   pass a char**. With that in mind:
+void printString(void *vpStr) {
+	char **pStr = vpStr;
+	printf("[ %s ]", *pstr);
+}
+
+*** [5+]
+   Just for reference, the method you are using is how this is traditionally done in C. But in modern C
+   you can write such generic functions in a better way: type safe and without the need for function
+   pointers:
+#include <stdio.h>
+#include <string.h>
+
+#define print_array(data, n)         \
+  _Generic((*data),                  \
+           int: print_int,           \
+           char: print_char)(data,n) \
+
+
+void print_int (const int* data, size_t n) {
+	for(size_t i=0; i<n; i++) {
+		printf("%d ", data[i]);
+	}
+}
+
+void print_char (const char* data, size_t n) {
+	for(size_t i=0; i<n; i++) {
+		printf("%c ", data[i]);
+	}
+}
+
+int main (void) {
+	int int_array [3] = {1, 2, 3};
+	const char* char_array = "hello world";
+
+	print_array(int_array, 3);
+	printf("\n");
+	print_array(char_array, strlen(char_array));
+	printf("\n");
+
+}
+
+
+
+---
+

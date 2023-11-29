@@ -1,0 +1,7 @@
+suffix trees
+heap trees
+reversing a linked-list
+quick sort
+merge sort
+heap sort
+

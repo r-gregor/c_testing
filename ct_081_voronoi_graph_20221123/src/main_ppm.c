@@ -1,0 +1,821 @@
+/*
+ * from:
+ * https://github.com/tsoding/voronoi-opengl/blob/master/src/main_ppm.c
+ * ORIGINAL: unchanged from github!
+ * v6-d: up to end <-- ORIGINAL
+ * 300 random colors from: https://www.entrylevelprogrammer.com/color/randomcolor.php
+ *
+ */
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <errno.h>
+#include <time.h>
+#include <limits.h>
+
+#define WIDTH 800
+#define HEIGHT 600
+#define SEEDS_COUNT 120
+
+#define OUTPUT_FILE_PATH "output_v6.ppm"
+
+// hex colors with apha (opacity):
+//                 reversed order: 0xAABBGGRR
+//                   normal order: 0xRRGGBBAA
+// A - alpha, R - red, G - green, B - blue
+#define MY_COLOR_001 0xFFA64B73
+#define MY_COLOR_002 0xFF060E27
+#define MY_COLOR_003 0xFF58E3DA
+#define MY_COLOR_004 0xFF0547CB
+#define MY_COLOR_005 0xFFE5735A
+#define MY_COLOR_006 0xFFA8B0B0
+#define MY_COLOR_007 0xFF0A2D15
+#define MY_COLOR_008 0xFFF1361A
+#define MY_COLOR_009 0xFF02845A
+#define MY_COLOR_010 0xFFF26E03
+#define MY_COLOR_011 0xFF2E15DF
+#define MY_COLOR_012 0xFF1B4A03
+#define MY_COLOR_013 0xFF6EECB8
+#define MY_COLOR_014 0xFFEB4582
+#define MY_COLOR_015 0xFF6A2EAD
+#define MY_COLOR_016 0xFF4AA8C4
+#define MY_COLOR_017 0xFFEF846B
+#define MY_COLOR_018 0xFF15BEFC
+#define MY_COLOR_019 0xFFCD56FA
+#define MY_COLOR_020 0xFF555265
+#define MY_COLOR_021 0xFFDF3327
+#define MY_COLOR_022 0xFFF6CF58
+#define MY_COLOR_023 0xFF8BFC96
+#define MY_COLOR_024 0xFFFBF289
+#define MY_COLOR_025 0xFF00571C
+#define MY_COLOR_026 0xFF7090ED
+#define MY_COLOR_027 0xFF5AE1DE
+#define MY_COLOR_028 0xFF75902C
+#define MY_COLOR_029 0xFF17D9C6
+#define MY_COLOR_030 0xFF6C02A9
+#define MY_COLOR_031 0xFF2E6382
+#define MY_COLOR_032 0xFF5777D1
+#define MY_COLOR_033 0xFFDE5D78
+#define MY_COLOR_034 0xFF1AC679
+#define MY_COLOR_035 0xFF59B756
+#define MY_COLOR_036 0xFF5FED84
+#define MY_COLOR_037 0xFFF67CCB
+#define MY_COLOR_038 0xFF0D3679
+#define MY_COLOR_039 0xFFF0EAA3
+#define MY_COLOR_040 0xFF984673
+#define MY_COLOR_041 0xFF16667C
+#define MY_COLOR_042 0xFFA0ECCC
+#define MY_COLOR_043 0xFF4BF9F0
+#define MY_COLOR_044 0xFF5282B2
+#define MY_COLOR_045 0xFF754A33
+#define MY_COLOR_046 0xFF429C44
+#define MY_COLOR_047 0xFFC7668C
+#define MY_COLOR_048 0xFF82E12C
+#define MY_COLOR_049 0xFF49AA6E
+#define MY_COLOR_050 0xFF7B956D
+#define MY_COLOR_051 0xFFAEF634
+#define MY_COLOR_052 0xFF302D8D
+#define MY_COLOR_053 0xFF0834C5
+#define MY_COLOR_054 0xFF3154DE
+#define MY_COLOR_055 0xFFFD5C6C
+#define MY_COLOR_056 0xFF91C36D
+#define MY_COLOR_057 0xFFB1E98C
+#define MY_COLOR_058 0xFFF608C7
+#define MY_COLOR_059 0xFFF64E92
+#define MY_COLOR_060 0xFF4F1C33
+#define MY_COLOR_061 0xFF577860
+#define MY_COLOR_062 0xFFD41529
+#define MY_COLOR_063 0xFF60D0B5
+#define MY_COLOR_064 0xFF6D98C8
+#define MY_COLOR_065 0xFF5C17C6
+#define MY_COLOR_066 0xFFD28074
+#define MY_COLOR_067 0xFFD7E7FD
+#define MY_COLOR_068 0xFFA2C8E1
+#define MY_COLOR_069 0xFFB7A9D2
+#define MY_COLOR_070 0xFF3668F9
+#define MY_COLOR_071 0xFFAB2A27
+#define MY_COLOR_072 0xFF467ECB
+#define MY_COLOR_073 0xFFB8BEF6
+#define MY_COLOR_074 0xFFEB2ADB
+#define MY_COLOR_075 0xFFD59E77
+#define MY_COLOR_076 0xFF9AEAED
+#define MY_COLOR_077 0xFFC4E8C2
+#define MY_COLOR_078 0xFF438F88
+#define MY_COLOR_079 0xFF97696C
+#define MY_COLOR_080 0xFFDD06E4
+#define MY_COLOR_081 0xFF51AF5F
+#define MY_COLOR_082 0xFF319097
+#define MY_COLOR_083 0xFFD5FD90
+#define MY_COLOR_084 0xFFD77DA9
+#define MY_COLOR_085 0xFF16B2F8
+#define MY_COLOR_086 0xFFB60C31
+#define MY_COLOR_087 0xFF5E3479
+#define MY_COLOR_088 0xFFBD8811
+#define MY_COLOR_089 0xFF8B2C0A
+#define MY_COLOR_090 0xFFE368A4
+#define MY_COLOR_091 0xFF6CD1B9
+#define MY_COLOR_092 0xFF83293A
+#define MY_COLOR_093 0xFF047C45
+#define MY_COLOR_094 0xFFC83A70
+#define MY_COLOR_095 0xFF020C47
+#define MY_COLOR_096 0xFFF09F9E
+#define MY_COLOR_097 0xFF2E7102
+#define MY_COLOR_098 0xFF79A354
+#define MY_COLOR_099 0xFFC4856A
+#define MY_COLOR_100 0xFFBD79A2
+#define MY_COLOR_101 0xFF86D602
+#define MY_COLOR_102 0xFFD69D74
+#define MY_COLOR_103 0xFF62D7BD
+#define MY_COLOR_104 0xFFA0A974
+#define MY_COLOR_105 0xFF99C70C
+#define MY_COLOR_106 0xFF9AB208
+#define MY_COLOR_107 0xFFCE573D
+#define MY_COLOR_108 0xFFC8EAF2
+#define MY_COLOR_109 0xFFA49619
+#define MY_COLOR_110 0xFFD976F8
+#define MY_COLOR_111 0xFFCDB8B5
+#define MY_COLOR_112 0xFFF83A63
+#define MY_COLOR_113 0xFF248B70
+#define MY_COLOR_114 0xFF5F8679
+#define MY_COLOR_115 0xFF9A6A35
+#define MY_COLOR_116 0xFFB14C39
+#define MY_COLOR_117 0xFF6BFE22
+#define MY_COLOR_118 0xFFE49C51
+#define MY_COLOR_119 0xFFA22B8A
+#define MY_COLOR_120 0xFF6B594B
+#define MY_COLOR_121 0xFF8AEAE8
+#define MY_COLOR_122 0xFFB7D239
+#define MY_COLOR_123 0xFF289498
+#define MY_COLOR_124 0xFF854159
+#define MY_COLOR_125 0xFFB9C888
+#define MY_COLOR_126 0xFF1E9427
+#define MY_COLOR_127 0xFF65AD70
+#define MY_COLOR_128 0xFF0024D3
+#define MY_COLOR_129 0xFF6DE69D
+#define MY_COLOR_130 0xFF94E688
+#define MY_COLOR_131 0xFFF529CD
+#define MY_COLOR_132 0xFF46B8FB
+#define MY_COLOR_133 0xFF1AC6E6
+#define MY_COLOR_134 0xFF5AD1FE
+#define MY_COLOR_135 0xFFF32C6E
+#define MY_COLOR_136 0xFF2E3B2E
+#define MY_COLOR_137 0xFF2078E0
+#define MY_COLOR_138 0xFF84113D
+#define MY_COLOR_139 0xFFE2089C
+#define MY_COLOR_140 0xFFC5E975
+#define MY_COLOR_141 0xFF8313E5
+#define MY_COLOR_142 0xFF2A0823
+#define MY_COLOR_143 0xFF1C896C
+#define MY_COLOR_144 0xFF983794
+#define MY_COLOR_145 0xFFEF1D76
+#define MY_COLOR_146 0xFFE84C5D
+#define MY_COLOR_147 0xFF757216
+#define MY_COLOR_148 0xFF9A880E
+#define MY_COLOR_149 0xFFDA1B68
+#define MY_COLOR_150 0xFF208788
+#define MY_COLOR_151 0xFF57E262
+#define MY_COLOR_152 0xFF1D0359
+#define MY_COLOR_153 0xFFC476BF
+#define MY_COLOR_154 0xFFCF80C8
+#define MY_COLOR_155 0xFF4CC5FD
+#define MY_COLOR_156 0xFF39D989
+#define MY_COLOR_157 0xFF0A51B8
+#define MY_COLOR_158 0xFFE06E0C
+#define MY_COLOR_159 0xFFDDC69D
+#define MY_COLOR_160 0xFFAEF0C9
+#define MY_COLOR_161 0xFF98DB9B
+#define MY_COLOR_162 0xFFE0B4FA
+#define MY_COLOR_163 0xFF2BBE87
+#define MY_COLOR_164 0xFFEFFAC6
+#define MY_COLOR_165 0xFFD9738D
+#define MY_COLOR_166 0xFF690B38
+#define MY_COLOR_167 0xFF43E130
+#define MY_COLOR_168 0xFFC99E43
+#define MY_COLOR_169 0xFFBEE53A
+#define MY_COLOR_170 0xFFB67EF6
+#define MY_COLOR_171 0xFF0FEDFA
+#define MY_COLOR_172 0xFFCB4190
+#define MY_COLOR_173 0xFF186415
+#define MY_COLOR_174 0xFFB7BF44
+#define MY_COLOR_175 0xFFFE71E1
+#define MY_COLOR_176 0xFF442E57
+#define MY_COLOR_177 0xFFAE90B1
+#define MY_COLOR_178 0xFFD0E50E
+#define MY_COLOR_179 0xFFCEF272
+#define MY_COLOR_180 0xFFBAF8D2
+#define MY_COLOR_181 0xFFDCF05B
+#define MY_COLOR_182 0xFFD7C14A
+#define MY_COLOR_183 0xFF56E9E2
+#define MY_COLOR_184 0xFFE34B8D
+#define MY_COLOR_185 0xFF874F21
+#define MY_COLOR_186 0xFF7D0026
+#define MY_COLOR_187 0xFF48561F
+#define MY_COLOR_188 0xFFB13697
+#define MY_COLOR_189 0xFFC2E590
+#define MY_COLOR_190 0xFF01E62D
+#define MY_COLOR_191 0xFF3D2D7E
+#define MY_COLOR_192 0xFF97547D
+#define MY_COLOR_193 0xFF876259
+#define MY_COLOR_194 0xFF61F30A
+#define MY_COLOR_195 0xFFD461E5
+#define MY_COLOR_196 0xFF6FEA95
+#define MY_COLOR_197 0xFF01F3AA
+#define MY_COLOR_198 0xFF4739C6
+#define MY_COLOR_199 0xFF8B611C
+#define MY_COLOR_200 0xFF8EACD9
+#define MY_COLOR_201 0xFF388F6C
+#define MY_COLOR_202 0xFF1A4BD2
+#define MY_COLOR_203 0xFF7A4315
+#define MY_COLOR_204 0xFF4593B2
+#define MY_COLOR_205 0xFFD5769E
+#define MY_COLOR_206 0xFFB28BF0
+#define MY_COLOR_207 0xFF7AA3B4
+#define MY_COLOR_208 0xFF462344
+#define MY_COLOR_209 0xFF62C5E1
+#define MY_COLOR_210 0xFFE0DEFC
+#define MY_COLOR_211 0xFF3CBC79
+#define MY_COLOR_212 0xFF952C14
+#define MY_COLOR_213 0xFFA26D76
+#define MY_COLOR_214 0xFF64C029
+#define MY_COLOR_215 0xFF1893A1
+#define MY_COLOR_216 0xFF705486
+#define MY_COLOR_217 0xFFBFD0A6
+#define MY_COLOR_218 0xFF47E31A
+#define MY_COLOR_219 0xFFE936D7
+#define MY_COLOR_220 0xFFA97577
+#define MY_COLOR_221 0xFF50E124
+#define MY_COLOR_222 0xFFBF30C2
+#define MY_COLOR_223 0xFF762F34
+#define MY_COLOR_224 0xFF517D38
+#define MY_COLOR_225 0xFF10B771
+#define MY_COLOR_226 0xFF938EC1
+#define MY_COLOR_227 0xFF561761
+#define MY_COLOR_228 0xFF68CCDE
+#define MY_COLOR_229 0xFF3E9A95
+#define MY_COLOR_230 0xFFE06CB7
+#define MY_COLOR_231 0xFFD524F9
+#define MY_COLOR_232 0xFF1E4B20
+#define MY_COLOR_233 0xFF01C617
+#define MY_COLOR_234 0xFF958986
+#define MY_COLOR_235 0xFFEC3F17
+#define MY_COLOR_236 0xFF8B9AB3
+#define MY_COLOR_237 0xFFC520B0
+#define MY_COLOR_238 0xFFA32B8A
+#define MY_COLOR_239 0xFF83EAA0
+#define MY_COLOR_240 0xFFBA9378
+#define MY_COLOR_241 0xFFEAAB2E
+#define MY_COLOR_242 0xFFD724BE
+#define MY_COLOR_243 0xFF7CAEA1
+#define MY_COLOR_244 0xFFD05A55
+#define MY_COLOR_245 0xFFF5E25B
+#define MY_COLOR_246 0xFF40EC9F
+#define MY_COLOR_247 0xFF20A718
+#define MY_COLOR_248 0xFF0BF2C3
+#define MY_COLOR_249 0xFF1162FD
+#define MY_COLOR_250 0xFF15FE59
+#define MY_COLOR_251 0xFF706515
+#define MY_COLOR_252 0xFFDF7444
+#define MY_COLOR_253 0xFF693228
+#define MY_COLOR_254 0xFFA7D4F7
+#define MY_COLOR_255 0xFF1F152D
+#define MY_COLOR_256 0xFF2423D7
+#define MY_COLOR_257 0xFF5A38BF
+#define MY_COLOR_258 0xFF4D4590
+#define MY_COLOR_259 0xFFA8E75F
+#define MY_COLOR_260 0xFFDE8295
+#define MY_COLOR_261 0xFF4B00A0
+#define MY_COLOR_262 0xFF34CFBC
+#define MY_COLOR_263 0xFF1B9C26
+#define MY_COLOR_264 0xFFF7F630
+#define MY_COLOR_265 0xFF82CCE0
+#define MY_COLOR_266 0xFF3801C7
+#define MY_COLOR_267 0xFF101607
+#define MY_COLOR_268 0xFF42BA04
+#define MY_COLOR_269 0xFF427F3A
+#define MY_COLOR_270 0xFF33D506
+#define MY_COLOR_271 0xFFA05FB5
+#define MY_COLOR_272 0xFFEA6AF5
+#define MY_COLOR_273 0xFF16C725
+#define MY_COLOR_274 0xFFFCC228
+#define MY_COLOR_275 0xFF7BEDEE
+#define MY_COLOR_276 0xFFB84DD1
+#define MY_COLOR_277 0xFF35EE37
+#define MY_COLOR_278 0xFF0F4A67
+#define MY_COLOR_279 0xFF9306DE
+#define MY_COLOR_280 0xFF94A119
+#define MY_COLOR_281 0xFF7690CB
+#define MY_COLOR_282 0xFFC2F518
+#define MY_COLOR_283 0xFFCD1BA3
+#define MY_COLOR_284 0xFF50D141
+#define MY_COLOR_285 0xFF1152A9
+#define MY_COLOR_286 0xFF8BA1D9
+#define MY_COLOR_287 0xFF161FE3
+#define MY_COLOR_288 0xFF753DC0
+#define MY_COLOR_289 0xFFCF799C
+#define MY_COLOR_290 0xFFC57683
+#define MY_COLOR_291 0xFF516140
+#define MY_COLOR_292 0xFF5A617E
+#define MY_COLOR_293 0xFF96352D
+#define MY_COLOR_294 0xFF7775E2
+#define MY_COLOR_295 0xFF81D653
+#define MY_COLOR_296 0xFFD6DF26
+#define MY_COLOR_297 0xFFDFA491
+#define MY_COLOR_298 0xFF912BFD
+#define MY_COLOR_299 0xFF43A740
+#define MY_COLOR_300 0xFF2866DC
+
+#define BACKGROUND_COLOR 0xFF181818
+#define COLOR_BLACK 0xFF000000
+
+#define SEED_MARKER_RADIUS 3
+#define SEED_MARKER_COLOR COLOR_BLACK
+
+typedef uint32_t Color32;
+
+typedef struct {
+	int x, y;
+} Point;
+
+typedef struct {
+	uint16_t x;
+	uint16_t y;
+} Point32;
+
+static Color32 image[HEIGHT][WIDTH];
+static int depth[HEIGHT][WIDTH];
+static Point seeds[SEEDS_COUNT];
+static Color32 palette[] = {
+	MY_COLOR_001,
+	MY_COLOR_002,
+	MY_COLOR_003,
+	MY_COLOR_004,
+	MY_COLOR_005,
+	MY_COLOR_006,
+	MY_COLOR_007,
+	MY_COLOR_008,
+	MY_COLOR_009,
+	MY_COLOR_010,
+	MY_COLOR_011,
+	MY_COLOR_012,
+	MY_COLOR_013,
+	MY_COLOR_014,
+	MY_COLOR_015,
+	MY_COLOR_016,
+	MY_COLOR_017,
+	MY_COLOR_018,
+	MY_COLOR_019,
+	MY_COLOR_020,
+	MY_COLOR_021,
+	MY_COLOR_022,
+	MY_COLOR_023,
+	MY_COLOR_024,
+	MY_COLOR_025,
+	MY_COLOR_026,
+	MY_COLOR_027,
+	MY_COLOR_028,
+	MY_COLOR_029,
+	MY_COLOR_030,
+	MY_COLOR_031,
+	MY_COLOR_032,
+	MY_COLOR_033,
+	MY_COLOR_034,
+	MY_COLOR_035,
+	MY_COLOR_036,
+	MY_COLOR_037,
+	MY_COLOR_038,
+	MY_COLOR_039,
+	MY_COLOR_040,
+	MY_COLOR_041,
+	MY_COLOR_042,
+	MY_COLOR_043,
+	MY_COLOR_044,
+	MY_COLOR_045,
+	MY_COLOR_046,
+	MY_COLOR_047,
+	MY_COLOR_048,
+	MY_COLOR_049,
+	MY_COLOR_050,
+	MY_COLOR_051,
+	MY_COLOR_052,
+	MY_COLOR_053,
+	MY_COLOR_054,
+	MY_COLOR_055,
+	MY_COLOR_056,
+	MY_COLOR_057,
+	MY_COLOR_058,
+	MY_COLOR_059,
+	MY_COLOR_060,
+	MY_COLOR_061,
+	MY_COLOR_062,
+	MY_COLOR_063,
+	MY_COLOR_064,
+	MY_COLOR_065,
+	MY_COLOR_066,
+	MY_COLOR_067,
+	MY_COLOR_068,
+	MY_COLOR_069,
+	MY_COLOR_070,
+	MY_COLOR_071,
+	MY_COLOR_072,
+	MY_COLOR_073,
+	MY_COLOR_074,
+	MY_COLOR_075,
+	MY_COLOR_076,
+	MY_COLOR_077,
+	MY_COLOR_078,
+	MY_COLOR_079,
+	MY_COLOR_080,
+	MY_COLOR_081,
+	MY_COLOR_082,
+	MY_COLOR_083,
+	MY_COLOR_084,
+	MY_COLOR_085,
+	MY_COLOR_086,
+	MY_COLOR_087,
+	MY_COLOR_088,
+	MY_COLOR_089,
+	MY_COLOR_090,
+	MY_COLOR_091,
+	MY_COLOR_092,
+	MY_COLOR_093,
+	MY_COLOR_094,
+	MY_COLOR_095,
+	MY_COLOR_096,
+	MY_COLOR_097,
+	MY_COLOR_098,
+	MY_COLOR_099,
+	MY_COLOR_100,
+	MY_COLOR_101,
+	MY_COLOR_102,
+	MY_COLOR_103,
+	MY_COLOR_104,
+	MY_COLOR_105,
+	MY_COLOR_106,
+	MY_COLOR_107,
+	MY_COLOR_108,
+	MY_COLOR_109,
+	MY_COLOR_110,
+	MY_COLOR_111,
+	MY_COLOR_112,
+	MY_COLOR_113,
+	MY_COLOR_114,
+	MY_COLOR_115,
+	MY_COLOR_116,
+	MY_COLOR_117,
+	MY_COLOR_118,
+	MY_COLOR_119,
+	MY_COLOR_120,
+	MY_COLOR_121,
+	MY_COLOR_122,
+	MY_COLOR_123,
+	MY_COLOR_124,
+	MY_COLOR_125,
+	MY_COLOR_126,
+	MY_COLOR_127,
+	MY_COLOR_128,
+	MY_COLOR_129,
+	MY_COLOR_130,
+	MY_COLOR_131,
+	MY_COLOR_132,
+	MY_COLOR_133,
+	MY_COLOR_134,
+	MY_COLOR_135,
+	MY_COLOR_136,
+	MY_COLOR_137,
+	MY_COLOR_138,
+	MY_COLOR_139,
+	MY_COLOR_140,
+	MY_COLOR_141,
+	MY_COLOR_142,
+	MY_COLOR_143,
+	MY_COLOR_144,
+	MY_COLOR_145,
+	MY_COLOR_146,
+	MY_COLOR_147,
+	MY_COLOR_148,
+	MY_COLOR_149,
+	MY_COLOR_150,
+	MY_COLOR_151,
+	MY_COLOR_152,
+	MY_COLOR_153,
+	MY_COLOR_154,
+	MY_COLOR_155,
+	MY_COLOR_156,
+	MY_COLOR_157,
+	MY_COLOR_158,
+	MY_COLOR_159,
+	MY_COLOR_160,
+	MY_COLOR_161,
+	MY_COLOR_162,
+	MY_COLOR_163,
+	MY_COLOR_164,
+	MY_COLOR_165,
+	MY_COLOR_166,
+	MY_COLOR_167,
+	MY_COLOR_168,
+	MY_COLOR_169,
+	MY_COLOR_170,
+	MY_COLOR_171,
+	MY_COLOR_172,
+	MY_COLOR_173,
+	MY_COLOR_174,
+	MY_COLOR_175,
+	MY_COLOR_176,
+	MY_COLOR_177,
+	MY_COLOR_178,
+	MY_COLOR_179,
+	MY_COLOR_180,
+	MY_COLOR_181,
+	MY_COLOR_182,
+	MY_COLOR_183,
+	MY_COLOR_184,
+	MY_COLOR_185,
+	MY_COLOR_186,
+	MY_COLOR_187,
+	MY_COLOR_188,
+	MY_COLOR_189,
+	MY_COLOR_190,
+	MY_COLOR_191,
+	MY_COLOR_192,
+	MY_COLOR_193,
+	MY_COLOR_194,
+	MY_COLOR_195,
+	MY_COLOR_196,
+	MY_COLOR_197,
+	MY_COLOR_198,
+	MY_COLOR_199,
+	MY_COLOR_200,
+	MY_COLOR_201,
+	MY_COLOR_202,
+	MY_COLOR_203,
+	MY_COLOR_204,
+	MY_COLOR_205,
+	MY_COLOR_206,
+	MY_COLOR_207,
+	MY_COLOR_208,
+	MY_COLOR_209,
+	MY_COLOR_210,
+	MY_COLOR_211,
+	MY_COLOR_212,
+	MY_COLOR_213,
+	MY_COLOR_214,
+	MY_COLOR_215,
+	MY_COLOR_216,
+	MY_COLOR_217,
+	MY_COLOR_218,
+	MY_COLOR_219,
+	MY_COLOR_220,
+	MY_COLOR_221,
+	MY_COLOR_222,
+	MY_COLOR_223,
+	MY_COLOR_224,
+	MY_COLOR_225,
+	MY_COLOR_226,
+	MY_COLOR_227,
+	MY_COLOR_228,
+	MY_COLOR_229,
+	MY_COLOR_230,
+	MY_COLOR_231,
+	MY_COLOR_232,
+	MY_COLOR_233,
+	MY_COLOR_234,
+	MY_COLOR_235,
+	MY_COLOR_236,
+	MY_COLOR_237,
+	MY_COLOR_238,
+	MY_COLOR_239,
+	MY_COLOR_240,
+	MY_COLOR_241,
+	MY_COLOR_242,
+	MY_COLOR_243,
+	MY_COLOR_244,
+	MY_COLOR_245,
+	MY_COLOR_246,
+	MY_COLOR_247,
+	MY_COLOR_248,
+	MY_COLOR_249,
+	MY_COLOR_250,
+	MY_COLOR_251,
+	MY_COLOR_252,
+	MY_COLOR_253,
+	MY_COLOR_254,
+	MY_COLOR_255,
+	MY_COLOR_256,
+	MY_COLOR_257,
+	MY_COLOR_258,
+	MY_COLOR_259,
+	MY_COLOR_260,
+	MY_COLOR_261,
+	MY_COLOR_262,
+	MY_COLOR_263,
+	MY_COLOR_264,
+	MY_COLOR_265,
+	MY_COLOR_266,
+	MY_COLOR_267,
+	MY_COLOR_268,
+	MY_COLOR_269,
+	MY_COLOR_270,
+	MY_COLOR_271,
+	MY_COLOR_272,
+	MY_COLOR_273,
+	MY_COLOR_274,
+	MY_COLOR_275,
+	MY_COLOR_276,
+	MY_COLOR_277,
+	MY_COLOR_278,
+	MY_COLOR_279,
+	MY_COLOR_280,
+	MY_COLOR_281,
+	MY_COLOR_282,
+	MY_COLOR_283,
+	MY_COLOR_284,
+	MY_COLOR_285,
+	MY_COLOR_286,
+	MY_COLOR_287,
+	MY_COLOR_288,
+	MY_COLOR_289,
+	MY_COLOR_290,
+	MY_COLOR_291,
+	MY_COLOR_292,
+	MY_COLOR_293,
+	MY_COLOR_294,
+	MY_COLOR_295,
+	MY_COLOR_296,
+	MY_COLOR_297,
+	MY_COLOR_298,
+	MY_COLOR_299,
+	MY_COLOR_300,
+};
+#define palette_count (sizeof(palette)/sizeof(palette[0]))
+
+void fill_image(Color32 color)
+{
+	for (size_t y = 0; y < HEIGHT; ++y) {
+		for (size_t x = 0; x < WIDTH; ++x) {
+			image[y][x] = color;
+		}
+	}
+}
+
+int sqr_dist(int x1, int y1, int x2, int y2)
+{
+	int dx = x1 - x2;
+	int dy = y1 - y2;
+	return dx*dx + dy*dy;
+}
+
+void fill_circle(int cx, int cy, int radius, uint32_t color)
+{
+	// .......
+	// ..***..
+	// ..*@*..
+	// ..***..
+	// .......
+
+	int x0 = cx - radius;
+	int y0 = cy - radius;
+	int x1 = cx + radius;
+	int y1 = cy + radius;
+	for (int x = x0; x <= x1; ++x) {
+		if (0 <= x && x < WIDTH) {
+			for (int y = y0; y <= y1; ++y) {
+				if (0 <= y && y < HEIGHT) {
+					if (sqr_dist(cx, cy, x, y) <= radius*radius) {
+						image[y][x] = color;
+					}
+				}
+			}
+		}
+	}
+}
+
+void save_image_as_ppm(const char *file_path)
+{
+	FILE *f = fopen(file_path, "wb");
+	if (f == NULL) {
+		fprintf(stderr, "ERROR: could NOT write into file %s: %s\n", file_path, strerror(errno));
+		exit(1);
+	}
+	fprintf(f, "P6\n%d %d 255\n", WIDTH, HEIGHT);
+	for (size_t y = 0; y < HEIGHT; ++y) {
+		for (size_t x = 0; x < WIDTH; ++x) {
+			// 0xAABBGGRR
+			uint32_t pixel = image[y][x];
+			uint8_t bytes[3] = {
+				(pixel&0x0000FF)>>8*0,
+				(pixel&0x00FF00)>>8*1,
+				(pixel&0xFF0000)>>8*2,
+			};
+			fwrite(bytes, sizeof(bytes), 1, f);
+			assert(!ferror(f));
+		}
+	}
+
+	int ret = fclose(f);
+	assert(ret == 0);
+}
+
+void generate_random_seeds(void)
+{
+	for (size_t i = 0; i < SEEDS_COUNT; ++i) {
+		seeds[i].x = rand()%WIDTH;
+		seeds[i].y = rand()%HEIGHT;
+	}
+}
+
+void render_seed_markers(void)
+{
+	for (size_t i = 0; i < SEEDS_COUNT; ++i) {
+		fill_circle(seeds[i].x, seeds[i].y, SEED_MARKER_RADIUS, SEED_MARKER_COLOR);
+	}
+}
+
+void render_voronoi_naive(void)
+{
+	for (int y = 0; y < HEIGHT; ++y) {
+		for (int x = 0; x < WIDTH; ++x) {
+			int j = 0;
+			for (size_t i = 1; i < SEEDS_COUNT; ++i) {
+				if (sqr_dist(seeds[i].x, seeds[i].y, x, y) < sqr_dist(seeds[j].x, seeds[j].y, x, y)) {
+					j = i;
+				}
+			}
+			image[y][x] = palette[j%palette_count];
+		}
+	}
+}
+
+Color32 point_to_color(Point p)
+{
+	assert(p.x >= 0);
+	assert(p.y >= 0);
+	assert(p.x < UINT16_MAX);
+	assert(p.y < UINT16_MAX);
+	uint16_t x = p.x;
+	uint16_t y = p.y;
+	return (y<<16) | x;
+}
+
+Point color_to_point(Color32 c)
+{
+	return (Point) {
+		.x = (c&0x0000FFFF)>>0,
+		.y = (c&0xFFFF0000)>>16
+	};
+}
+
+void render_point_gradient(void)
+{
+	for (int y = 0; y < HEIGHT; ++y) {
+		for (int x = 0; x < WIDTH; ++x) {
+			Point p = {x, y};
+			image[y][x] = point_to_color(p);
+		}
+	}
+}
+
+void apply_next_seed(size_t seed_index)
+{
+	Point seed = seeds[seed_index];
+	Color32 color = palette[seed_index%palette_count];
+
+	for (int y = 0; y < HEIGHT; ++y) {
+		for (int x = 0; x < WIDTH; ++x) {
+			int dx = x - seed.x;
+			int dy = y - seed.y;
+			int d = dx*dx + dy*dy;
+			if (d < depth[y][x]) {
+				depth[y][x] = d;
+				image[y][x] = color;
+			}
+		}
+	}
+}
+
+void render_voronoi_interesting(void)
+{
+	for (int y = 0; y < HEIGHT; ++y) {
+		for (int x = 0; x < WIDTH; ++x) {
+			depth[y][x] = INT_MAX;
+		}
+	}
+
+	for (size_t i = 0; i < SEEDS_COUNT; ++i) {
+		apply_next_seed(i);
+	}
+}
+
+int main(void)
+{
+	srand(time(0));
+	fill_image(BACKGROUND_COLOR);
+	generate_random_seeds();
+	render_voronoi_interesting();
+	render_seed_markers();
+	save_image_as_ppm(OUTPUT_FILE_PATH);
+	return 0;
+}
+

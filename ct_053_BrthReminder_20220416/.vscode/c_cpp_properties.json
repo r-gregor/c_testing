@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "name": "windows-cygwin-gcc-x64",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "C:/Users/gregor.redelonghi/myprogs/cygwin64/usr/include/c++/v1"
+      ],
+      "compilerPath": "C:/Users/gregor.redelonghi/myprogs/cygwin64/bin/gcc.exe",
+      "cStandard": "c11",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "linux-gcc-x64",
+      "compilerArgs": [
+        "-g"
+      ]
+    }
+  ],
+  "version": 4
+}

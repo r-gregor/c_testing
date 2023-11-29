@@ -1,0 +1,3 @@
+WIN10:
+C:\Users\gregor.redelonghi\majstaf\majprogs\mingw64\bin\x86_64-w64-mingw32-g++.exe -o falling abc.cpp
+

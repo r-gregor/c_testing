@@ -1,0 +1,13 @@
+for FFF in $(find * -maxdepth 0 -type d -regex "cd..._.*"); do echo $FFF | sed 's/cd/cd_/'; done
+for FFF in $(find * -maxdepth 0 -type d -regex "cd..._.*"); do echo "mv $FFF $(echo $FFF | sed 's/cd/cd_/')"; done
+for FFF in $(find * -maxdepth 0 -type d -regex "cd..._.*"); do mv $FFF $(echo $FFF | sed 's/cd/cd_/'); done
+---
+for FFF in $(find * -maxdepth 0 -type d -regex "jd..._.*"); do echo $FFF | sed 's/jd/jd_/'; done
+for FFF in $(find * -maxdepth 0 -type d -regex "jd..._.*"); do echo "mv $FFF $(echo $FFF | sed 's/jd/jd_/')"; done
+for FFF in $(find * -maxdepth 0 -type d -regex "jd..._.*"); do mv $FFF $(echo $FFF | sed 's/jd/jd_/'); done
+---
+for FFF in $(find * -maxdepth 0 -type d -regex "pd..._.*"); do echo $FFF | sed 's/pd/pd_/'; done
+for FFF in $(find * -maxdepth 0 -type d -regex "pd..._.*"); do echo "mv $FFF $(echo $FFF | sed 's/pd/pd_/')"; done
+for FFF in $(find * -maxdepth 0 -type d -regex "pd..._.*"); do mv $FFF $(echo $FFF | sed 's/pd/pd_/'); done
+---
+

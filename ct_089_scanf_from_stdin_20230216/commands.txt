@@ -1,0 +1,46 @@
+# v1/s1
+$> echo -e "1,Gregor,Redelonghi\n2,Tadeja,Mali Redelonghi" | ./bin/readstdin.exe
+item: 1,Gregor,Redelonghi
+item: 2,Tadeja,Mali
+item: Redelonghi
+---
+# v1/s2
+$> echo -e "1,Gregor,Redelonghi\n2,Tadeja,Mali Redelonghi" | ./bin/readstdin.exe
+item: 1
+item: 1
+item: 1
+...
+
+$> echo -e "1,Gregor,Redelonghi\n2,Tadeja,Mali Redelonghi" > file.txt
+$> cat file.txt | ./bin/readstdin.exe
+item: 1
+item: 1
+item: 1
+...
+
+---
+# v1/s3-2
+$> cat file.txt | ./bin/readstdin.exe
+item: 1
+item: Gregor
+item: Redelonghi
+2
+item: Tadeja
+item: Mali Redelonghi
+
+---
+# v1/s3-3
+$> cat file.txt | ./bin/readstdin.exe
+item: 1
+item: Gregor
+item: Redelonghi
+item: 2
+item: Tadeja
+item: Mali Redelonghi
+
+---
+# v2
+$> cat file.csv | ./bin/readstdin_v2.exe
+1, Gregor, Redelonghi,  (3 items)
+2, Tadeja, Mali Redelonghi,  (3 items)
+

@@ -1,0 +1,7 @@
+20230419
+canges in 'hex_to_bin.h':
+
+- single function HexToBin with additional parameter for number of bits in hex number(8, 16)
+- functions hex_..32 and hex_..64, call HexToBin with bits parameter (32 -> 8, 34 -> 16)
+---
+

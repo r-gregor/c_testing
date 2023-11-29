@@ -1,0 +1,4 @@
+# in: [/home/gregor.redelonghi/C_en_testing]
+$> for FFF in $(find * -type f -iname "*.c" | grep -v "OSTALO\|FUNCTIONS\|TEST_FILES"); \
+> do diff -q $FFF ~/DRPBX_ODPRT/MCDN_d/coding/C_Cpp_d/c_d_testing/${FFF//cn/cd}; done 2>/dev/null
+

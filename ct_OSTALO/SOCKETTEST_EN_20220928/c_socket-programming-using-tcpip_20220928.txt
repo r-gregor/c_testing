@@ -1,0 +1,342 @@
+filename: c_socket-programming-using-tcpip_20220928.txt
+https://aticleworld.com/socket-programming-in-c-using-tcpip/
+
+Socket programming in c using TCP/IP
+
+   Before you start learning socket programming in C, you should basic knowledge of IP addresses, TCP,
+   and UDP. In this article, I shall describe TCP/IP and write a socket program using the TCP/IP API.
+
+TCP (Transmission control protocol)
+   A TCP (transmission control protocol) is a connection-oriented communication. It is an intermediate
+   layer of the application layer and internet protocol layer in the OSI model. TCP is designed to send
+   the data packets over the network. It ensures that data is delivered to the correct destination.
+
+   TCP creates a connection between the source and destination node before transmitting the data and
+   keeps the connection alive until the communication is active.
+
+   In TCP before sending the data it breaks the large data into smaller packets and cares the integrity
+   of the data at the time of reassembling at the destination node. Major Internet applications such as
+   the World Wide Web, email, remote administration, and file transfer rely on TCP.
+
+   TCP also offers the facility of retransmission, when a TCP client sends data to the server, it
+   requires an acknowledgment in return. If an acknowledgment is not received, after a certain amount of
+   time transmitted data will be lost and TCP automatically retransmits the data.
+
+   The communication over the network in TCP/IP model takes place in form of a client-server
+   architecture. ie, the client begins the communication and establishes a connection with a server.
+
+   For more understanding let's create a server that continuously runs and establish the connection
+   after getting a request from the client.
+
+   Note: here I am creating the server and client for Linux.
+
+   In this example, After the connection with a client, the server will wait for a message from the
+   client. After getting the message server will check the received message and send a proper response
+   as per the received message.
+
+Sequence of socket API calls and data flow:
+   To better understand check out the sequence of socket API calls and data flow for TCP client-server
+   communication. The left-hand column represents the client and the right-hand side is the server.
+
+                                                    TCP server
+                                                    [ socket()]
+                                                        |
+                                                        v
+                                                    [ bind() ]
+                                                        |
+                                                        v
+                                                    [ listen() ]
+                                                        |
+                                                        v
+                                                    [ accept() ]
+                                                        |
+                                                    blcks until connection
+                                                    from client
+                TCP client                              |
+                [ socket()]                             |
+                    |                                   |
+                    v                                   |
+                [ connect() ]<----TCP connection------->|
+                    |             establishment         |
+                    v                                   v
+             +->[ write() ]-------data(request)----->[ read() ]<--+
+             |      |                                   |         |
+             |      |                             do something    |
+             |      |                                   |         |
+             |      v                                   v         |
+             +--[ read() ]<-------data(reply)i-------[ write() ]--+
+                    |                                   |
+                    v                                   v
+                [ close() ]-------EOF notification---[ read() ]
+                                                         |
+                                                         v
+                                                     [ close() ]
+
+Steps to create a client using TCP/IP  API
+     * Create a socket with the socket() system call.
+     * Initialize the socket address structure as per the server and connect the socket to the address
+       of the server using the connect() system call.
+     * Receive and send the data using the recv() and send().
+     * Close the connection by calling the close() function.
+
+Steps to create a server using TCP/IP API
+
+     * Create a socket with the socket() system call.
+     * Initialize the socket address structure and bind the socket to an address using the bind() system
+       call.
+     * Listen for connections with the listen() system call.
+     * Accept a connection with the accept() system call. This call typically blocks until a client
+       connects to the server.
+     * Receive and send data by using the recv() and send().
+     * Close the connection by using the close().
+
+   If you are a beginner and want to learn TCP/IP, then you can check this course "[74]TCP/IP Networking
+   for Developers" that created by [75]Steve Evans, and the rating of this course is around 4.7. The
+   good thing is that FREE TRIAL is available and you can also access thousands of courses that are
+   created by industry experts.
+
+Example of Socket programming in C using TCP/IP:
+   As we know in socket programming network nodes (sockets) are communicating with each other over the
+   network. One socket(node) listens on a particular port at an IP, while the other socket reaches out
+   to the other to form a connection. In this example code, we will create two-node, one node for the
+   server and the other for the client. So let's see the example code for client-server socket
+   programming in C.
+
+Example Source code for TCP/IP client in C Linux:
+
+<code>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<sys/socket.h>
+#include<arpa/inet.h>
+#include<unistd.h>
+
+//Create a Socket for server communication
+short SocketCreate(void) {
+	short hSocket;
+	printf("Create the socket\n");
+	hSocket = socket(AF_INET, SOCK_STREAM, 0);
+	return hSocket;
+}
+
+//try to connect with server
+int SocketConnect(int hSocket) {
+	int iRetval=-1;
+	int ServerPort = 90190;
+	struct sockaddr_in remote= {0};
+
+	remote.sin_addr.s_addr = inet_addr("127.0.0.1"); //Local Host
+	remote.sin_family = AF_INET;
+	remote.sin_port = htons(ServerPort);
+
+	iRetval = connect(hSocket,(struct sockaddr *)&remote,sizeof(struct sockaddr_in));
+
+	return iRetval;
+}
+
+
+// Send the data to the server and set the timeout of 20 seconds
+int SocketSend(int hSocket,char* Rqst,short lenRqst) {
+
+	int shortRetval = -1;
+	struct timeval tv;
+	tv.tv_sec = 20;  /* 20 Secs Timeout */
+	tv.tv_usec = 0;
+
+	if(setsockopt(hSocket,SOL_SOCKET,SO_SNDTIMEO,(char *)&tv,sizeof(tv)) < 0) {
+		printf("Time Out\n");
+		return -1;
+	}
+	shortRetval = send(hSocket, Rqst, lenRqst, 0);
+
+	return shortRetval;
+}
+
+
+//receive the data from the server
+int SocketReceive(int hSocket,char* Rsp,short RvcSize) {
+
+	int shortRetval = -1;
+	struct timeval tv;
+	tv.tv_sec = 20;  /* 20 Secs Timeout */
+	tv.tv_usec = 0;
+
+	if(setsockopt(hSocket, SOL_SOCKET, SO_RCVTIMEO,(char *)&tv,sizeof(tv)) < 0) {
+		printf("Time Out\n");
+		return -1;
+
+	}
+	shortRetval = recv(hSocket, Rsp, RvcSize, 0);
+
+	printf("Response %s\n",Rsp);
+
+	return shortRetval;
+}
+
+
+//main driver program
+int main(int argc, char *argv[]) {
+	// original
+	// int hSocket, read_size;
+	int hSocket;
+	struct sockaddr_in server;
+	char SendToServer[100] = {0};
+	char server_reply[200] = {0};
+
+	//Create socket
+	hSocket = SocketCreate();
+
+	if(hSocket == -1) {
+		printf("Could not create socket\n");
+		return 1;
+	}
+
+	printf("Socket is created\n");
+
+	//Connect to remote server
+	if (SocketConnect(hSocket) < 0) {
+		perror("connect failed.\n");
+		return 1;
+	}
+
+	printf("Sucessfully conected with server\n");
+
+	printf("Enter the Message: ");
+	gets(SendToServer);
+
+	//Send data to the server
+	SocketSend(hSocket, SendToServer, strlen(SendToServer));
+
+	//Received the data from the server
+	// original
+	// read_size = SocketReceive(hSocket, server_reply, 200);
+	SocketReceive(hSocket, server_reply, 200);
+
+	printf("Server Response : %s\n\n",server_reply);
+
+	close(hSocket);
+	shutdown(hSocket,0);
+	shutdown(hSocket,1);
+	shutdown(hSocket,2);
+
+	return 0;
+}
+</code>
+
+
+Example Source code for TCP/IP server in C Linux:
+
+<code>
+#include<stdio.h>
+#include<string.h>
+#include<sys/socket.h>
+#include<arpa/inet.h>
+#include<unistd.h>
+
+short SocketCreate(void) {
+	short hSocket;
+	printf("Create the socket\n");
+
+	hSocket = socket(AF_INET, SOCK_STREAM, 0);
+	return hSocket;
+}
+
+
+int BindCreatedSocket(int hSocket) {
+	int iRetval=-1;
+	int ClientPort = 90190;
+	struct sockaddr_in	remote= {0};
+
+	/* Internet address family */
+	remote.sin_family = AF_INET;
+	/* Any incoming interface */
+	remote.sin_addr.s_addr = htonl(INADDR_ANY);
+	remote.sin_port = htons(ClientPort); /* Local port */
+	iRetval = bind(hSocket,(struct sockaddr *)&remote,sizeof(remote));
+
+	return iRetval;
+}
+
+
+int main(int argc, char *argv[]) {
+	int socket_desc, sock, clientLen, read_size;
+	struct sockaddr_in server, client;
+	char client_message[200]= {0};
+	char message[100] = {0};
+	const char *pMessage = "hello aticleworld.com";
+
+	//Create socket
+	socket_desc = SocketCreate();
+	if (socket_desc == -1) {
+		printf("Could not create socket");
+		return 1;
+	}
+	printf("Socket created\n");
+
+	//Bind
+	if( BindCreatedSocket(socket_desc) < 0) {
+		//print the error message
+		perror("bind failed.");
+		return 1;
+	}
+	printf("bind done\n");
+
+	//Listen
+	listen(socket_desc, 3);
+
+	//Accept and incoming connection
+
+	while(1) {
+		printf("Waiting for incoming connections...\n");
+		clientLen = sizeof(struct sockaddr_in);
+
+		//accept connection from an incoming client
+		sock = accept(socket_desc,(struct sockaddr *)&client,(socklen_t*)&clientLen);
+		if (sock < 0) {
+			perror("accept failed");
+			return 1;
+		}
+		printf("Connection accepted\n");
+
+		memset(client_message, '\0', sizeof client_message);
+		memset(message, '\0', sizeof message);
+		//Receive a reply from the client
+		if( recv(sock, client_message, 200, 0) < 0) {
+			printf("recv failed");
+			break;
+		}
+
+		printf("Client reply : %s\n",client_message);
+
+		if(strcmp(pMessage,client_message)==0) {
+			strcpy(message,"Hi there !");
+		} else {
+			strcpy(message,"Invalid Message !");
+		}
+
+		// Send some data
+		if( send(sock, message, strlen(message), 0) < 0) {
+			printf("Send failed");
+			return 1;
+		}
+
+		close(sock);
+		sleep(1);
+	}
+	
+	return 0;
+}
+</code>
+
+
+   OutPut 1.
+   [img1]
+
+   OutPut 2.
+   [img2]
+
+
+
+---
+

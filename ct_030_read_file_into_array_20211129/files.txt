@@ -1,0 +1,9 @@
+/home
+/home/rgregor
+/home/rgregor/Movies
+/home/tadeja
+/home/tadeja/Desktop
+/home/mark
+/home/mark/Documents/Naloga-1.java
+/home/zala
+/home/zala/muska

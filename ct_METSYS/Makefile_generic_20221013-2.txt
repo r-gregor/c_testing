@@ -1,0 +1,37 @@
+# 20221013
+# new generic Makefile -- compiles from ./src to ./bin
+
+CC = gcc
+CFLAGS = -g -Wall
+LDFLAGS =
+RM = rm -v
+BIN = ./bin
+SRC = ./src
+LIBS = ./libs
+INCL = ./include
+TESTS = ./testing
+
+SRCS = $(wildcard $(SRC)/*.c)
+PROGS = $(patsubst $(SRC)/%.c,$(BIN)/%,$(SRCS))
+
+all: newbindir $(PROGS)
+
+.PHONY: newbindir
+newbindir:
+	@mkdir -p $(BIN)
+
+$(PROGS): $(SRCS)
+	@echo -n "Compiling $@ ... "
+	@$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+	@echo done
+
+.PHONY: clean
+clean:
+	@echo "Removing executables ..."
+	@$(RM) $(PROGS)
+
+.PHONY: dirs
+dirs:
+	@echo "Creating dirs ..."
+	@mkdir -pv $(BIN) $(SRC) $(LIBS) $(INCL) $(TESTS)
+

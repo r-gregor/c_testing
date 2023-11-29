@@ -1,0 +1,31 @@
+0 > Cranberry
+  1 > Cucumber
+    2 > Banana
+      3 > Banana
+        4 > Passionfruit
+        4 > Raisin
+      3 > Honeydew
+        4 > Miracle fruit
+        4 > Custard apple
+    2 > Prune
+      3 > Guava
+        4 > Peach
+        4 > Boysenberry
+      3 > Melon
+        4 > Yuzu
+        4 > Persimmon
+  1 > Strawberry
+    2 > Cucumber
+      3 > Plantain
+        4 > Prune
+        4 > Raisin
+      3 > Nectarine
+        4 > Mangosteen
+        4 > Cranberry
+    2 > Melon
+      3 > Jackfruit
+        4 > Jabuticaba
+        4 > Nectarine
+      3 > Blood orange
+        4 > Salal berry
+        4 > Avocado

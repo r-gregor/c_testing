@@ -1,0 +1,15 @@
+RM = rm -v
+BIN = bin
+SRC = src
+
+SRCS = $(wildcard $(SRC)/*.java)
+PROGS = $(patsubst $(SRC)/%.java,$(BIN)/%.class,$(SRCS))
+
+
+all: $(PROGS)
+
+$(BIN)/%.class: $(SRC)/%.java
+	javac -cp $(SRC) -d $(BIN) $(SRCS)
+
+clean:
+	$(RM) $(PROGS)

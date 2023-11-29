@@ -1,0 +1,11 @@
+- update 20231005 (d) - jbez0rg:
+	change to serialize.h --> serialize_v2.h:
+		changes to: add_struct()
+		- no intermediate struct creation, but directly assigning
+		  a pointer to an offset from start of the buf
+---
+- update 20231010 (en):
+	update Makefile to update on *.h files change
+---
+LAST CHANGE: 20231010 (en)
+

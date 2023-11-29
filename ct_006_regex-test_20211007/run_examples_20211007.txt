@@ -1,0 +1,34 @@
+RUN1:
+gregor.redelonghi@cygwin-en ~/majstaf/coding/C_Cpp_en/C_en_testing/cn006_regex-test_20211007
+$> ./regex_test2-1.exe '([[:digit:]]+)' 'some-file-name_20211007.txt'
+Trying to find '([[:digit:]]+)' in 'some-file-name_20211007.txt'
+$& is '20211007' (bytes 15:23)
+$1 is '20211007' (bytes 15:23)
+No more matches.
+
+RUN2:
+gregor.redelonghi@cygwin-en ~/majstaf/coding/C_Cpp_en/C_en_testing/cn006_regex-test_20211007
+$> ./regex_test2-1.exe '([[:digit:]]+)' 'some-file-name_20211007_and-some-more-225566_.txt'
+Trying to find '([[:digit:]]+)' in 'some-file-name_20211007_and-some-more-225566_.txt'
+$& is '20211007' (bytes 15:23)
+$1 is '20211007' (bytes 15:23)
+$& is '225566' (bytes 38:44)
+$1 is '225566' (bytes 38:44)
+No more matches.
+
+RUN3:
+gregor.redelonghi@cygwin-en ~/majstaf/coding/C_Cpp_en/C_en_testing/cn006_regex-test_20211007
+$> ./regex_test2-1.exe '([[:digit:]]{8})' 'c_some_text_89563_with_numbers-12-33-66-and_the ending_20211007.txt'
+Trying to find '([[:digit:]]{8})' in 'c_some_text_89563_with_numbers-12-33-66-and_the ending_20211007.txt'
+$& is '20211007' (bytes 55:63)
+$1 is '20211007' (bytes 55:63)
+No more matches.
+
+RUN4:
+gregor.redelonghi@cygwin-en ~/majstaf/coding/C_Cpp_en/C_en_testing/cn006_regex-test_20211007
+$> ./regex_test2-1.exe '([[:digit:]]{1,3}-[[:digit:]]{1,3})' 'A phone number: 123-556'
+Trying to find '([[:digit:]]{1,3}-[[:digit:]]{1,3})' in 'A phone number: 123-556'
+$& is '123-556' (bytes 16:23)
+$1 is '123-556' (bytes 16:23)
+No more matches.
+

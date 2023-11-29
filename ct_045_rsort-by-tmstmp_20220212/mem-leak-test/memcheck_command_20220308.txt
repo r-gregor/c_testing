@@ -1,0 +1,4 @@
+memcheck command:
+valgrind --leak-check=full --show-leak-kinds=all bin/f14_sort-by-tmstmp
+
+

@@ -1,0 +1,63 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BIN	Makefile	/^BIN = .\/bin$/;"	m
+CC	Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -g -Wall$/;"	m
+LINE_LEN	memtest_v1.c	6;"	d	file:
+LINE_LEN	memtest_v2.c	6;"	d	file:
+LINE_LEN	memtest_v3.c	6;"	d	file:
+LINE_LEN	memtest_v4.c	6;"	d	file:
+MAX_ELEMENTS	memtest_v3.c	7;"	d	file:
+MAX_ELEMENTS	memtest_v4.c	7;"	d	file:
+NAME_LEN	memtest_v1.c	5;"	d	file:
+NAME_LEN	memtest_v2.c	5;"	d	file:
+NAME_LEN	memtest_v3.c	5;"	d	file:
+NAME_LEN	memtest_v4.c	5;"	d	file:
+PROGS	Makefile	/^PROGS = $(patsubst %.c,$(BIN)\/%,$(SRCS))$/;"	m
+Person	memtest_v1.c	/^typedef struct Person {$/;"	s	file:
+Person	memtest_v1.c	/^} Person;$/;"	t	typeref:struct:Person	file:
+Person	memtest_v2.c	/^typedef struct Person {$/;"	s	file:
+Person	memtest_v2.c	/^} Person;$/;"	t	typeref:struct:Person	file:
+Person	memtest_v3.c	/^typedef struct Person {$/;"	s	file:
+Person	memtest_v3.c	/^} Person;$/;"	t	typeref:struct:Person	file:
+Person	memtest_v4.c	/^typedef struct Person {$/;"	s	file:
+Person	memtest_v4.c	/^} Person;$/;"	t	typeref:struct:Person	file:
+RM	Makefile	/^RM = rm -v$/;"	m
+SRCS	Makefile	/^SRCS = $(wildcard *.c)$/;"	m
+addPerson	memtest_v3.c	/^void addPerson(char *myname, int myage) {$/;"	f
+addPerson	memtest_v4.c	/^void addPerson(char *myname, int myage) {$/;"	f
+age	memtest_v1.c	/^	int age;$/;"	m	struct:Person	file:
+age	memtest_v2.c	/^	int age;$/;"	m	struct:Person	file:
+age	memtest_v3.c	/^	int age;$/;"	m	struct:Person	file:
+age	memtest_v4.c	/^	int age;$/;"	m	struct:Person	file:
+createPerson	memtest_v2.c	/^Person *createPerson(char *myname, int myage) {$/;"	f
+list_of_persons	memtest_v3.c	/^Person **list_of_persons;$/;"	v
+list_of_persons	memtest_v4.c	/^Person **list_of_persons;$/;"	v
+main	memtest_v1.c	/^int main(int argc, char **argv) {$/;"	f
+main	memtest_v2.c	/^int main(int argc, char **argv) {$/;"	f
+main	memtest_v3.c	/^int main(int argc, char **argv) {$/;"	f
+main	memtest_v4.c	/^int main(int argc, char **argv) {$/;"	f
+name	memtest_v1.c	/^	char name[NAME_LEN];$/;"	m	struct:Person	file:
+name	memtest_v2.c	/^	char name[NAME_LEN];$/;"	m	struct:Person	file:
+name	memtest_v3.c	/^	char name[NAME_LEN];$/;"	m	struct:Person	file:
+name	memtest_v4.c	/^	char name[NAME_LEN];$/;"	m	struct:Person	file:
+personsCount	memtest_v3.c	/^int personsCount;$/;"	v
+personsCount	memtest_v4.c	/^int personsCount;$/;"	v
+printElements	memtest_v4.c	/^void printElements(Person **list) {$/;"	f
+printPerson	memtest_v1.c	/^void printPerson(Person *p) {$/;"	f
+printPerson	memtest_v2.c	/^void printPerson(Person *p) {$/;"	f
+printPerson	memtest_v3.c	/^void printPerson(Person *p) {$/;"	f
+printPerson	memtest_v4.c	/^void printPerson(Person *p) {$/;"	f
+releasePerson	memtest_v1.c	/^void releasePerson(Person **ptr) {$/;"	f
+releasePerson	memtest_v2.c	/^void releasePerson(Person **ptr) {$/;"	f
+releasePerson	memtest_v3.c	/^void releasePerson(Person **ptr) {$/;"	f
+releasePerson	memtest_v4.c	/^void releasePerson(Person **ptr) {$/;"	f
+testIfPtrNull	memtest_v1.c	/^int testIfPtrNull(void *ptr) {$/;"	f
+testIfPtrNull	memtest_v2.c	/^int testIfPtrNull(void *ptr) {$/;"	f
+testIfPtrNull	memtest_v3.c	/^int testIfPtrNull(void *ptr) {$/;"	f
+testIfPtrNull	memtest_v4.c	/^int testIfPtrNull(void *ptr) {$/;"	f
+updatePerson	memtest_v1.c	/^void updatePerson(Person *p, char *myname, int myage) {$/;"	f

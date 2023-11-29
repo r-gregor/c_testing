@@ -1,0 +1,2 @@
+gcc -g -Wall -I/usr/include/curl -o bin/progbar_v2 progbar_v2.c -lcurl
+

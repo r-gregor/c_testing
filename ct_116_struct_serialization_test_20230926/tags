@@ -1,0 +1,27 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+BIN	Makefile	/^BIN = .\/bin$/;"	m
+BUF_SIZE	serialize_v5.h	24;"	d
+CC	Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -g -Wall$/;"	m
+Element	serialize_v5.h	/^typedef struct Element {$/;"	s
+Element_t	serialize_v5.h	/^} Element_t;$/;"	t	typeref:struct:Element
+FPATH_MAKE_ABSOLUTE_H_	fpath_to_abspath_v2.h	6;"	d
+PROGS	Makefile	/^PROGS = $(patsubst %.c,$(BIN)\/%,$(SRCS))$/;"	m
+RM	Makefile	/^RM = rm -v$/;"	m
+SERIALIZE_H_	serialize_v5.h	11;"	d
+SRCS	Makefile	/^SRCS = $(wildcard *.c)$/;"	m
+count	serialize_v5.h	/^	uint64_t count;$/;"	m	struct:Element
+element_add_to_buf	serialize_v5.h	/^void element_add_to_buf(char *buf, char *name) {$/;"	f
+elements_global_count	serialize_v5.h	/^uint64_t elements_global_count = 0;$/;"	v
+elements_print_all	serialize_v5.h	/^void elements_print_all(char *buf, uint64_t elements_count) {$/;"	f
+elements_print_single	serialize_v5.h	/^void elements_print_single(char *buf, uint64_t pos, uint64_t elements_count) {$/;"	f
+fpath_make_absolute	fpath_to_abspath_v2.h	/^void fpath_make_absolute(char *fpath, char *fname, char *argv0) {$/;"	f
+main	sas1_serialize_array_of_structs_v12.c	/^int main(int argc, char **argv) {$/;"	f
+main	sas2_retreive_structs_from_file_v7.c	/^int main(int argc, char **argv) {$/;"	f
+name	serialize_v5.h	/^	char name[48];$/;"	m	struct:Element
+offset	serialize_v5.h	/^	uint64_t offset;$/;"	m	struct:Element

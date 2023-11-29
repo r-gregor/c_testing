@@ -1,0 +1,5 @@
+20230524:
+- Testing traversing array of ints or structs with array subindexing and array pointer arithmetics
+- 
+
+

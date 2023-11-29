@@ -1,0 +1,14 @@
+$> mvalgrind-test bin/llist_v3 2> memleaktest_v3.txt
+==97052== Memcheck, a memory error detector
+==97052== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==97052== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==97052== Command: bin/llist_v3
+==97052== 
+==97052== 
+==97052== HEAP SUMMARY:
+==97052==     in use at exit: 0 bytes in 0 blocks
+==97052==   total heap usage: 12 allocs, 12 frees, 1,200 bytes allocated
+==97052== 
+==97052== All heap blocks were freed -- no leaks are possible
+==97052== 
+==97052== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

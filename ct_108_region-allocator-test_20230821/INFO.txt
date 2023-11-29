@@ -1,0 +1,3 @@
+$> ./generate_100MB_random_txt_file.sh                               # --> test_file_100MiB.txt
+$> tr '\n' ' ' < test_file_100MiB.txt > test_file_2_100MiB.txt       # --> replace newlines with spaces
+

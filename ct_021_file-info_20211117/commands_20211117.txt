@@ -1,0 +1,26 @@
+gregor.redelonghi@cygwin-en ~/DOWNLOADS/test_files
+$> find * -maxdepth 0 -name "*.txt"
+Sample-text-file-1000kb.txt
+Sample-text-file-100kb.txt
+Sample-text-file-200kb.txt
+Sample-text-file-500kb.txt
+
+gregor.redelonghi@cygwin-en ~/DOWNLOADS/test_files
+$> find * -maxdepth 0 -name "*.txt" |xargs -I{} ~/BRISI/cn1000_file-info_20211117/bin/file-info_V2.exe {}
+Filename: Sample-text-file-1000kb.txt
+Size:     1023385 bytes
+Lines:    3310
+---
+Filename: Sample-text-file-100kb.txt
+Size:     102180 bytes
+Lines:    326
+---
+Filename: Sample-text-file-200kb.txt
+Size:     204118 bytes
+Lines:    654
+---
+Filename: Sample-text-file-500kb.txt
+Size:     511274 bytes
+Lines:    1653
+---
+
