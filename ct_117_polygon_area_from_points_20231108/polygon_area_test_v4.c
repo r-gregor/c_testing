@@ -71,7 +71,7 @@ int main(void) {
 		{8,8}
 	};
 
-	int points_num = sizeof(square_points) / sizeof(square_points[0]); // v4
+	int points_num = sizeof(triangle_points) / sizeof(triangle_points[0]); // v4
 	Polygon p3 = make_polygon(triangle_points, points_num);
 	display_polygon_points(&p3);
 	printf("Area of polygon p3 is: %d (triangle 8/8)\n---\n", polygon_area(&p3));
