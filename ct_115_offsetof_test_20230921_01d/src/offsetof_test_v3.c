@@ -1,16 +1,17 @@
 /*
- * offsetof_test_v2.c
- * v2
- * 20240105_02 (en)
+ * offsetof_test_v3.c
+ * v3
+ * 20240105_03 (en)
  */
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h> // offsetof()
 
+// different position of DS-s from larger to smaller ...
 typedef struct Data {
+	char name[256];
 	size_t size;
 	int age;
-	char name[256];
 } Data;
 
 /* MAIN */
@@ -49,9 +50,9 @@ int main(void) {
 
 	/* visual representation */
 	printf("  typedef struct Data {\n");
+	printf("  	char name[256];    \n");
 	printf("  	size_t size;       \n");
 	printf("  	int age;           \n");
-	printf("  	char name[256];    \n");
 	printf("  } Data;              \n");
 
 	printf("\n");
@@ -59,19 +60,23 @@ int main(void) {
 	printf("  Data d1 = {0};\n");
 	printf("  strcpy(d1.name, \"Tadeja Mali Redelonghi\");\n\n");
 
-	printf("  0      7  11     18                    271 (position)     \n");
-	printf("  1      8  12     19                    272 (bytes offset) \n");
-	printf("  x......x...x......x................ ~ ...x                \n");
-	printf("  |      |   |      |                                       \n");
-	printf("  |      |   |     'Mali Redelonghi'                        \n");
-	printf("  |      |   |      Lastn                                   \n");
-	printf("  |      |   |      |                                       \n");
-	printf("  |      |  'Tadeja Mali Redelonghi'                        \n");
-	printf("  |      |   d1.name                                        \n");
-	printf("  |      |                                                  \n");
-	printf("  |      d1.age                                             \n");
-	printf("  d1.size                                                   \n");
-	printf("  d1                                                        \n");
+	printf("  0      7               255      263      271 (position)     \n");
+	printf("  1      8               256      264      272 (bytes offset) \n");
+	printf("  x......x... ~ ...........x........x........x                \n");
+	printf("  |      |                 |        |                         \n");
+	printf("  |      |                 |        |                         \n");
+	printf("  |      |                 |        |                         \n");
+	printf("  |      |                 |        |                         \n");
+	printf("  |      |                 |        |                         \n");
+	printf("  |      |                 |        d1.age                    \n");
+	printf("  |      |                 d1.size                            \n");
+	printf("  |      |                                                    \n");
+	printf("  |     'Mali Redelonghi'                                     \n");
+	printf("  |      Lastn                                                \n");
+	printf("  |                                                           \n");
+	printf(" 'Tadeja Mali Redelonghi'                                     \n");
+	printf("  d1.name                                                     \n");
+	printf("  d1                                                          \n");
 
 	return 0;
 } // end MAIN
