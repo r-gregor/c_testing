@@ -1,16 +1,17 @@
 /*
- * struct_region_offset_v3.c
+ * struct_region_offset_v4.c
  * v3: function hl() for horizontal line instead of #define CRT___
  * v3: redefine show_all() to dsiplay 32x32 with header and footer
  *     header from 00 till 31 and footer fron 01 till 32
  * v3: redefine set_elements() to write name and surname
  * v4: randomize set_elements() function
+ * 20230831 (d)
  */
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h> // for clra and srand()
-#include <time.h>
+#include <stdlib.h> // for clr and srand()
+#include <time.h>   // for srand()
 
 #define ENG_ALPHABET_CHARS 26
 #define MAX_BUFF_ELEMENTS 1025
@@ -68,8 +69,9 @@ int main(int argc, char **argv) {
 	printf("Populating firts 26 positions with ENG alphabet (overriding previous ones) ...\n");
 	populate_with_alphabet(&container);
 	int offset2 = 50;
-	printf("Displayinh first %d positions:\n", offset2);
-	show_first_n(&container, ENG_ALPHABET_CHARS + (offset2 - ENG_ALPHABET_CHARS));
+	printf("Displaying first %d positions:\n", offset2);
+	// show_first_n(&container, ENG_ALPHABET_CHARS + (offset2 - ENG_ALPHABET_CHARS));
+	show_first_n(&container, offset2);
 
 	hl(3); // ---
 
@@ -222,12 +224,12 @@ void clr() {
 char get_name_chars(char *name, size_t curr_char) {
 	if (curr_char < strlen(name)) {
 		if (name[curr_char] == ' ') {
-			return '0';
+			return 1;
 		} else {
 			return name[curr_char];
 		}
 	} else {
-		return '0';
+		return 0;
 	}
 }
 

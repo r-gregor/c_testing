@@ -1,11 +1,13 @@
 /*
- * struct_region_offset_v4.c
+ * struct_region_offset_v5.c
  * v3: function hl() for horizontal line instead of #define CRT___
  * v3: redefine show_all() to dsiplay 32x32 with header and footer
  *     header from 00 till 31 and footer fron 01 till 32
  * v3: redefine set_elements() to write name and surname
  * v4: randomize set_elements() function
+ * v5: change get_name_chars() to return '.' if char is ' '
  * 20230831 (d)
+ * 20240108 (en)
  */
 
 #include <stdio.h>
@@ -224,7 +226,8 @@ void clr() {
 char get_name_chars(char *name, size_t curr_char) {
 	if (curr_char < strlen(name)) {
 		if (name[curr_char] == ' ') {
-			return 1;
+			// return 1;
+			return '.';
 		} else {
 			return name[curr_char];
 		}
