@@ -21,7 +21,7 @@
 #include <time.h>   // for srand()
 
 #define ENG_ALPHABET_CHARS 26
-#define MAX_BUFF_ELEMENTS 4069
+#define MAX_BUFF_ELEMENTS 4069 //v6
 #define CHARS_PER_LINE 32
 #define EMPTY_SPOT '.'
 
@@ -88,7 +88,8 @@ int main(int argc, char **argv) {
 
 	show_nth(&container, 6);
 	show_nth(&container, 900);
-	show_nth(&container, 1026);
+	show_nth(&container, 1024);
+	show_nth(&container, 5000);
 
 	hl(3); // ---
 
@@ -96,7 +97,8 @@ int main(int argc, char **argv) {
 	printf("After null-ing out entire region:\n");
 	show_nth(&container, 6);
 	show_nth(&container, 900);
-	show_nth(&container, 1026);
+	show_nth(&container, 1024);
+	show_nth(&container, 5000);
 
 	hl(3); // ---
 
