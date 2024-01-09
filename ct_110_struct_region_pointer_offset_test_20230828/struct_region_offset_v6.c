@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
 
 	clr();
 
-	set_elements_from_string(&container, "GREGOR REDELONGHI IN SPELA REDELONGHI IN ZALA");
+	set_elements_from_string(&container, "GREGOR REDELONGHI IN SPELA REDELONGHI");
 	show_all(&container);
 
 	return 0;
@@ -155,7 +155,7 @@ void show_nth(Region *r, size_t n) {
  */
 void show_all(Region *r) {
 
-	printf("Displaying entire memory region folded on 32-nd position\n\n"); // v6
+	printf("Displaying populated memory region folded on 32-nd position\n\n"); // v6
 	/* header */
 	int hdr;
 	for (hdr = 0; hdr < CHARS_PER_LINE - 1; hdr++) {
