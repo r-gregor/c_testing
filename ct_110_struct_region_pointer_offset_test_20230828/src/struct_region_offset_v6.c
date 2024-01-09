@@ -8,11 +8,13 @@
  * v5: change get_name_chars() to return '.' if char is ' '  -- (20240108_03)
  * v5: change get_name_chars() to return 0 if char is ' '    -- (20240108_04)
  * v6: bigger buffer and name NOT cut off at the 32-nd line  -- (20240108_05)
+ * v6: test for element outside buffer bounds (> 4069)       -- (20240108_06)
  * 20230831_01 (d)
  * 20240108_02 (en)
  * 20240108_03 (en)
  * 20240108_04 (en)
  * 20240108_05 (d)
+ * 20240109_06 (en)
  */
 
 #include <stdio.h>
