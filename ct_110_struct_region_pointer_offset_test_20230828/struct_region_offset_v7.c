@@ -29,7 +29,7 @@
 #include <time.h>   // for srand()
 
 #define ENG_ALPHABET_CHARS 26
-#define MAX_BUFF_ELEMENTS 4069
+#define MAX_BUFF_ELEMENTS 4096
 #define CHARS_PER_LINE 32
 #define EMPTY_SPOT '.'
 
