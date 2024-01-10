@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 	// v7
 	set_value_of_element(&container, 3, 'X');
 	set_value_of_element(&container, 6, 'Y');
-	set_value_of_element(&container, 4070, 'Z');
+	set_value_of_element(&container, 4123, 'Z');
 
 	/* display first 20 */
 	int offset1 = 20;
