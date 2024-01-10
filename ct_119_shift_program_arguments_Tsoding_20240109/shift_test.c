@@ -16,7 +16,7 @@ char *shift(int *argc, char ***argv) {
 
 int main(int argc, char **argv) {
 	// const char *program_name = shift(&argc, &argv);
-	shift(&argc, &argv); // skip program name --> argv[0] == program_name
+	shift(&argc, &argv); // first shift: to skip program name --> argv[0] == program_name
 
 	if (argc == 0) {
 		fprintf(stderr, "No args ... no output. Bye!\n");
