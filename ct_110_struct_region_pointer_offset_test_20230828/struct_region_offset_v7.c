@@ -5,11 +5,13 @@
  *     header from 00 till 31 and footer fron 01 till 32
  * v3: redefine set_elements() to write name and surname
  * v4: randomize set_elements() function
- * v5: change get_name_chars() to return '.' if char is ' '  -- (20240108_03)
- * v5: change get_name_chars() to return 0 if char is ' '    -- (20240108_04)
- * v6: bigger buffer and name NOT cut off at the 32-nd line  -- (20240108_05)
- * v6: test for element outside buffer bounds (> 4069)       -- (20240108_06)
- * v7: implement functions for region initialization         -- (20240109_07)
+ * v5: change get_name_chars() to return '.' if char is ' '          -- (20240108_03)
+ * v5: change get_name_chars() to return 0 if char is ' '            -- (20240108_04)
+ * v6: bigger buffer and name NOT cut off at the 32-nd line          -- (20240108_05)
+ * v6: test for element outside buffer bounds (> 4069)               -- (20240108_06)
+ * v7: implement functions for region initialization                 -- (20240109_07)
+ * v7: added +1 in curr_pos to ensure single char per line           -- (20240110_08)
+ *     changed type from int to size_t for all counts and positions  -- (20240110_08)
  * ---
  * 20230831_01 (d)
  * 20240108_02 (en)
@@ -18,6 +20,7 @@
  * 20240108_05 (d)
  * 20240109_06 (en)
  * 20240109_07 (en) -- v7
+ * 20240110_08 (en)
  */
 
 #include <stdio.h>
@@ -217,14 +220,18 @@ void show_all(Region *r) {
  */
 void set_elements_from_string(Region *r, char *name) {
 	srand(time(0));
-	int line_start = 0;
+	size_t line_start = 0;
 	size_t curr_char = 0;
 	size_t name_len = strlen(name); // v6
 	// size_t lines_num = (MAX_BUFF_ELEMENTS - 1) / CHARS_PER_LINE;
 	lines_num = name_len;
 
 	for (int i=0; i < lines_num; i++) {
-		int curr_pos = line_start + rand() % CHARS_PER_LINE;
+
+		/* +1 in curr_pos, or there were two chars on single line if
+		 * one was at the last position
+		 */
+		size_t curr_pos = line_start + rand() % CHARS_PER_LINE + 1;
 		*(r->data + curr_pos) = get_name_chars(name, curr_char);
 		curr_char++;
 		line_start += CHARS_PER_LINE;
@@ -272,7 +279,7 @@ char get_name_chars(char *name, size_t curr_char) {
  * set value for specific position in memory region
  */
 void set_value_of_element(Region *r, size_t position, char value) {
-	printf("Setting value '%c' for possition: %ld\n", value, position);
+	printf("Setting value '%c' for position: %ld\n", value, position);
 	if (position > MAX_BUFF_ELEMENTS) {
 		fprintf(stderr, "Element %ld out of buffer bounds!\n", position);
 	} else {
