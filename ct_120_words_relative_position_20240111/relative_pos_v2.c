@@ -10,11 +10,13 @@ size_t next_spc_position(char *subline);
 size_t words_count(char *line);
 void print_relative_lines(char *line);
 
+/* MAIN */
 int main(void) {
 
-	char *lines[] = {"GREGOR REDELONGHI IN TADEJA MALI REDELONGHI",
-		             "Zala Mark Špela Tadeja Gregor",
-					 "Januar Februar Marec April Maj Junij Julij Avgust September Oktober November December"
+	char *lines[] = {
+		"GREGOR REDELONGHI IN TADEJA MALI REDELONGHI",
+		"Zala Mark Špela Tadeja Gregori Sisi",
+		"Januar Februar Marec April Maj Junij Julij Avgust September Oktober November December"
 	};
 
 	for (int i = 0; i < sizeof(lines) / sizeof(lines[0]); ++i) {
@@ -23,11 +25,12 @@ int main(void) {
 
 
 	return 0;
-}
+} /* END MAIN */
 
 /*
  * find position (offset) to next space char
  * @param subline (string)
+ * TODO: count multiple spaces as one
  */
 size_t next_spc_position(char *subline) {
 	size_t pos = 0;
@@ -43,6 +46,7 @@ size_t next_spc_position(char *subline) {
 /*
  * get number of words in line (delim = space)
  * @param line (string)
+ * TODO: check for leading spaces and discard them
  */
 size_t words_count(char *line) {
 	size_t i = 0;
@@ -57,20 +61,20 @@ size_t words_count(char *line) {
 }
 
 void print_relative_lines(char *line) {
-	size_t curr_pos2 = 0;
-	size_t count2 = 0;
-	char *ln2 = line;
+	size_t curr_pos = 0;
+	size_t count = 0;
+	char *ln = line;
 	while(1) {
-		count2++;
-		printf("iteration %02ld: %s\n", count2, ln2);
+		count++;
+		printf("iteration %02ld: %s\n", count, ln);
 
 		/* set poiner to space character */
-		curr_pos2 = next_spc_position(ln2);
-		if (curr_pos2 == 0) {
+		curr_pos = next_spc_position(ln);
+		if (curr_pos == 0) {
 			break;
 		}
 		/* set pointer to character next to space (next word) */
-		ln2 += curr_pos2 + 1;
+		ln += curr_pos + 1;
 	}
 	printf("---\n");
 }
