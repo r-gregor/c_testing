@@ -1,0 +1,9 @@
+bm
+from: git clone https://github.com/tsoding/bm.git
+---
+common/sv.h, sv.c              -- String_View
+common/arena.c, arena.h        -- region based allocator
+common/path.c, path.h          -- path construction
+nobuild.c, nobuild.h           -- nobuild build system in c
+--
+
