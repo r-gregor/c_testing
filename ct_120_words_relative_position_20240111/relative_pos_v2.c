@@ -46,7 +46,8 @@ size_t next_spc_position(char *subline) {
 /*
  * get number of words in line (delim = space)
  * @param line (string)
- * TODO: check for leading spaces and discard them
+ * TODO: check for leading and trailing spaces and discard them
+ *       something like trimm[_left, _righ, _all] --> func()?
  */
 size_t words_count(char *line) {
 	size_t i = 0;
