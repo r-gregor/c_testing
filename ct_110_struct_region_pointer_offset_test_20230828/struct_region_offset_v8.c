@@ -1,5 +1,5 @@
 /*
- * struct_region_offset_v7.c
+ * struct_region_offset_v8.c
  * v3: function hl() for horizontal line instead of #define CRT___
  * v3: redefine show_all() to dsiplay 32x32 with header and footer
  *     header from 00 till 31 and footer fron 01 till 32
@@ -12,6 +12,7 @@
  * v7: implement functions for region initialization                 -- (20240109_07)
  * v7: added +1 in curr_pos to ensure single char per line           -- (20240110_08)
  *     changed type from int to size_t for all counts and positions  -- (20240110_08)
+ * v8: better display of memory populations                          -- (20240117_09)
  * ---
  * 20230831_01 (d)
  * 20240108_02 (en)
@@ -21,6 +22,7 @@
  * 20240109_06 (en)
  * 20240109_07 (en) -- v7
  * 20240110_08 (en)
+ * 20240117_09 (en) -- v8
  */
 
 #include <stdio.h>
@@ -134,12 +136,20 @@ Region initialize_region() {
 /* display first n elements */
 void show_first_n(Region *r, size_t n) {
 	int i = 0;
+	int j = 0;
+
+	/* new: header */
+	for (; j < n; j++) {
+		printf("%02d ", j + 1);
+	}
+	printf("\n");
+
 	for (; i < n; i++) {
 		char e = *(r->data + i);
 		if (e == 0) {
-			printf("%c ", EMPTY_SPOT);
+			printf(" %c ", EMPTY_SPOT);
 		} else {
-			printf("%c ", *(r->data + i));
+			printf(" %c ", *(r->data + i));
 		}
 	}
 	printf("%c\n", *(r->data + i));
