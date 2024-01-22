@@ -1,7 +1,9 @@
 /*
- * filename: custom_string_type_test_v2-1.c
- * v2-1: make_string() returns a pointer to compound statement
- * 20240122_04 (d)
+ * filename: custom_string_type_test_v4.c
+ * v4: make_string() returns a pointer to struct (just a test)
+ *     made wizh malloc has to be freed !!
+ * TODO: arena
+ * 20240122_03 (en)
  */
 #include <stdio.h>
 #include <string.h>
@@ -12,14 +14,12 @@ typedef struct string {
 	char *contents;
 } String_t;
 
-String_t *make_string(char *line);
+String_t *make_string(char *line); //v4
 void print_string(String_t *str);
 size_t get_str_len(String_t *str);
 
 int main(void) {
 
-
-	/* !! does NOT work with fucntion returning pointer to compound literal !!
 	String_t *s1 = make_string("Gregor Redelonghi");
 
 	char name[20] = "Hula Hula!";
@@ -31,25 +31,23 @@ int main(void) {
 	printf("String s2: "); print_string(s2);
 	printf("Length of s2: %ld\n", get_str_len(s2));
 	printf("---\n");
-	*/
 
-	char *nm2 = "gregor redelonghi";
-	printf("Length of string \"abcdefg\": %ld\n", get_str_len(&(String_t){.len = strlen("abcdefg"), .contents = "abcdefg"}));
-	printf("Length of string \"%s\": %ld\n", nm2, get_str_len(&(String_t){.len = strlen(nm2), .contents = nm2}));
+	printf("Length of string \"abcdefghi\": %ld\n", get_str_len((make_string("abcdefghi"))));
 	printf("---\n");
-
 	return 0;
 }
 
 
-/*
+/* v4
  * converts a string into String_t type (struct)
- * end returns a struct
- * !! does NOT work with returning a pointer to compound literal !!
+ * end returns a pointer to a struct
  */
 String_t *make_string(char *line) {
 	size_t len = strlen(line);
-	return &(String_t) { .len = len, .contents = line }; // v2 - COMPOUND LITERAL !!
+	String_t *s = malloc(sizeof(len) + len); // v4
+	s->len = len;
+	s->contents = line;
+	return s;
 }
 
 void print_string(String_t *str) {
@@ -66,4 +64,3 @@ void print_string(String_t *str) {
 size_t get_str_len(String_t *str) {
 	return str->len;
 }
-
