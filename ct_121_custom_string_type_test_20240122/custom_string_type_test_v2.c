@@ -1,6 +1,6 @@
 /*
  * filename: custom_string_type_test_v2.c
- * V1: make_string() returns a struct (just a test)
+ * v2: make_string() returns compound statement
  * 20240122_02 (en)
  */
 #include <stdio.h>
