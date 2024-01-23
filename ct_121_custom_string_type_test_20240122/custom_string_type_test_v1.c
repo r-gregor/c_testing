@@ -1,6 +1,6 @@
 /*
  * filename: custom_string_type_test_v1.c
- * V1: make_string() returns a struct (just a test)
+ * v1: make_string() returns a struct (just a test)
  * 20240122_01 (en)
  */
 #include <stdio.h>
