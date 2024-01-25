@@ -1,5 +1,5 @@
 /*
- * filename: custom_NString_type_test_v5.c
+ * filename: custom_string_type_test_v5.c
  * v5: names rearrangement
  * 20240125_05 (en)
  */
@@ -18,7 +18,7 @@ typedef struct string {
 	char *contents;
 } NString_t;
 
-NString_t *ns_make_string(char *cstr); // v4
+NString_t *ns_make_string(char *cstr); // v5
 void ns_print_string(NString_t *str);
 size_t ns_get_str_len(NString_t *str);
 
@@ -50,7 +50,7 @@ int main(void) {
 
 
 /* v5
- * converts a c-string into NString_t type tring (struct)
+ * converts a c-string into NString_t type string (struct)
  * and returns a pointer to a struct
  * !! does NOT work with returning a pointer to compound literal !!
  */
