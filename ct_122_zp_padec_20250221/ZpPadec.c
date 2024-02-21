@@ -36,19 +36,20 @@ float padec  = vrazd / hrazd;
 float ppadec = padec * 100;
 
 
-printf("Začetna točka: %.2f m\n", kota1);
-printf("Končna točka:  %.2f m\n", kota2);
-printf("Hori. razd:    %.2f m\n", hrazd);
-printf("Vert. razd:    %.2f m\n", vrazd);
-printf("Izračunani padec: %.2f %%\n", ppadec);
+printf("---------------------------------\n");
+printf("Začetna točka:    %10.2f m\n", kota1);
+printf("Končna točka:     %10.2f m\n", kota2);
+printf("Hori. razd:       %10.2f m\n", hrazd);
+printf("Vert. razd:       %10.2f m\n", vrazd);
+printf("Izračunani padec: %10.2f %%\n", ppadec);
 
-float abs_padec = abs_vred(padec);
+// float bs_padec = abs_vred(padec);
 
-if (abs_padec < min_padec) {
+if (abs_vred(padec) < min_padec) {
 	printf("\n");
-	printf("############################\n");
-	printf("# Padec je manši of 0.3%% ! #\n");
-	printf("############################\n\n");
+	printf("##########################\n");
+	printf("# Padec je manši of 0.3%% #\n");
+	printf("##########################\n\n");
 	print_min_max(kota1, hrazd);
 	return 0;
 }
@@ -63,8 +64,8 @@ void print_min_max(float kota1, float hrazd) {
 	float vrazd = hrazd * min_padec;
 	printf("---------------------------------\n");
 	printf("Potrebna končna višina mora biti\n");
-	printf("večja kot:  %f m\n", kota1 + abs_vred(vrazd));
-	printf("manjša kot: %f m\n", kota1 - abs_vred(vrazd));
+	printf("večja kot:        %10f m\n", kota1 + abs_vred(vrazd));
+	printf("manjša kot:       %10f m\n", kota1 - abs_vred(vrazd));
 }
 
 
