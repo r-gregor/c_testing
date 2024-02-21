@@ -1,9 +1,14 @@
+/*
+ * filename: ZpPadec.c
+ * 20240221 (en)
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 int usage(char **);
-void print_min_max(float, float, float);
+void print_min_max(float, float);
 float abs_vred(float vred);
 
 float min_padec = 0.3/100.00;
@@ -44,18 +49,18 @@ if (abs_padec < min_padec) {
 	printf("############################\n");
 	printf("# Padec je manši of 0.3%% ! #\n");
 	printf("############################\n\n");
-	print_min_max(kota1, hrazd, min_padec);
+	print_min_max(kota1, hrazd);
 	return 0;
 }
 
-print_min_max(kota1, hrazd, min_padec);
+print_min_max(kota1, hrazd);
 
 	return 0;
 } /* end MAIN */
 
 
-void print_min_max(float kota1, float hrazd, float padec) {
-	float vrazd = hrazd * padec;
+void print_min_max(float kota1, float hrazd) {
+	float vrazd = hrazd * min_padec;
 	printf("---------------------------------\n");
 	printf("Potrebna končna višina mora biti\n");
 	printf("večja kot:  %f m\n", kota1 + abs_vred(vrazd));
