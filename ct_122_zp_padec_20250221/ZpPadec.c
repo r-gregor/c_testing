@@ -47,9 +47,9 @@ printf("Izračunani padec: %10.2f %%\n", ppadec);
 
 if (abs_vred(padec) < min_padec) {
 	printf("\n");
-	printf("##########################\n");
-	printf("# Padec je manši of 0.3%% #\n");
-	printf("##########################\n\n");
+	printf("############################\n");
+	printf("# Padec je manjši od 0.3 %% #\n");
+	printf("############################\n\n");
 	print_min_max(kota1, hrazd);
 	return 0;
 }
@@ -64,8 +64,8 @@ void print_min_max(float kota1, float hrazd) {
 	float vrazd = hrazd * min_padec;
 	printf("---------------------------------\n");
 	printf("Potrebna končna višina mora biti\n");
-	printf("večja kot:        %10f m\n", kota1 + abs_vred(vrazd));
-	printf("manjša kot:       %10f m\n", kota1 - abs_vred(vrazd));
+	printf(" + večja kot:     %10f m\n", kota1 + abs_vred(vrazd));
+	printf(" - manjša kot:    %10f m\n", kota1 - abs_vred(vrazd));
 }
 
 
