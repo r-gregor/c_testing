@@ -18,11 +18,6 @@ float min_padec = 0.3/100.00;
 int main(int argc, char **argv) {
 
 if (argc != 4) {
-/*
- * 	printf("Usage: %s <kota1> <kota2> <razdalja>\n\n", argv[0]);
- * 	printf("\t<kota1>, <kota2>, <razdalja> ... format: XXX.XX\n\n");
- * 	return -1;
- */
 	usage(argv[0]);
 	return -1;
 
@@ -38,11 +33,11 @@ float ppadec = padec * 100;
 
 
 printf("---------------------------------\n");
-printf("Začetna točka:    %10.2f m\n", kota1);
-printf("Končna točka:     %10.2f m\n", kota2);
-printf("Hori. razd:       %10.2f m\n", hrazd);
-printf("Vert. razd:       %10.2f m\n", vrazd);
-printf("Izračunani padec: %10.2f %%\n", ppadec);
+printf("Začetna točka pt1:  %10.2f m\n", kota1);
+printf("Končna točka  pt2:  %10.2f m\n", kota2);
+printf("Hor. razdalja:      %10.2f m\n", hrazd);
+printf("Vert. razdalja:     %10.2f m\n", vrazd);
+printf("Izračunani padec:   %10.2f %%\n", ppadec);
 
 // float bs_padec = abs_vred(padec);
 
@@ -72,8 +67,11 @@ void print_min_max(float kota1, float hrazd) {
 
 
 void usage(const char *progname) {
-	printf("Usage: %s <kota1> <kota2> <razdalja>\n\n", progname);
-	printf("\t<kota1>, <kota2>, <razdalja> ... format: XXX.XX\n\n");
+	printf("Usage: %s [pt1] [pt2] [h_razd]\n\n", progname);
+	printf("	pt1 ...... začetna višina        [m]\n");
+	printf("	pt2 ...... končna višina         [m]\n");
+	printf("	h_razd ... horizontalna razdalja [m]\n");
+	printf("	pt1, pt2, h_razd ... format = xxx.xx\n");
 }
 
 
