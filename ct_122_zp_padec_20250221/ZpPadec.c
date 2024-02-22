@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-int usage(char **);
+void usage(const char *progname);
 void print_min_max(float, float);
 float abs_vred(float vred);
 
@@ -18,12 +18,13 @@ float min_padec = 0.3/100.00;
 int main(int argc, char **argv) {
 
 if (argc != 4) {
-	/*
-	printf("Usage: %s <kota1> <kota2> <razdalja>\n\n", argv[0]);
-	printf("\t<kota1>, <kota2>, <razdalja> ... format: XXX.XX\n\n");
+/*
+ * 	printf("Usage: %s <kota1> <kota2> <razdalja>\n\n", argv[0]);
+ * 	printf("\t<kota1>, <kota2>, <razdalja> ... format: XXX.XX\n\n");
+ * 	return -1;
+ */
+	usage(argv[0]);
 	return -1;
-	*/
-	usage(argv);
 
 }
 
@@ -69,11 +70,12 @@ void print_min_max(float kota1, float hrazd) {
 }
 
 
-int usage(char **argv) {
-	printf("Usage: %s <kota1> <kota2> <razdalja>\n\n", argv[0]);
+
+void usage(const char *progname) {
+	printf("Usage: %s <kota1> <kota2> <razdalja>\n\n", progname);
 	printf("\t<kota1>, <kota2>, <razdalja> ... format: XXX.XX\n\n");
-	return -1;
 }
+
 
 float abs_vred(float vred) {
 	if(vred < 0) {
