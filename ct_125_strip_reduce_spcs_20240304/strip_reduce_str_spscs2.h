@@ -1,6 +1,6 @@
 /*
- * v1
- * 20240304_01_en
+ * v2
+ * 20240304_02_en
  */
 
 #ifndef _STRIP_REDUCE_STR_SPSCS_H

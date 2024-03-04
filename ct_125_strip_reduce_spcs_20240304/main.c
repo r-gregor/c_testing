@@ -1,8 +1,15 @@
+/*
+ * main.c
+ * v1
+ * 20240304_01_en
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include "strip_reduce_str_spscs.h"
 
 
+/* MAIN */
 int main(void) {
 	
 	char *mystring = "     TEST STRING          WITH SOME   MULTIPLE            SPACES";
@@ -34,15 +41,6 @@ int main(void) {
 	printf("Striped: \"%s\"\n", final);
 	printf("Striped: "); pprnt(final);
 
-
-
-
-
-
-
-
-
-
-
 	return 0;
-}
+} /* end MAIN */
+
