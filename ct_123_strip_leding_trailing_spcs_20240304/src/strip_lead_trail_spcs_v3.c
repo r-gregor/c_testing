@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
+// #include <stdlib.h>
 
 void strip_leading_trailing_spcs(char *sourc, char* dest);
 void strip_leading_trailing_spcs2(char sourc[], char* dest);

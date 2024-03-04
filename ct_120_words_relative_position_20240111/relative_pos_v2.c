@@ -16,7 +16,8 @@ int main(void) {
 	char *lines[] = {
 		"GREGOR REDELONGHI IN TADEJA MALI REDELONGHI",
 		"Zala Mark Špela Tadeja Gregori Sisi",
-		"Januar Februar Marec April Maj Junij Julij Avgust September Oktober November December"
+		"Januar Februar Marec April Maj Junij Julij Avgust September Oktober November December",
+		"   first second      third  fourth              fifth    "
 	};
 
 	for (int i = 0; i < sizeof(lines) / sizeof(lines[0]); ++i) {
