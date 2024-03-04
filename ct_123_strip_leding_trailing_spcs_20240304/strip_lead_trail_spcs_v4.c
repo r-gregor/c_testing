@@ -6,7 +6,11 @@
 #include <stdio.h>
 #include <string.h>
 
-char *strip_leading_trailing_spcs3(char *source);
+#ifndef MAX_MULT_SPCS_STR_LEN
+#define MAX_MULT_SPCS_STR_LEN 256
+#endif
+
+char *strip_leading_trailing_spcs(char *source);
 void pprnt(char *line);
 
 int main(void) {
@@ -20,7 +24,7 @@ int main(void) {
 
 	char *reduced4 = NULL;
 	printf("\nStripping leading and trailing spaces from line4:\n");
-	reduced4 = strip_leading_trailing_spcs3(line4);
+	reduced4 = strip_leading_trailing_spcs(line4);
 
 	printf("Cleand line4: ");
 	pprnt(reduced4);
@@ -29,8 +33,8 @@ int main(void) {
 	return 0;
 }
 
-char *strip_leading_trailing_spcs3(char *source) {
-	static char dest[256];
+char *strip_leading_trailing_spcs(char *source) {
+	static char dest[MAX_MULT_SPCS_STR_LEN];
 	if (*source == ' ') {
 		while (*source == ' ') source++;
 	}
