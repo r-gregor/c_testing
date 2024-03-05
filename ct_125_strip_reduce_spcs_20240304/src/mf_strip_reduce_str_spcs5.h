@@ -3,17 +3,17 @@
  * 20240304_05_en
  */
 
-#ifndef _STRIP_REDUCE_STR_SPSCS_H
-#define _STRIP_REDUCE_STR_SPSCS_H
+#ifndef _MF_STRIP_REDUCE_STR_SPCS_H
+#define _MF_STRIP_REDUCE_STR_SPCS_H
 
 #ifndef MAX_MULT_SPCS_STR_LEN
 #define MAX_MULT_SPCS_STR_LEN 256
 #endif
 
-void multiple_spcs_as_one(char *src, char *dst);
-void strip_leading_trailing_spcs(char *src, char *dst);
-char *strip_reduce(char *src);
-void pprnt(char *line);
+void mf_reduce_multiple_spcs(char *src, char *dst);
+void mf_strip_lead_trail_spcs(char *src, char *dst);
+char *mf_strip_reduce(char *src);
+void mf_pprnt(char *line);
 
 
 /* ======== IMPLEMENTATIONS ========= */
@@ -22,7 +22,7 @@ void pprnt(char *line);
  * @param char *source (input) string
  * @return char *dst to new string
  */
-void multiple_spcs_as_one(char *src, char *dst) {
+void mf_reduce_multiple_spcs(char *src, char *dst) {
 
 	while (*src != '\0') {
 		if (*src != ' ') {
@@ -39,7 +39,7 @@ void multiple_spcs_as_one(char *src, char *dst) {
  * @param char *source (input) string
  * @return char *result to new string
  */
-void strip_leading_trailing_spcs(char *src, char *dst) {
+void mf_strip_lead_trail_spcs(char *src, char *dst) {
 	if (*src == ' ') {
 		while (*src == ' ') src++;
 	}
@@ -56,8 +56,8 @@ void strip_leading_trailing_spcs(char *src, char *dst) {
 	}
 }
 
-char *strip_reduce(char *src) {
-	/* strip_leading_trailing_spcs(char *src, char *dst) */
+char *mf_strip_reduce(char *src) {
+	/* mf_strip_lead_trail_spcs(char *src, char *dst) */
 	char buff1[MAX_MULT_SPCS_STR_LEN];
 	memset(buff1, 0, MAX_MULT_SPCS_STR_LEN);
 	char *dst1 = buff1;
@@ -77,7 +77,7 @@ char *strip_reduce(char *src) {
 	}
 
 
-	/* void multiple_spcs_as_one(char *src, char *dst) */
+	/* void mf_reduce_multiple_spcs(char *src, char *dst) */
 	char buff2[MAX_MULT_SPCS_STR_LEN];
 	memset(buff2, 0, MAX_MULT_SPCS_STR_LEN);
 	char *result = buff2;
@@ -100,7 +100,7 @@ char *strip_reduce(char *src) {
  * @param char *source (input) string
  * @retur void: print out reformated string
  */
-void pprnt(char *line) {
+void mf_pprnt(char *line) {
 	printf("\"");
 	while(*line != '\0') {
 		if (*line == ' ') {
