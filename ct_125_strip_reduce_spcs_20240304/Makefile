@@ -15,7 +15,7 @@ all: newbindir $(PROGS)
 newbindir:
 	@mkdir -p ./bin
 
-$(BIN)/%: %.c
+$(BIN)/%: %.c *.h
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
