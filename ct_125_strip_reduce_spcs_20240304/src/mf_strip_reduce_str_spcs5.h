@@ -78,7 +78,7 @@ char *mf_strip_reduce(char *src) {
 
 
 	/* void mf_reduce_multiple_spcs(char *src, char *dst) */
-	char buff2[MAX_MULT_SPCS_STR_LEN];
+	static char buff2[MAX_MULT_SPCS_STR_LEN];
 	memset(buff2, 0, MAX_MULT_SPCS_STR_LEN);
 	char *result = buff2;
 	char *dst2 = buff1;
