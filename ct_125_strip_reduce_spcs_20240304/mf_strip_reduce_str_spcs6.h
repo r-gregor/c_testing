@@ -58,7 +58,7 @@ void mf_strip_lead_trail_spcs(char *src, char *dst) {
 
 char *mf_strip_reduce(char *src) {
 	/* strip_leading_trailing_spcs(char *src, char *dst) */
-	static char buff1[MAX_MULT_SPCS_STR_LEN];
+	char buff1[MAX_MULT_SPCS_STR_LEN];
 	memset(buff1, 0, MAX_MULT_SPCS_STR_LEN);
 	char *dst1 = buff1;
 	if (*src == ' ') {
