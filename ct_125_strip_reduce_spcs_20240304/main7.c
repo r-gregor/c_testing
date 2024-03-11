@@ -1,12 +1,12 @@
 /*
- * main6.c
- * v6
- * 202400304_06_en
+ * main7.c
+ * v7
+ * 202400311_07_en
  */
 
 #include <stdio.h>
 #include <string.h>
-#include "mf_strip_reduce_str_spcs6.h"
+#include "mf_strip_reduce_str_spcs7.h"
 
 char striped[MAX_MULT_SPCS_STR_LEN];
 char reduced[MAX_MULT_SPCS_STR_LEN];
