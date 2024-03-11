@@ -21,6 +21,7 @@ int main(void) {
 	                   "     BERTHOLD SCHTROLTZENBURGER     AND THE    MAHNIFICENT EIGHT                          "
 	};
 
+	/* LOOP */
 	for (size_t i = 0; i < sizeof(stringZ) / sizeof(stringZ[0]); ++i) {
 		printf("-----------------------------------------------------------------------------\n");
 		printf("Original string: \"%s\"\n", stringZ[i]);
@@ -39,6 +40,7 @@ int main(void) {
 		printf("Striped and reduced: "); mf_pprnt(striped_reduced);
 	}
 
+	/* SINGLE */
 	printf("-----------------------------------------------------------------------------\n");
 	char *nl = "     Zala in      Mark,    ter Špela            in  Tadeja   Mali Redelonghi                       ";
 	printf("Original string: \"%s\"\n", nl);
