@@ -1,7 +1,6 @@
 /*
  * substring_withpointers_v1.c
- * v1
- * 20240312_v1_en
+ * 20240312_1_en
  */
 #include <stdio.h>
 #include <string.h>

@@ -1,7 +1,7 @@
 /*
  * substring_withpointers_v2.c
- * v2
- * 20240312_v2_en
+ * 20240312_1_en
+ * 20240312_2_mdb
  * updated to use widechars (UTF-8)
  */
 #include <stdio.h>
@@ -12,15 +12,18 @@
 void show_start_end(const size_t begin, const size_t subss_len);
 void print_substring(const wchar_t *start, const wchar_t *end);
 
+
 /* MAIN */
 int main(void) {
-	const size_t begin  = 12;        // strat char
+
+	setlocale(LC_ALL, "C.UTF-8");
+
+	const size_t begin     = 3;      // start char
 	const size_t subss_len = 16;     // substring length
-	
+
 	printf("Get substring with start at %ld-th char and end length of %ld chars:\n\n", begin, subss_len);
 
 	const wchar_t *str = L"Iz česa je lepota tvoja stkana, da tvoj obraz milijon podob ima?"; // WITHOUT MULTIBYTES CHARS !!
-	setlocale(LC_ALL, "C.UTF-8");
 	printf("'%ls' -- original\n", str);
 
 	const size_t strl = wcslen(str);
@@ -50,6 +53,8 @@ int main(void) {
 /*
  * display beginiing and end of
  * substring on original string
+ * @param begin:        start of subatring
+ * @param subss_len:    length of substring (including first char at start)
  */
 void show_start_end(const size_t begin, const size_t subss_len) {
 	int st;
@@ -83,9 +88,9 @@ void print_substring(const wchar_t *start, const wchar_t *end) {
 	printf("'");
 	size_t k=0;
 	while (start + k < end) {
-		printf("%c", *(start + k));
+		printf("%lc", *(start + k));
 		k++;
 	}
 	printf("' -- substring\n");
-}
+ }
 
