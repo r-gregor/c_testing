@@ -1,13 +1,16 @@
 /*
  * substring_withpointers_v2.c
  * 20240312_1_en
- * 20240312_2_mdb
- * updated to use widechars (UTF-8)
+ * 20240312_2_en v2: updated to use widechars (UTF-8)
+ * 20240313_3_mdb
+ * 20240313_3_en
  */
 #include <stdio.h>
 #include <string.h>
 #include <wchar.h>
 #include <locale.h>
+
+#define SUBS_MIN_LEN 3
 
 void show_start_end(const size_t begin, const size_t subss_len);
 void print_substring(const wchar_t *start, const wchar_t *end);
@@ -18,12 +21,17 @@ int main(void) {
 
 	setlocale(LC_ALL, "C.UTF-8");
 
-	const size_t begin     = 3;      // start char
-	const size_t subss_len = 16;     // substring length
+	const size_t begin     = 13;     // start char
+	const size_t subss_len = 13;     // substring length
+	
+	if(subss_len < SUBS_MIN_LEN) {
+		printf("[ERROR] Length of substring should be at least %d or more\n", SUBS_MIN_LEN);
+		return -1;
+	}
 
-	printf("Get substring with start at %ld-th char and end length of %ld chars:\n\n", begin, subss_len);
+	printf("Get substring with start at %ld-th char and length of %ld chars:\n\n", begin, subss_len);
 
-	const wchar_t *str = L"Iz česa je lepota tvoja stkana, da tvoj obraz milijon podob ima?"; // WITHOUT MULTIBYTES CHARS !!
+	const wchar_t *str = L"Iz česa je lepota tvoja stkana, da tvoj obraz milijon podob ima?";
 	printf("'%ls' -- original\n", str);
 
 	const size_t strl = wcslen(str);
@@ -69,10 +77,10 @@ void show_start_end(const size_t begin, const size_t subss_len) {
 	printf("|\n");
 
 	printf(" 1"); // 1-st character + leading space for "'" character
-	for (st=0; st < begin - 2; ++st) {
+	for (st=0; st < begin - 2 - 1; ++st) {
 		printf(" ");
 	}
-	printf("%ld", begin);
+	printf("%2ld", begin);
 
 	for (st=1; st < subss_len - 2; ++st) {
 		printf(" ");
