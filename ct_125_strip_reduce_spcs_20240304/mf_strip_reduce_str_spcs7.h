@@ -59,8 +59,7 @@ void mf_strip_lead_trail_spcs(char *src, char *dst) {
 
 char *mf_strip_reduce(char *src) {
 	/* strip_leading_trailing_spcs(char *src, char *dst) */
-	char buff1[MAX_MULT_SPCS_STR_LEN] = {0};      // v7
-	// memset(buff1, 0, MAX_MULT_SPCS_STR_LEN);   // v7
+	char buff1[MAX_MULT_SPCS_STR_LEN] = {0};      // v7: instead of memset(buff1, 0, MAX_MULT_SPCS_STR_LEN)
 	char *dst1 = buff1;
 	if (*src == ' ') {
 		while (*src == ' ') src++;
@@ -79,8 +78,7 @@ char *mf_strip_reduce(char *src) {
 
 
 	/* void multiple_spcs_as_one(char *src, char *dst) */
-	static char buff2[MAX_MULT_SPCS_STR_LEN] = {0}; // v7
-	// memset(buff2, 0, MAX_MULT_SPCS_STR_LEN);     // V7
+	static char buff2[MAX_MULT_SPCS_STR_LEN] = {0}; // v7: instead of memset(buff2, 0, MAX_MULT_SPCS_STR_LEN)
 	char *result = buff2;
 	char *dst2 = buff1;
 	while (*dst2 != '\0') {
