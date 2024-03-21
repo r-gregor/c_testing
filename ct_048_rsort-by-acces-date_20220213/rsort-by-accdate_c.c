@@ -111,7 +111,7 @@ void putFnameIntoArray(DIR *dir) {
 				//printf("d_name: %s\n", dirent->d_name);
 
 				fullpath = realpath(curr_path, NULL);
-				line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 2);
+				line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 3);
 				sprintf(line, "%s/%s", fullpath, dirent->d_name);
 				release_ptr(fullpath);
 				if ( dirent->d_type == DT_DIR ) {
