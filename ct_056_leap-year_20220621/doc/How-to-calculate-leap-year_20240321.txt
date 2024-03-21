@@ -1,0 +1,18 @@
+Every fourth year (years which, divided by 4, leave no remainder), like 2024, is a leap year, except those
+evenly divisible by 100 unless they’re also evenly divisible by 400. Does this seem like news? This rule has
+been in effect since 1582 when the Gregorian calendar was first introduced.
+
+So, if you’re still around in February 2100, you’ll likely notice that it will last only 28 days. February
+2400, on the other hand, like Feb 2000, will have 29. Given the sparsity of 28-day Februaries in years
+divisible by 4, it should come as no surprise if most of us never notice that they sometimes have only 28
+days. February 2000 wasn’t all that long ago but, evenly divisible by both 100 and 400, it managed to hold
+onto that 29th day. February 2100 will not.
+
+    February 2000          February 2100          February 2400
+Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa
+       1  2  3  4  5       1  2  3  4  5  6          1  2  3  4  5
+ 6  7  8  9 10 11 12    7  8  9 10 11 12 13    6  7  8  9 10 11 12
+13 14 15 16 17 18 19   14 15 16 17 18 19 20   13 14 15 16 17 18 19
+20 21 22 23 24 25 26   21 22 23 24 25 26 27   20 21 22 23 24 25 26
+27 28 29               28                     27 28 29
+
