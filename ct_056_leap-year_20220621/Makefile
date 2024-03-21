@@ -17,4 +17,4 @@ $(BIN)/%: %.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	$(RM) $(PROGS)
+	$(RM) ./bin/*
