@@ -1,6 +1,7 @@
 /*
- * leap-years-write-to-file_v3.c
+ * leap-years-write-to-file_v4.c
  * 20240321_03_en
+ * 20240328_04_en: moved all time and localtime related parts out of main()
  */
 #include <stdio.h>
 #include <string.h>
@@ -14,30 +15,17 @@
 bool is_leap_year(int);
 void write_leap_years(int, int);
 void write_columns(int *, int);
+char *get_output_fname();
 
 FILE *fd;
-char *fname;
-
-time_t now;
-struct tm *now_ptr;
-
+char *outputf;
 
 /* main */
 int main(int argc, char **argv) {
 
-	now = time(NULL);
-	now_ptr = localtime(&now);
 
-	char fname[38];
-	sprintf(fname, "OUTPUT_leap-years_%d%02d%02d_%02d%02d%02d.txt",
-							now_ptr->tm_year + 1900,
-							now_ptr->tm_mon + 1,
-							now_ptr->tm_mday,
-							now_ptr->tm_hour,
-							now_ptr->tm_min,
-							now_ptr->tm_sec);
-
-	fd = fopen(fname, "w");
+	outputf = get_output_fname();
+	fd = fopen(outputf, "w");
 
 	if (fd == NULL) {
 		fprintf(stderr, "File could'nt be open for writing!");
@@ -45,7 +33,7 @@ int main(int argc, char **argv) {
 	}
 
 	write_leap_years(1, 2600);
-	printf("Output written to: %s\n", fname);
+	printf("Output written to: %s\n", outputf);
 
 	return 0;
 } // end main
@@ -65,19 +53,25 @@ bool is_leap_year(int year) {
  */
 void write_leap_years(int starty, int endy) {
 
-char *intro = "Every fourth year (years which, divided by 4, leave no remainder) is a\n"
-"leap year except those evenly divisible by 100 unless they're also evenly\n"
-"divisible by 400. This rule has been in effect since 1582 when the Gregorian\n"
-"calendar was first introduced.\n"
-"\n"
-"    February 2000          February 2100          February 2400\n"
-"Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa\n"
-"       1  2  3  4  5       1  2  3  4  5  6          1  2  3  4  5\n"
-" 6  7  8  9 10 11 12    7  8  9 10 11 12 13    6  7  8  9 10 11 12\n"
-"13 14 15 16 17 18 19   14 15 16 17 18 19 20   13 14 15 16 17 18 19\n"
-"20 21 22 23 24 25 26   21 22 23 24 25 26 27   20 21 22 23 24 25 26\n"
-"27 28 29               28                     27 28 29\n"
-"---\n";
+	// v4
+	time_t now;
+	struct tm *now_ptr;
+	now = time(NULL);
+	now_ptr = localtime(&now);
+
+	char *intro = "Every fourth year (years which, divided by 4, leave no remainder) is a\n"
+                  "leap year except those evenly divisible by 100 unless they're also evenly\n"
+                  "divisible by 400. This rule has been in effect since 1582 when the Gregorian\n"
+                  "calendar was first introduced.\n"
+                  "\n"
+                  "    February 2000          February 2100          February 2400\n"
+                  "Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa\n"
+                  "       1  2  3  4  5       1  2  3  4  5  6          1  2  3  4  5\n"
+                  " 6  7  8  9 10 11 12    7  8  9 10 11 12 13    6  7  8  9 10 11 12\n"
+                  "13 14 15 16 17 18 19   14 15 16 17 18 19 20   13 14 15 16 17 18 19\n"
+                  "20 21 22 23 24 25 26   21 22 23 24 25 26 27   20 21 22 23 24 25 26\n"
+                  "27 28 29               28                     27 28 29\n"
+                  "---\n";
 
 	int yearsnum = endy + 1 - starty;
 	int size = yearsnum / 4;
@@ -134,5 +128,22 @@ void write_columns(int *array, int count) {
 		clmns++;
 	}
 	fprintf(fd, "%5d\n", *(array + count - 1));
+}
+
+char *get_output_fname() {
+	time_t now;
+	struct tm *now_ptr;
+	now = time(NULL);
+	now_ptr = localtime(&now);
+	static char fname[38];
+
+	sprintf(fname, "OUTPUT_leap-years_%d%02d%02d_%02d%02d%02d.txt",
+							now_ptr->tm_year + 1900,
+							now_ptr->tm_mon + 1,
+							now_ptr->tm_mday,
+							now_ptr->tm_hour,
+							now_ptr->tm_min,
+							now_ptr->tm_sec);
+	return &fname[0];
 }
 

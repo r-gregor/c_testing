@@ -1,6 +1,7 @@
 /*
- * leap-years-display_v6.c
+ * leap-years-display_v7.c
  * 20240321_06_en
+ * 20240328_07_en: moved all time and localtime related parts into display_leap_years() function
  */
 #include <stdio.h>
 #include <string.h>
@@ -15,15 +16,9 @@ void display_leap_years(int, int);
 void print_columns(int *, int);      // v5: 'int *' is same as 'int []'
 void show_intro();
 
-time_t now;
-struct tm *now_ptr;
-
 
 /* main */
 int main(int argc, char **argv) {
-
-	now = time(NULL);
-	now_ptr = localtime(&now);
 
 	show_intro();
 	display_leap_years(1, 2600);
@@ -45,6 +40,13 @@ bool is_leap_year(int year) {
  * of an array
  */
 void display_leap_years(int starty, int endy) {
+
+	// v7
+	time_t now;
+	struct tm *now_ptr;
+	now = time(NULL);
+	now_ptr = localtime(&now);
+
 	int yearsnum = endy + 1 - starty;
 	int size = yearsnum / 4;
 	int leapyears[size];
