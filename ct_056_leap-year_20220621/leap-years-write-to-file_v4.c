@@ -144,6 +144,6 @@ char *get_output_fname() {
 							now_ptr->tm_hour,
 							now_ptr->tm_min,
 							now_ptr->tm_sec);
-	return &fname[0];
+	return fname;
 }
 
