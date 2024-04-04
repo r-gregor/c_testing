@@ -1,10 +1,12 @@
 /*
- * relative_pos_v2.c
+ * relative_pos_v3.c
  * 20240111_01 (en)
  * 20240111_02 (en) -- v2
+ * 20240404_03 (en) -- v3
  */
 #include <stdio.h>
 #include <string.h>
+#include "mf_strip_reduce_str_spcs.h" // v3
 
 size_t next_spc_position(char *subline);
 size_t words_count(char *line);
@@ -19,9 +21,12 @@ int main(void) {
 		"Januar Februar Marec April Maj Junij Julij Avgust September Oktober November December",
 		"   first second      third  fourth              fifth    "
 	};
-
+	char *clean_line = NULL;
 	for (int i = 0; i < sizeof(lines) / sizeof(lines[0]); ++i) {
-		print_relative_lines(lines[i]);
+		printf("Original line: \"%s\"\n", lines[i]);
+		clean_line = mf_strip_reduce(lines[i]); // v3
+		print_relative_lines(clean_line);
+		memset(clean_line, 0, MAX_MULT_SPCS_STR_LEN);
 	}
 
 
@@ -31,7 +36,6 @@ int main(void) {
 /*
  * find position (offset) to next space char
  * @param subline (string)
- * TODO: count multiple spaces as one
  */
 size_t next_spc_position(char *subline) {
 	size_t pos = 0;
@@ -47,8 +51,6 @@ size_t next_spc_position(char *subline) {
 /*
  * get number of words in line (delim = space)
  * @param line (string)
- * TODO: check for leading and trailing spaces and discard them
- *       something like trim[_left, _righ, _all] --> func()?
  */
 size_t words_count(char *line) {
 	size_t i = 0;

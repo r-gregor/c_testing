@@ -16,7 +16,8 @@ int main(void) {
 	char *lines[] = {
 		"GREGOR REDELONGHI IN TADEJA MALI REDELONGHI",
 		"Zala Mark Špela Tadeja Gregori Sisi",
-		"Januar Februar Marec April Maj Junij Julij Avgust September Oktober November December"
+		"Januar Februar Marec April Maj Junij Julij Avgust September Oktober November December",
+		"   first second      third  fourth              fifth    "
 	};
 
 	for (int i = 0; i < sizeof(lines) / sizeof(lines[0]); ++i) {
@@ -46,7 +47,8 @@ size_t next_spc_position(char *subline) {
 /*
  * get number of words in line (delim = space)
  * @param line (string)
- * TODO: check for leading spaces and discard them
+ * TODO: check for leading and trailing spaces and discard them
+ *       something like trim[_left, _righ, _all] --> func()?
  */
 size_t words_count(char *line) {
 	size_t i = 0;
