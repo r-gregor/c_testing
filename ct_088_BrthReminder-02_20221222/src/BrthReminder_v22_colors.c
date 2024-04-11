@@ -1,3 +1,12 @@
+/*
+ * BrthReminder_v22.c
+ * v22: remove function wcstok() for tokenizing, because mingW could not compile
+ *      into win native executable. Running in cmd still not showing "čšž" properly
+ *      Go version works well (go for win)
+ *      wcstok() function replaced by char by char copy, and swprintf() function to
+ *      conwert wchar_t chars into integers
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,7 +81,7 @@ int main(int argc, char **argv) {
 	strcat(path1, "/");
 	strcat(path1, fname);
 	mbstowcs(path2, path1, 256);
-	wprintf(L"%ls\n", path2);
+	// wprintf(L"%ls\n", path2);
 
 	g_nLines = getNumOfLinesFromFile(path1);
 	persons = malloc(sizeof(Person *) * g_nLines);
@@ -153,14 +162,32 @@ Person *makePersonFromLine(wchar_t *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
 	Person *person = malloc(sizeof(Person));
-	person->name = malloc(sizeof(wchar_t) * (pos + 1));
+	// person->name = calloc((pos + 10), sizeof(wchar_t));
+	person->name = malloc((pos + 10) * sizeof(wchar_t));
 
-	wchar_t* ptr;
+	for (wchar_t j=0; j < pos; ++j) {
+		person->name[j] = line[j];
+	}
+	person->name[pos] = L'\0';
+	// test
+	// wprintf(L"person name: %ls\n", person->name);
+	
 	wchar_t * pEnd;
-	wcscpy(person->name, wcstok(line, L",", &ptr));
-	person->bd_date.d = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->bd_date.m = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->bd_date.y = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	wchar_t day_s[10] = {0};
+	wchar_t mon_s[10] = {0};
+	wchar_t yr_s[10] = {0};
+
+	swprintf(day_s, 3, L"%ls", line + pos + 1);
+	swprintf(mon_s, 3, L"%ls", line + pos + 1 + 3);
+	swprintf(yr_s, 5, L"%ls", line + pos + 1 + 3 + 3);
+
+	// test
+	// wprintf(L"%ls.%ls.%ls\n", day_s, mon_s, yr_s);
+	
+	person->bd_date.d = wcstol(day_s, &pEnd, 10);
+	person->bd_date.m = wcstol(mon_s, &pEnd, 10);
+	person->bd_date.y = wcstol(yr_s, &pEnd, 10);
+
 	person->age = curryear - person->bd_date.y;
 
 	Date this_year = {person->bd_date.d, person->bd_date.m, g_curr_date->y};

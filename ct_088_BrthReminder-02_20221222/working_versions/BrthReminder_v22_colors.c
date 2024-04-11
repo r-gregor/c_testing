@@ -1,3 +1,12 @@
+/*
+ * BrthReminder_v22.c
+ * v22: remove function wcstok() for tokenizing, because mingW could not compile
+ *      into win native executable. Running in cmd still not showing "čšž" properly
+ *      Go version works well (go for win)
+ *      wcstok() function replaced by char by char copy, and swprintf() function to
+ *      conwert wchar_t chars into integers
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,7 +20,12 @@
 
 #define _XOPEN_SOURCE 500
 
-// v20
+// v21: COLORS!!
+
+#define COLOR_BG_BLUE "\e[1;48;5;27m"
+#define COLOR_BG_GREEN "\e[1;48;5;29m"
+#define COLOR_BG_RED "\e[1;48;5;88m"
+#define COLOR_RESET "\e[0m"
 
 /* ================== GLOBALS ============================= */
 time_t today;
@@ -32,6 +46,9 @@ typedef struct Person {
 	int day_diff;
 } Person;
 
+
+
+
 const char *fname = "ROJSTNIDNEVI.txt";
 Date *g_curr_date;
 int g_nLines = 0;
@@ -49,8 +66,8 @@ void release_ptr(void *);
 int get_daydiff(Date *, Date *);
 int getNumOfLinesFromFile(const char *);
 int cmpfunc(const void *, const void *);
-void crtc(int);
-char *abspath(char *);
+void crtc(int n);
+char *abspath(char *argv0);
 
 /* =================== MAIN ============================== */
 /** main */
@@ -58,12 +75,12 @@ int main(int argc, char **argv) {
 	
 	setlocale(LC_ALL, "sl_SI.utf-8");
 
-	char path1[PATH_MAX];
-	// wchar_t path2[PATH_MAX];
+	char path1[256];
+	wchar_t path2[256];
 	strcpy(path1, abspath(argv[0]));
 	strcat(path1, "/");
 	strcat(path1, fname);
-	// mbstowcs(path2, path1, 256);
+	mbstowcs(path2, path1, 256);
 	// wprintf(L"%ls\n", path2);
 
 	g_nLines = getNumOfLinesFromFile(path1);
@@ -107,15 +124,9 @@ int main(int argc, char **argv) {
 		displayPersonsDiff100(persons);
 	}
 
-	fclose(fp);
-	
 	release_ptr(line);
 	release_ptr(g_curr_date);
-
-	for (int i=0; i < g_nLines; i++) {
-		freePerson(persons[i]);
-	}
-	release_ptr(persons);
+	fclose(fp);
 
 	return 0;
 } /* end main */
@@ -151,14 +162,32 @@ Person *makePersonFromLine(wchar_t *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
 	Person *person = malloc(sizeof(Person));
-	person->name = malloc(sizeof(wchar_t) * (pos + 1));
+	// person->name = calloc((pos + 10), sizeof(wchar_t));
+	person->name = malloc((pos + 10) * sizeof(wchar_t));
 
-	wchar_t* ptr;
+	for (wchar_t j=0; j < pos; ++j) {
+		person->name[j] = line[j];
+	}
+	person->name[pos] = L'\0';
+	// test
+	// wprintf(L"person name: %ls\n", person->name);
+	
 	wchar_t * pEnd;
-	wcscpy(person->name, wcstok(line, L",", &ptr));
-	person->bd_date.d = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->bd_date.m = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->bd_date.y = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	wchar_t day_s[10] = {0};
+	wchar_t mon_s[10] = {0};
+	wchar_t yr_s[10] = {0};
+
+	swprintf(day_s, 3, L"%ls", line + pos + 1);
+	swprintf(mon_s, 3, L"%ls", line + pos + 1 + 3);
+	swprintf(yr_s, 5, L"%ls", line + pos + 1 + 3 + 3);
+
+	// test
+	// wprintf(L"%ls.%ls.%ls\n", day_s, mon_s, yr_s);
+	
+	person->bd_date.d = wcstol(day_s, &pEnd, 10);
+	person->bd_date.m = wcstol(mon_s, &pEnd, 10);
+	person->bd_date.y = wcstol(yr_s, &pEnd, 10);
+
 	person->age = curryear - person->bd_date.y;
 
 	Date this_year = {person->bd_date.d, person->bd_date.m, g_curr_date->y};
@@ -176,16 +205,14 @@ Person *makePersonFromLine(wchar_t *line) {
  * Prints formated contents of updated person.
  */
 void printPerson(Person *person) {
+	if (person->day_diff < 3) wprintf(L"%s", COLOR_BG_RED);
+	if (person->day_diff >= 3 && person->day_diff <= 8) wprintf(L"%s", COLOR_BG_BLUE);
+	if (person->day_diff >= 8 && person->day_diff <= 21) wprintf(L"%s", COLOR_BG_GREEN);
 	wprintf(L"%-30ls", person->name);
 	wprintf(L"%02ld.%02ld.%ld     ", person->bd_date.d, person->bd_date.m, person->bd_date.y);
 	wprintf(L"%-5ld", person->age);
-
-	wchar_t asap[6] =                                                 L"     ";
-	if (person->day_diff < 3)                            wcscpy(asap, L"  ***");
-	if (person->day_diff >= 3 && person->day_diff <= 8)  wcscpy(asap, L"   **");
-	if (person->day_diff >= 8 && person->day_diff <= 21) wcscpy(asap, L"    *");
-	
-	wprintf(L"%ls%5ld\n", asap, person->day_diff);
+	wprintf(L"%10ld", person->day_diff);
+	wprintf(L"%s\n", COLOR_RESET);
 }
 
 
@@ -317,6 +344,7 @@ char *abspath(char *argv0) {
 		chdir(argv0);
 		getcwd(abs_exe_path, sizeof(abs_exe_path));
 	}
+
 	abspth = abs_exe_path;
 	return abspth;
 }
