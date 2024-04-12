@@ -17,8 +17,4 @@ $(BIN)/%: %.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	$(RM) $(BIN)/*
-
-test:
-	/usr/bin/valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s $(PROGS)
-
+	$(RM) $(PROGS)

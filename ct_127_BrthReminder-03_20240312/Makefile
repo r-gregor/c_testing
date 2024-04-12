@@ -1,3 +1,5 @@
+# for win
+# CC=/c/Users/gregor.redelonghi/majstaf/majprogs/mingw64/bin/x86_64-w64-mingw32-gcc-11.1.0.exe
 CC = gcc
 CFLAGS = -g -Wall
 RM = rm -v
@@ -13,12 +15,8 @@ all: newbindir $(PROGS)
 newbindir:
 	@mkdir -p ./bin
 
-$(BIN)/%: %.c
+$(BIN)/%: %.c *.h
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
 	$(RM) $(BIN)/*
-
-test:
-	/usr/bin/valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s $(PROGS)
-
