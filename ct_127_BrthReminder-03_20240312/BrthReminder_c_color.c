@@ -62,7 +62,8 @@ int np = 0;
 int getPositionOfDelim(wchar_t, wchar_t *);
 void displayPersonsAll(Person **);
 void displayPersonsDiff100(Person **);
-void displayPersonsIfFound(Person **, wchar_t *);  //v24
+void displayPersonsIfFound(Person **, wchar_t *);  // v24
+void to_wlower(wchar_t *, wchar_t *);              // v24
 Person *makePersonFromLine(wchar_t *);
 void printPerson(Person *);
 void freePerson(Person *);
@@ -251,6 +252,7 @@ void displayPersonsDiff100(Person **persons) {
 	crtc(cols);
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
 	crtc(cols);
+	
 
 	for (int i=0; i<g_nLines; i++) {
 		if (persons[i]->day_diff <= 100) {
@@ -270,8 +272,16 @@ void displayPersonsIfFound(Person **persons, wchar_t *serarchp) {
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
 	crtc(cols);
 
+	// wchar_t *wsrc =  malloc(sizeof(wchar_t) * 64);
+	// wchar_t *wdest = malloc(sizeof(wchar_t) * 64);
+	// to_wlower(serarchp, wdest);
+	// wprintf(L"%ls\n", wdest);
+
 	for (int i=0; i<g_nLines; i++) {
+
+		// to_wlower(persons[i]->name, wsrc);
 		if (wcsstr(persons[i]->name, serarchp) != NULL) {
+		// if (wcsstr(wsrc, wdest) != NULL) {
 			printPerson(persons[i]);
 		}
 	}
@@ -371,5 +381,14 @@ char *abspath(char *argv0) {
 
 	abspth = abs_exe_path;
 	return abspth;
+}
+
+void to_wlower(wchar_t *wstr, wchar_t *lwstr) {
+	wint_t wi = 0;
+	while(wstr[wi] != L'0') {
+		lwstr[wi] = wstr[wi];
+		wi++;
+	}
+	lwstr[wi] = L'0';
 }
 
