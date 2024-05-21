@@ -61,8 +61,8 @@ int np = 0;
 /* ================== FUNCTION DECLARATIONS ============== */
 int getPositionOfDelim(wchar_t, wchar_t *);
 void displayPersonsAll(Person **);
-void displayPersonsDiff100(Person **persons);
-void displayPersonsIfFound(Person **persons, wchar_t *serchp);  //v24
+void displayPersonsDiff100(Person **);
+void displayPersonsIfFound(Person **, wchar_t *);  //v24
 Person *makePersonFromLine(wchar_t *);
 void printPerson(Person *);
 void freePerson(Person *);
@@ -264,23 +264,20 @@ void displayPersonsDiff100(Person **persons) {
 /**
  * display persons whosw name contains search pattern
  */
-void displayPersonsIfFound(Person **persons, wchar_t *serchp) {
+void displayPersonsIfFound(Person **persons, wchar_t *serarchp) {
 	int cols = 30 + 15 + 5 + 10;
 	crtc(cols);
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
 	crtc(cols);
 
 	for (int i=0; i<g_nLines; i++) {
-		// if (wcsstr(persons[i]->name, serchp) != NULL) {
-		if (wcsstr(persons[i]->name, L"Odar") != NULL) {
+		if (wcsstr(persons[i]->name, serarchp) != NULL) {
 			printPerson(persons[i]);
-		} else {
-			wprintf(L"No such person found\n");
-			break;
 		}
 	}
 	crtc(cols);
-	wprintf(L"Displaying persons with '%ls' pattern in name\n", serchp);
+	wprintf(L"Displaying persons with '%ls' pattern in name\n", serarchp);
+
 }
 
 /**
