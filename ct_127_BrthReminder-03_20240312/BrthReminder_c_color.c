@@ -7,6 +7,7 @@
  *      conwert wchar_t chars into integers
  *
  * v23: wcscasecmp instead of wcssmp in main() for case insensitive comparisson
+ * v24: check for part of the name
  */
 
 #include <stdio.h>
@@ -61,6 +62,7 @@ int np = 0;
 int getPositionOfDelim(wchar_t, wchar_t *);
 void displayPersonsAll(Person **);
 void displayPersonsDiff100(Person **persons);
+void displayPersonsIfFound(Person **persons, wchar_t *serchp);  //v24
 Person *makePersonFromLine(wchar_t *);
 void printPerson(Person *);
 void freePerson(Person *);
@@ -113,15 +115,16 @@ int main(int argc, char **argv) {
 	qsort(persons, g_nLines, sizeof(Person *), cmpfunc);
 	
 	// v19
-	if (argc == 2 && strlen(argv[1]) < 4) {
-		wchar_t wans[4];
+	// if (argc == 2 && strlen(argv[1]) < 4) {
+	if (argc == 2) {
+		wchar_t wans[256] = {L'0'};
 		// size_t numwchars;
-		mbstowcs(wans, argv[1], 4);
-		// if (wcscmp(wans, L"ALL") == 0) {
+		mbstowcs(wans, argv[1], 256);
 		if (wcscasecmp(wans, L"ALL") == 0) { // v23
 			displayPersonsAll(persons);
 		} else {
-			displayPersonsDiff100(persons);
+			// displayPersonsDiff100(persons);
+			displayPersonsIfFound(persons, wans);
 		}
 	} else {
 		displayPersonsDiff100(persons);
@@ -258,6 +261,27 @@ void displayPersonsDiff100(Person **persons) {
 	wprintf(L"Displaying persons with less than 100 days till BD\n");
 }
 
+/**
+ * display persons whosw name contains search pattern
+ */
+void displayPersonsIfFound(Person **persons, wchar_t *serchp) {
+	int cols = 30 + 15 + 5 + 10;
+	crtc(cols);
+	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
+	crtc(cols);
+
+	for (int i=0; i<g_nLines; i++) {
+		// if (wcsstr(persons[i]->name, serchp) != NULL) {
+		if (wcsstr(persons[i]->name, L"Odar") != NULL) {
+			printPerson(persons[i]);
+		} else {
+			wprintf(L"No such person found\n");
+			break;
+		}
+	}
+	crtc(cols);
+	wprintf(L"Displaying persons with '%ls' pattern in name\n", serchp);
+}
 
 /**
  * dro a lin of n "-"s
