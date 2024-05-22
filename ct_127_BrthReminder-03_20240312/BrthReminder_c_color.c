@@ -7,7 +7,7 @@
  *      conwert wchar_t chars into integers
  *
  * v23: wcscasecmp instead of wcssmp in main() for case insensitive comparisson
- * v24: check for part of the name
+ * v24: check for part of the name (case insesitive)
  */
 
 #include <stdio.h>
@@ -62,8 +62,8 @@ int np = 0;
 int getPositionOfDelim(wchar_t, wchar_t *);
 void displayPersonsAll(Person **);
 void displayPersonsDiff100(Person **);
-void displayPersonsIfFound(Person **, wchar_t *);  // v24
-void to_wlower(wchar_t *, wchar_t *);              // v24
+void displayPersonsIfFound(Person **persons, wchar_t *searchp); // v24
+void wcs_to_lower(wchar_t *source, wchar_t *dest);              // v24
 Person *makePersonFromLine(wchar_t *);
 void printPerson(Person *);
 void freePerson(Person *);
@@ -115,16 +115,12 @@ int main(int argc, char **argv) {
 	/* qsort ... */
 	qsort(persons, g_nLines, sizeof(Person *), cmpfunc);
 	
-	// v19
-	// if (argc == 2 && strlen(argv[1]) < 4) {
 	if (argc == 2) {
 		wchar_t wans[256] = {L'0'};
-		// size_t numwchars;
 		mbstowcs(wans, argv[1], 256);
 		if (wcscasecmp(wans, L"ALL") == 0) { // v23
 			displayPersonsAll(persons);
 		} else {
-			// displayPersonsDiff100(persons);
 			displayPersonsIfFound(persons, wans);
 		}
 	} else {
@@ -264,29 +260,27 @@ void displayPersonsDiff100(Person **persons) {
 }
 
 /**
- * display persons whosw name contains search pattern
+ * display persons whose name contains search pattern
  */
-void displayPersonsIfFound(Person **persons, wchar_t *serarchp) {
+void displayPersonsIfFound(Person **persons, wchar_t *searchp) {
 	int cols = 30 + 15 + 5 + 10;
 	crtc(cols);
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
 	crtc(cols);
-
-	// wchar_t *wsrc =  malloc(sizeof(wchar_t) * 64);
-	// wchar_t *wdest = malloc(sizeof(wchar_t) * 64);
-	// to_wlower(serarchp, wdest);
-	// wprintf(L"%ls\n", wdest);
+	wchar_t searchp_lc[256] = {L'\0'};
+	wcs_to_lower(searchp, searchp_lc);
 
 	for (int i=0; i<g_nLines; i++) {
+		wchar_t name_lc[256] = {L'\0'};
+		wcs_to_lower(persons[i]->name, name_lc);
 
-		// to_wlower(persons[i]->name, wsrc);
-		if (wcsstr(persons[i]->name, serarchp) != NULL) {
+		if (wcsstr(name_lc, searchp_lc) != NULL) {
 		// if (wcsstr(wsrc, wdest) != NULL) {
 			printPerson(persons[i]);
 		}
 	}
 	crtc(cols);
-	wprintf(L"Displaying persons with '%ls' pattern in name\n", serarchp);
+	wprintf(L"Displaying persons with '%ls' pattern in name\n", searchp);
 
 }
 
@@ -383,12 +377,12 @@ char *abspath(char *argv0) {
 	return abspth;
 }
 
-void to_wlower(wchar_t *wstr, wchar_t *lwstr) {
-	wint_t wi = 0;
-	while(wstr[wi] != L'0') {
-		lwstr[wi] = wstr[wi];
-		wi++;
+/*
+ * need to initialize the dest string as:
+ *     wchar_t *dest[SIZE] = {L'\0'};
+ */
+void wcs_to_lower(wchar_t *source, wchar_t *dest) {
+	for (int i = 0; i < wcslen(source); i++) {
+		dest[i] = towlower(source[i]);
 	}
-	lwstr[wi] = L'0';
 }
-
