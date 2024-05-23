@@ -15,10 +15,10 @@
 int main(void) {
 
 	printf("%s\n", PATH("foo", "bar", "baz", "test"));
-	printf("%s\n", PATH("root", "home", "rgregor", "tests"));
+	printf("%s\n", PATH("RUUT", "home", "rgregor", "tests"));
 	HL3
 
-	MKDIRS("root", "home", "rgregor", "tests");
+	MKDIRS("RUUT", "home", "rgregor", "tests");
 	HL3
 
 	return 0;
