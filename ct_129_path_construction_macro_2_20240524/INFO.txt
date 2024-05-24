@@ -1,0 +1,6 @@
+20240524:
+	join all inetrfaces into single heade: buil.h
+	update *.c and Makefile acordingly
+
+---
+

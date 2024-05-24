@@ -1,0 +1,1979 @@
+Transcript:		https://www.youtube.com/watch?v=n47AFxc1ksE&list=PLpM-Dvs8t0VY73ytTCQqgvgCWttV3m8LM&index=14&t=5227s
+				 New Build System in C — Part 1; Tsoding Daily
+
+Start
+10:19 ... hello welcome to another stream how about that how about that hello
+10:25 ... hello hello and welcome welcome welcome um hello mr vodka
+10:30 ... apparently potatoes drake zorn hotend plots a good duke at the nasser beat 69 ... 10:36 ... stream uh yeah japan that's japanese by the way thank you so much for the subscription thank you thank you thank
+10:41 ... you really appreciate it welcome to our epic club uh with the neurostereo surgeon uh
+10:47 ... hello hello welcome welcome welcome hello um thrice maybe like
+10:55 ... hello everyone uh one uh one course or in course or columbia so today is
+11:02 ... tuesday if i'm not mistaken enough enough to hello and uh that means today according to schedule we are supposed to be
+11:09 ... developing a virtual machine in sea uh all right but recently i was actually
+11:15 ... dealing with a lot of problems uh with the build system for our virtual machine because our virtual machine has
+11:21 ... to work um it has to be built in four different major systems out then hello hello
+11:28 ... uh yatko welcome welcome welcome so um yeah so we have to be able to build
+11:34 ... this entire thing on linux mac os windows msvc mingw
+11:41 ... and a freebsd so like and also uh we should be able to build it on linux uh with clank and gcc
+11:49 ... so there is a lot of cross-platform ability and cross-compiler-ness that gets involved in here which makes
+11:55 ... it kind of difficult to build this entire stuff and so we could just use like one of the build
+12:00 ... tools like cmake or something like that but uh you know uh it's just an additional
+12:07 ... dependency that increases the cost of maintenance so you get c make so you cannot use c make without make
+12:14 ... you cannot really use make without shell so and like you you use one tool and
+12:20 ... another tool starts to suck in the whole infrastructure with itself so uh like you think you're depending on
+12:27 ... the one thing in fact you're depending on thousands of them implicitly and this is
+12:32 ... the cause that is blood becomes obvious only like later um and uh what's interesting it works in
+12:38 ... big companies because big companies have a lot of resources to actually accommodate this entire cost but we are not a big
+12:45 ... company we are a one uh bold guy well we're actually community
+12:52 ... so people contribute uh here as well so i'm not the only one who's developing this internet thing so we are many but we are not as
+12:59 ... powerful as some corporations right so what i decided to do
+13:05 ... i decided to revive my old idea of using c as
+13:11 ... a scripting language for building things as a scripting language of building
+13:17 ... building things so let me demonstrate to you what i mean com unity
+13:24 ... cool you're very funny what can i say uh so essentially right now we have this
+13:30 ... bunch of scripts like build the sage and since uh shell is kind of
+13:36 ... it's not impossible to have shell on windows but it's really uncommon to have it and people usually prefer to have
+13:42 ... something like butt scripts wait a second why oh yeah and uh
+13:48 ... people usually prefer have bad bad scripts especially when they build on svc so we have separate scripts for that uh
+13:55 ... but the problem is that the script do the same thing so uh what if we rewrote
+14:01 ... those scripts in c right so see like um on windows we have to use
+14:08 ... cmd on linux we have to use shell i mean on unix but c works everywhere right c works on
+14:14 ... linuxc works on freebies dc works on mac os he works on windows so uh if we manage to rewrite this
+14:20 ... entire thing in c so that a such script would be a more cross platform right such script
+14:27 ... will be more from platform and what's cool is that uh to build your
+14:33 ... project the only thing you will need is a c compiler right so imagine that you have a uh some
+14:38 ... sort of a script like build c uh which is cross cross platform enough
+14:44 ... first plot platform enough uh right so something like this and the
+14:50 ... only thing you have to do is just to bootstrap this script like this uh let me let me put it this way right
+14:58 ... you just bootstrap it and you have a build system that then when run uh builds everything else right so and
+15:05 ... essentially really like the only thing you need is a c compiler you don't need even shell you
+15:12 ... don't need any powershell any cmd any make or anything you have a project in c
+15:18 ... you have a c compiler you can build the whole project using only the c compiler and nothing
+15:26 ... else like seriously not even these invisible costs that people usually tend to ignore like
+15:31 ... make and shell or anything like that so you bootstrap it once and then it basically builds everything
+15:37 ... for you and it's not that much of a you know actions in my opinion because majority
+15:44 ... of the modern build systems um have this two-step of built
+15:49 ... anyway right usually you have configuration step and only then the build step right so you can consider like
+15:56 ... bootstrapping the build system as the configuration step why not um
+16:01 ... yeah and also once the executable is bootstrapped it uh can for example rebuild itself
+16:09 ... when it detects changes in build.c right so maybe you never have to like bootstrap it ever
+16:15 ... again because the executable starts to manage itself right so and this is basically the idea of the build
+16:21 ... system that i had for several years already i think i have it like for three years or something um and i was just you know hypothesizing
+16:30 ... about this entire stuff right uh so but i think
+16:35 ... since i have this playground where i experiment with things uh like virtual machine and stuff um i'm
+16:42 ... thinking maybe i can experiment on that project with the build system as well
+16:47 ... right uh so just try to try out this build system on one of my projects
+16:52 ... and see how it go uh is using this kind of approach in his project cool so that means i'm not the
+16:58 ... only one who thought that it's a good idea or you can just have a single
+17:04 ... compilation you need pog chomp uh probably you can have a single population unit but
+17:09 ... the thing is uh i have several executables right so uh the part of the project
+17:15 ... actually the whole tool chain so we need to build the whole tool chain so we have to have at least compilation for
+17:22 ... each individual executable this is the first thing second thing uh part of the build process
+17:28 ... is using the tool chain to build examples because we're developing a virtual machine right
+17:34 ... and we need to build uh the byte code over the examples to run them and whatnot so our entire build process actually
+17:41 ... consists of two phases first building the tool chain and then using that tool chain
+17:47 ... build the examples so that already requires more sophisticated uh a process than just you know smashing
+17:54 ... everything into a single file and compiling it right it would be ideal i do agree with you but we're kind of doing
+17:59 ... like a slightly different project here unfortunately so and on top of that we also have a
+18:04 ... integration testing system uh which then uh uses the tool chain
+18:10 ... to um record the behavior of the program it compiled and then uh compare that behavior with
+18:17 ... the expected behavior to make sure that we didn't break the virtual machine so and all of that requires like
+18:22 ... sophisticated tool with sophisticated logic not really that sophisticated but i mean
+18:28 ... you want to use a proper programming language for developing this kind of logic so you know what i mean it would be kind
+18:35 ... of cool if we had like a tuning complete proper language for build system and cmake is one of those things but i
+18:41 ... already explained why i didn't like cma so uh yeah so i decided to give it a try
+18:46 ... and just add a research uh try to use this approach for virtual machine
+18:55 ... simek don't like her well simek sounds like a complete overkill for this project uh this project doesn't depend on
+19:02 ... anything uh except libsy seriously
+19:07 ... imagine having a project that literally has zero dependencies and using cmake to build that project
+19:14 ... like i think this is insanity like you're adding additional maintenance cost
+19:20 ... for nothing i would understand if you had some sort of a big library that you had to depend on and maybe several
+19:27 ... libraries that you have to then search on different systems and bring together and stuff like i would understand that
+19:33 ... but in this project it doesn't make any sense okay and the cause of the buzzing
+19:39 ... doesn't make sure it makes sense so and it's actually very easy in a constant in the context of basm so we can use
+19:46 ... this project to sort of bootstrap the build system and once build system can
+19:51 ... build something as simple as buzzing it will be uh possible to extend it to build more
+19:57 ... sophisticated projects that include dependency and then even more sophisticated projects and so on and so forth
+20:03 ... i think that's that such build system should be started to do to be developed in projects like basm
+20:08 ... where you have no dependencies uh so yeah that's basically the idea
+20:14 ... that's basically the idea and essentially how i want this system to look like uh
+20:20 ... so you have a build c right and the first thing you do you just do gcc of that build c
+20:26 ... uh creating the executable so build uh let's call it exit because
+20:31 ... unfortunately the word build is already taken by the build folder so it's going to be gcc built
+20:38 ... you do something like that and then you execute build.xz and it just builds everything it does everything for you and within
+20:45 ... that build script what do you have uh you would simply include a special
+20:52 ... library special header on the library that brings like all the power of the build tool to
+20:58 ... you um omg dot xd works on linux
+21:04 ... well i can i can actually show you something cool you want to see something super cool uh i can even call it
+21:11 ... your mom right so uh of course there is no uh you know build.sage not the sh but i
+21:18 ... mean h so i'm going to remove that and uh build your mom and look at that
+21:23 ... there's the executable build dot your mom and you can call build your mom so can your windows do
+21:29 ... that by the way so i don't think so
+21:38 ... [Music] hmm
+21:46 ... it can't hello cool wizard
+21:56 ... um all right so we have a cup of tea uh and
+22:04 ... uh all right so i already researched um different ways on how to implement
+22:11 ... this entire thing uh we did that on the call yesterday on the discord so i kind of know a little bit what i'm
+22:17 ... doing so i'm a little bit prepared on how to develop things so i'm going to develop this thing from scratch just to uh you know let you know the
+22:24 ... whole context of the development of this entire thing uh all right so let me start uh by
+22:30 ... opening build.c and let's explore uh how i want
+22:37 ... uh this thing to be used right so essentially i'm going to open build sh and what we need to do here uh
+22:44 ... we need to uh like basically imagine that we have this library implemented
+22:51 ... for us we have this thing uh implemented right here so it's gonna be build.sh
+22:56 ... and it brings uh all sorts of different tools for us to implement this entire logic so the first
+23:02 ... thing we wanna do in here we wanna create the corresponding folders right
+23:08 ... uh we want to create the corresponding folders so basically i want to be able to just do make deer uh write build
+23:16 ... slash bin right so this is what i want to be able to do so this is quite important
+23:23 ... i'm actually sick of using windows people wouldn't mind
+23:28 ... okay so and here's the thing um the path separators oh did they do they
+23:35 ... include the sage i'm sorry doesn't matter uh so the path separators
+23:43 ... are actually platform dependent so uh we want to have some sort of like a special thing that
+23:48 ... constructs the path for us in a cross-platform way and uh all these functions are gonna be part of the
+23:53 ... build.h so we don't know how to implement it or anything like that i just want to be able to do this kind of thing like make
+24:00 ... deer uh and also construct paths however i want i want to be able to do full
+24:05 ... bar buzz and it just like constructs the path in a cross-platform way
+24:12 ... uh so and of course make deer usually on many platforms
+24:19 ... doesn't create the folder if the previous folder already exists and so on uh linux it's usually minus p
+24:27 ... you put minus p flag and it creates all of the folder in that particular path so
+24:32 ... um i think in our case it is going to mean like something like make deers and basically will create all the
+24:37 ... directors in this particular path okay hello yeah so it's uh
+24:42 ... implementation of another idea i think we even discussed it with you at some point on your stream uh in the chat i kind of vaguely
+24:49 ... remember that we had a discussion about this but i finally got around to implement that and i finally got a perfect project
+24:55 ... for testing it out so yeah choose by the way because shape
+25:03 ... tell me why the [ __ ] you're not a vip
+25:08 ... okay let's continue so uh let me now do the following thing
+25:16 ... so we need to create at least two folders in here like bin and uh examples right so we need to
+25:22 ... create an examples uh cool so after we created all these
+25:27 ... folders right all right it's it's up to these functions to actually like figure out everything how to properly do that
+25:33 ... on different platforms and also i want the entire build system uh
+25:38 ... to um to log everything it does so you can uh you
+25:43 ... know know what exactly is going on uh so the next thing i want to be able to do i want to be able to
+25:49 ... just call an arbitrary command right something like uh cmd right uh and then
+25:56 ... i should be able to provide some sort of like flags uh then oh uh and
+26:03 ... since this is a path right on different platforms it's going to have different
+26:09 ... separators right it's going to have different separators so it has to be constructed with path
+26:14 ... so let me do it like that right it's going to be a path
+26:21 ... [Music] all right so and here comes another path
+26:27 ... so we're grabbing the value from uh src and then we do something like basm.c uh
+26:34 ... and then we put libs in here but i don't think libs yeah we don't really use leaves
+26:40 ... here so i'm going to just put it like that and see flag could be defined as a macro here all right you could define it like
+26:46 ... define c flags and then grab this entire stuff grab all of these flags and separate them
+26:55 ... uh with commas so essentially once you put it here it will expand into the
+27:01 ... arguments and it will just consume everything and yeah it's up to the build tool to uh run
+27:07 ... it properly wait for the child process also log everything so the only thing you have to be able to do you just have
+27:13 ... to be able to do this kind of thing right um
+27:20 ... cool but we don't have a single executable here right as already mentioned we don't have a single executable we have several of them
+27:27 ... so we want to be able to iterate over them um yeah we can always organize uh some sort
+27:34 ... of array all right so cons char uh tool chain so this is going to be called
+27:40 ... the tool chain and we are going to put all of these tools there so first we need to
+27:46 ... build bosom then bme a bmr bosom is the assembly for the virtual
+27:52 ... machine bme is a virtual machine emulator bmr is the recorder we use uh
+27:58 ... this tool to record the output of the programs that are run on the virtual machine and then compare these outputs
+28:04 ... to the expected ones we use it on the for continuous integration uh so then
+28:09 ... we need a disassembly deposit then we have a debugger so gdb
+28:16 ... style debugger and we also have a translator that takes a bosom and translates it to nasam x8664 ... 28:23 ... for linux uh using linux syscalls and stuff like that so this is the tool chain that we need to
+28:29 ... build here so um basically what i want to be able to do
+28:34 ... i want to have a special macro that lets me do four each on the elements of the array
+28:40 ... so something like for each array uh uh then two chain
+28:45 ... and then i can construct a body and this is the body that is gonna be repeated uh for each individual tool in here and
+28:52 ... so then i can do something like uh let's put it this way this is a tool and then um
+28:58 ... i need to add like a c extension here you see i need to add the c extension so we need also a special thing that
+29:05 ... concatenates the tool name with the dot c you see i'm trying to simplify working with the
+29:11 ... strings here as much as possible because working with strings in uh period c is a pure
+29:16 ... pain right uh so and here's the thing um i'm designing this thing so i can
+29:23 ... leak a lot of memory right so all these things they will just malloc memory
+29:29 ... and never free it uh because uh this is a patch program so it's gonna do its job
+29:34 ... and then it's gonna die right so it doesn't need to like maintain proper uh memory or anything because it's not
+29:40 ... gonna run for several hours like a game right so it doesn't need to manage memory that uh extensively as a game for
+29:47 ... example so i think this is a perfect example when we can just let it leak we can just let it leak i
+29:54 ... think it's um i think it's a proper example good example uh anyway so
+30:00 ... uh this entire thing should uh like build all of the tool chain it should build all of the tool chain and once we build all the
+30:07 ... tool chain we have to use that tool chain to build the examples right the examples
+30:14 ... are uh located in the examples folder right so we need to take each individual
+30:20 ... bosom file right we're taking each individual button file and we're using bazam executable that we just build to
+30:28 ... turn it into the byte code so you see this is the second phase um so i think our build system should
+30:36 ... also support a special for each uh for each file in directory right so
+30:41 ... and you can do something like example and uh examples so this is the name of the folder and you can iterate each file
+30:48 ... within that folder quite easily with a special macro you don't have to think about it so uh let's quickly do that so what i'm
+30:55 ... doing right now i'm just ex like outlining the interface that i want from the tool right i'm outlining the
+31:02 ... interface that i want from the tool uh so and uh here's the thing so example
+31:08 ... is supposed to be a string so what i want to do here is essentially take that example i wish emacs would
+31:16 ... understand this kind of this kind of macros unfortunately it is incapable of
+31:21 ... understanding them it tries to indent them too much um for some reason maybe
+31:26 ... what if i like use c plus plus mode would it be easier no no even in cpl spot mode it doesn't
+31:32 ... understand that it's just insane uh but anyway so uh here's the thing i
+31:38 ... want to take this thing plus str len of the example so
+31:43 ... essentially i have a pointer to the beginning of the stream i go to the end of the string actually
+31:49 ... next character after the end of the string and i need to subtract four characters right and
+31:54 ... this entire thing should be equal to the extension so this is how we can take the extension do you have to be a
+32:00 ... little bit careful if this entire thing is like less uh than four so it's gonna be
+32:09 ... kind of dangerous to do that uh why do you use macros instead of
+32:15 ... functions because in c you cannot pass a block of code as an argument to a function
+32:29 ... anyways now so maybe it makes sense to actually save
+32:37 ... the size of the whole string like this uh and then i'm gonna assert super quick
+32:44 ... uh that n is greater or equal than four
+32:49 ... so and then we're gonna put n right and so we what we expect here we want this thing to be actually equal
+32:55 ... to bosom right and we're gonna ignore everything uh else right so and in here
+33:01 ... uh the way we build them is we're calling uh cmd
+33:09 ... path build beam
+33:15 ... bosom so then we have to provide the minus g flag then we have to do concat
+33:24 ... uh example dot bosom we don't really need to concat because
+33:29 ... example already contains the extension okay so we don't have to worry about that uh and then the output has to be path
+33:36 ... uh build uh concat example and we concatenate it with the
+33:42 ... extension bm cool so that's it
+33:47 ... actually we can even split this thing like that so this is what is needed right now
+33:55 ... uh this is what is needed right now to build the whole bm
+34:01 ... so and this is exactly what we're gonna implement for now
+34:08 ... so then build files will be called uh dot buzz and dot bm yes uh okay so here
+34:14 ... is like a simple outline what we want from the uh from the build tool and the only
+34:20 ... thing we need to do now is to implement all of that and uh the idea is that they should be
+34:28 ... simple and readable as this right so we will try to maintain it like that
+34:33 ... uh right and on different platforms uh they're gonna have different implementations right if you on linux is gonna do it linux way
+34:39 ... if you're on windows it probably will use wind api or something like that uh so yeah
+34:53 ... um anyways okay so do i have a build.h
+35:02 ... so i'm gonna actually save it and if we try to build this entire thing
+35:09 ... right so i'm gonna actually do gcco build.xz build dot c uh it's not gonna work because for
+35:16 ... example you don't have make deers right so and this is probably something that we should start with
+35:21 ... what's up ronic welcome to the stream um so i'm gonna comment out everything that is not compilable right now
+35:28 ... uh and we're gonna try to make this entire thing compilable one construction at a time right so
+35:34 ... we're gonna start with the make it ears and path right so right now we don't we have neither
+35:40 ... make deers uh nor path so maybe i'm gonna actually put this thing away
+35:45 ... and i'm gonna only start with path right so path is supposed to take a very
+35:50 ... addicting amount of arguments let's actually start with something longer four four
+35:56 ... full bar buzz test uh and on depending on the platform it's
+36:02 ... just gonna be like a path uh separated with different uh path separators
+36:08 ... so we don't have uh this thing let me do stdio might as well actually put it in build h
+36:14 ... because we definitely will leave it there uh all right so what's going to be the path
+36:20 ... so path could be a variatic function right it could be a variety function
+36:27 ... uh so let me see how we can implement that path uh it's gonna be a big one though right
+36:35 ... something like this but what's interesting is that uh according to how you work with variatic functions in c
+36:42 ... variatic uh functions
+36:48 ... variatic functions so what you have to do you have to call
+36:54 ... uh va start and va starts as far as no accepts a parameter
+37:00 ... so a parameter is declared with the register storage class specifier the array of function uh not compatible yeah
+37:07 ... so basically for variatic functions in c uh for various functions and c you need
+37:14 ... a first uh argument right so you need the first argument and this is pretty much impossible to
+37:20 ... um avoid right so uh okay we can have some sort of like a
+37:25 ... stupid argument maybe like uh account right and so that means you have to know the amount of arguments
+37:32 ... up front but it's really inconvenient uh it's really inconvenient because you
+37:37 ... have to maintain the amount of arguments and if you are actually [ __ ] up right um you
+37:45 ... will troubleshoot this kind of problem for a very long time so i think we're not going to use this as a count maybe it's going to be like a
+37:53 ... temporary dummy uh argument that you can actually put to
+37:58 ... anything uh we have a rate from rw grim hello hello uh welcome raiders we're developing a
+38:04 ... build system in c uh you guys want to see how it's supposed to look like this is how it's supposed to look like by the way
+38:11 ... yes so yeah essentially you build this program and it acts like a
+38:17 ... not really shell script but it's a build system
+38:23 ... why not mention uh mason because it's an overkill for what we do um all right so and also it and also
+38:30 ... it's fun to develop your own things is mason by by the way based on python
+38:36 ... that's double no right seriously that's a straight a double note nothing wrong with python by the way it's just against what we're trying to
+38:42 ... achieve here and i already explained what we're trying to achieve here at the beginning of the stream really sorry everyone has missed that so uh
+38:51 ... so yeah we are kind of trying to do the opposite
+38:57 ... thing we're trying to get rid of the dependencies right uh not bring more right that's why uh we're doing
+39:04 ... this kind of thing so ideally uh our goal is to build the whole project using only c compiler
+39:13 ... you should be able to just have a c compiler and that should be enough to build the
+39:18 ... project you won't need a python you will need a build system
+39:23 ... rather than python you will need shell you won't need cmd you will need a powershell you will need
+39:31 ... a pearl you won't need anything at all only c compiler that's the point
+39:37 ... uh right so we're trying to go in the opposite direction right we're not trying to introduce
+39:42 ... dependencies we're trying to reduce them that's why we're not using that so again nothing wrong with python
+39:48 ... or anything is just not what we're trying to do right now um okay so in my opinion
+39:55 ... for this specific project c compiler should be enough to build everything and i think it is visible
+40:01 ... because the project is not that big anyway so [Music] okay so uh essentially yeah
+40:08 ... so but if the first argument um uh if the first argument
+40:16 ... is uh something dummy right that we're gonna ignore uh how do we know the end of this
+40:23 ... argument because if you work with very addictive arguments right if you work with varied
+40:28 ... arguments uh you need some sort of an indication uh of the end of the arguments because at compile time
+40:35 ... it will never tell you right because it's not known at compile time that's kind of the point um it's not known at compile time so
+40:41 ... usually there is a trick you either use a count thing or uh you pass um a list of pointers
+40:49 ... so uh something like with with exec vp right so if you have exactly p uh exactly p
+40:59 ... well i mean generally the whole family of exact exact functions they accept uh variatic arguments but to indicate that
+41:07 ... you're done with like listing arguments you put a null there right you put a null there so uh this is
+41:15 ... something that we can do so that means uh that instead of just doing something like this right where you could just do build bin
+41:23 ... you would be forced to do something like 69 uh build bin which basically just ignore
+41:29 ... this thing bin and nu and if you forget to put any of these two things
+41:34 ... at the edges of your um [Music] of your call uh you're pretty much
+41:40 ... screwed but i think we can actually simplify
+41:45 ... that what if we wrap this function call into a macro so let's actually call it
+41:50 ... path impul and then have a special macro a special periodic macro
+41:56 ... uh so it's going to be path and it just accepts the idea governments so the variatic macros by the way are slightly
+42:02 ... different see uh very added macros
+42:08 ... symbiotic markers so essentially you can just take the arguments of the bariatric macros and you just
+42:13 ... can pass them like that and on top of that you can pass something after them so that means you
+42:19 ... can do something like this path implementation just 69 then uh va args and then
+42:27 ... no so that way you never have to worry about this garbage in the begin on in the end of
+42:34 ... the arguments you can just always call uh build bin and
+42:39 ... it will just work uh it will just work so this is basically the pattern that i discovered yesterday
+42:46 ... and it's actually pretty cool pattern i never realized that you can do that in c
+42:53 ... so that's pretty cool and this is basically what we need to implement here so um yeah we need to iterate through
+42:59 ... all the arguments and concatenate them uh with uh the uh the path separator right that's
+43:06 ... what we need to do here and um this function definitely will allocate memory right it will just
+43:12 ... allocate the buffer that can contain the whole path and it will just leak it right because it's a bill too
+43:19 ... uh it's not supposed to be running for a long time so it just needs to you know it's it's a batch program right
+43:25 ... so just let it leak and when the program exits here the operating system will delicate all the
+43:30 ... memory you don't have to worry about that so and we need to potentially
+43:36 ... think for the future right uh maybe we'll build on a system
+43:42 ... where there's not that much memory so we'll have to still manage the memory a little bit
+43:47 ... so the safest approach with memory management right now would be only to use malloc and
+43:55 ... not real lock right because when you use only malloc or kellogg or something that just only
+44:01 ... allocates the memory but doesn't reallocate the memory right uh that way you can easily
+44:06 ... substitute these melodicals with uh like a region-based allocation
+44:11 ... uh which is then easy to integrate to the system which which periodically cleans up its own
+44:17 ... memory as it goes right so uh once we have like a region based memory allocation uh you will be able to split
+44:24 ... your building into the phases and for example memory will be cleaned up after each big phase so if we only use
+44:30 ... malloc this kind of refactoring this kind of refactoring is going to be very much trivial so this is uh one of
+44:37 ... the limitations i'm gonna impose on myself while allocating memory apart from that limitation i think i'm
+44:43 ... not gonna care about memory management management at all uh doesn't make sense uh hopefully it makes sense so i'm just
+44:49 ... slightly i didn't like to think into the future because usually i don't really have that much information to design
+44:55 ... things properly up front but for this particular case i think it's kind of important
+45:01 ... ah does malloc works in windows yes malloc is a part of the standard of c and um
+45:08 ... microsoft visual studio tries to follow the standard so and uh that means malloc does work on
+45:14 ... windows so and what's interesting is that if you're only using leap c your program will be very cross-platform
+45:21 ... seriously it will work on windows it will work on linux that will work on freebsd it will work on mac os it will
+45:26 ... work on your mom's toaster so yeah especially if your program in
+45:31 ... ncc like a very old version of c uh so yeah
+45:38 ... hello everyone and welcome to the sony channel cheers
+45:44 ... so let's try to implement this thing um [Music]
+45:50 ... so let's go uh what we need to do first we need to
+45:56 ... figure out uh first we need to figure out um how much memory we need to allocate right
+46:02 ... how much memory we need to allocate unfortunately we don't know anything about variati
+46:09 ... arguments up front right we don't know anything about biologic arguments up front so we need to first iterate through all
+46:17 ... of the variatic arguments figure out the sizes accumulate all the
+46:22 ... sizes of all of the strings then allocate the memory and then iterate through variatic arguments one
+46:28 ... more time so likely c allows us to iterate over a very ideal argument how many times we
+46:33 ... want so which is which is very convenient in our case so let's actually start
+46:39 ... let me take a look at the variatic example here is the verdict example so let me put it somewhere here so i'm
+46:46 ... going to put it like that and let's start so we need to first define this variable and do a start
+46:54 ... so this function accepts the uh va list which is going to be used to
+47:00 ... iterate over variety arguments and the parameter of the function um
+47:05 ... after which after which the variatic arguments start so this is how it figure out figures out
+47:12 ... how to like where to search for them because i would imagine that they are located on the stack and by knowing
+47:17 ... the uh argument after which they start it knows where in the stack these various arguments are located so which
+47:24 ... does make sense to me all right so another interesting thing
+47:29 ... is that we know we need to know their type but the convention for this function is that you only have to
+47:34 ... uh provide the uh the cons char star basically sisters and sister
+47:40 ... stands for c string right so uh let's do the following thing so it's gonna be const
+47:45 ... uh constitu and it's gonna be arg um v a arg
+47:52 ... and here is the type that we're trying to extract here um all right so and by the way after
+47:58 ... you're done with uh like working with the arguments all right you we have to do va end and by the way you cannot start
+48:05 ... iterating over the arguments yet again if you didn't call va end so first you have to sort of declare
+48:11 ... okay i'm done iterating over the edit arguments and then you can do the start yet again
+48:17 ... and start iterating yet again so there's gonna be like a two iteration process right um and by the way throughout the
+48:25 ... implementation we'll notice that uh this pattern of iterating variety argument twice is gonna be
+48:31 ... pretty much prevalent in all these things so we probably will extract that
+48:36 ... into some sort of a macro to simplify the the process if that makes any sense
+48:41 ... uh all right so what we need to do here is while our not equal nu all right while it's not
+48:48 ... equal no we're going to keep uh doing this kind of thing uh we're going to keep iterating through the arguments
+48:57 ... all right so we also need to figure out the uh the whole size or like the sum of the sizes of all
+49:05 ... of the strings right because without knowing this entire uh length of the path uh we can't allocate enough
+49:12 ... memory right we can't allocate enough memory so initially it's gonna be zero and now every time we iterate through
+49:18 ... the argument it's gonna be length plus strlen uh rg right uh and we know the sum
+49:26 ... of all of the lengths of all of the arguments here so we kind of know um how much memory to allocate right we
+49:34 ... kind of know how the machinery allocate but we do not include the uh path separators
+49:40 ... right we do not include path separators so we also need to count those right so i'm gonna have something like seps
+49:46 ... uh initially zero and it's gonna be steps uh plus one right so basically you have
+49:54 ... a one line separator per path component
+49:59 ... which is not necessarily true right you usually have actually minus one right because if you
+50:05 ... have full bar buzz path separators right so you have two path separators
+50:11 ... so one of the things you can do here is basically after you've done iterating you can
+50:16 ... do a minus one to bring it down or you can actually start with minus one
+50:22 ... here so yeah so astrophysicist actually came up with a pretty cool idea
+50:29 ... so you can actually start with minus one and you're gonna end up with minus one i mean uh so that's pretty convenient
+50:35 ... not gonna lie all right so now you know the length
+50:40 ... why don't you use do while instead i could use the while but you can end right here
+50:48 ... so what if you didn't provide any arguments you need to actually finish here so how do you express that with the
+50:54 ... while um with do while it's going to be kind of difficult to express i think
+51:01 ... or maybe not anyway so uh what's interesting is that i think we
+51:06 ... can um we can actually use for loop here so because it kind of matches the for loop
+51:14 ... uh paradigm where you have initialization then the condition and then the next
+51:19 ... iteration right so it's going to be like this so now we have a for loop
+51:26 ... right so you start with the first one then check condition and then then now you have only this stuff in the
+51:32 ... in the body which is quite convenient all right so uh size t is unsigned oh okay
+51:40 ... so uh well yeah that's not convenient then so that that means we can just do
+51:45 ... something like this minus one
+51:54 ... all right
+52:04 ... maybe maybe i can use this size all right
+52:13 ... bike shading stream um okay
+52:29 ... after that what we wanna try to achieve
+52:34 ... we want to allocate enough memory for like everything
+52:40 ... [Music] um
+52:46 ... so assert um
+53:01 ... so i want to assert one of the things right so for example that length is at least greater than zero so
+53:07 ... we have something to allocate um so
+53:12 ... just in case uh i'm not sure if it's that important hello jim puffed welcome to this gym um
+53:20 ... hello hello so uh now uh we have a sword and uh
+53:29 ... now the time has come to allocate this entire thing so we're going to allocate length then plus amount of separator
+53:36 ... um so maybe uh we're also going to have something like ester len yeah so essentially it would
+53:44 ... be nice to have a path separator path separator as a macro
+53:49 ... operator as a macro so um you're gonna have a slash in here
+53:56 ... something wait a second something strange
+54:16 ... let's see
+54:37 ... so uh basically uh we're not gonna try to
+54:43 ... uh [Music] we're not gonna try to um assume the
+54:52 ... sizes or anything right uh path separator so it would be like
+54:58 ... kind of easier to have a path separator length separator length and it's going to be the size of
+55:05 ... the path separator and maybe something like minus one when
+55:10 ... you do a size of on a string literal right when you do a size of a string literally what usually
+55:17 ... happens uh what usually happens um
+55:23 ... so let me try the following thing it's gonna be d uh size of
+55:30 ... uh this and let's see what's gonna happen right so it's going to be that uh printf yeah we need to include
+55:38 ... that printf thingy there but i don't want to make it compatible
+55:47 ... so it's going to be stdio all right
+55:54 ... build xz so it's going to be two okay so it does include the uh multimeter all right
+56:00 ... so it does include the new terminator uh so that means we need to do minus one
+56:06 ... okay so separator length so and when we allocate in the memory i'm
+56:12 ... gonna use a path uh separator length right and also i'm gonna do plus one uh for the
+56:19 ... null terminator right because they are going to be multimeter strings uh so and uh here we're gonna have a
+56:25 ... result so this is the result uh
+56:31 ... all right so we allocated enough memory we allocated enough memory and now we
+56:36 ... can start accumulating everything uh so here i'm gonna also return this
+56:41 ... result here so let's do the iteration one more time
+56:48 ... [Music] all right
+57:01 ... my neighbors [ __ ] burned something while cooking holy [ __ ] oh it's impossible to [ __ ] be here uh
+57:08 ... all right i'm really sorry uh i can literally smell everything that
+57:14 ... neighbors are doing is horrible
+57:23 ... they also smoke a lot um all right so uh here is an argument
+57:30 ... uh here is an argument and um this argument we're gonna just append
+57:36 ... it to the result but we also need to keep track of where exactly we're appending it
+57:41 ... right we also need to keep track of where exactly we are painting it so and um since we already like used
+57:48 ... the length for the allocation uh we don't really need that length anymore so the idea is gonna be the following
+57:54 ... uh we're gonna start with with zero we're gonna reset it to zero and we're gonna use that length of an indication where to um where we
+58:02 ... need to append things so it's gonna be something like uh mem copy uh result plus length result plus length
+58:11 ... uh arg and then size uh actually a stereo lens over the arc right and then we have to
+58:18 ... add uh ester length of arg to the length like this so this is how we're gonna
+58:24 ... append this entire step but maybe it also makes sense to actually extract this entire thing to like n
+58:30 ... so it's a little bit easier to work with and uh after that um
+58:39 ... yeah after that we're gonna append uh everything else and about hello welcome to the gym
+58:45 ... yes the size of uh nyan will be five because it includes multimeter right so i assume size of literally
+58:53 ... returns how much memory you need to store that string so yeah
+59:02 ... um because it's a different type
+59:10 ... but string literals have the type of cons char
+59:16 ... or do they oh string videos actually cause chair array i see so that makes sense uh
+59:25 ... all right so after that we need to add uh we need to end the line separator
+59:33 ... so it's going to mem copy a result length and actually plus length
+59:40 ... and we need to add a path separator
+59:48 ... separator uh pass separator and the amount of things we have to copy
+59:54 ... is a path separated length right and after that we have to append uh like increase
+1:00:00 ... this by a path separator length okay here's the interesting thing we have to actually uh
+1:00:07 ... append it at the end but not for the last argument not for the last argument so we need to
+1:00:12 ... know when we are at the last argument so we already have
+1:00:18 ... a seps count right so we can use it to indicate when we shouldn't add the path separator so
+1:00:25 ... look if steps uh equal uh greater than zero then you add the separator at the end
+1:00:32 ... and you decrement steps by one so essentially you consume the separators
+1:00:37 ... uh and after that you concatenated uh the path according to a path
+1:00:43 ... separator which is quite cool uh all right so let's give it a try
+1:00:48 ... um two to the two so uh so we didn't compile because we need to
+1:00:53 ... include std arc as far as i know stdr.h
+1:00:58 ... uh esther lynn so we need to include the string string.h
+1:01:06 ... assert let's also include assert anything else malloc i think this
+1:01:12 ... requires std lib i think this requires and there we
+1:01:17 ... go look at that it did it it actually uh you know concatenated everything accordingly so if you are on windows
+1:01:25 ... uh this thing is going to be defined like this so we have a different separator if you're on some operating system that uses like
+1:01:30 ... multi-character separators you're going to have it like that so and yeah now you can if you want to
+1:01:37 ... like uh concatenate the paths uh just like this and without worrying
+1:01:43 ... about like specific platform uh path separators you will just do it like that and the build system should figure out
+1:01:48 ... that for you so uh you see it should figure that out for you
+1:01:53 ... uh all right so it's gonna be slash and uh yeah for now for for linux is gonna
+1:01:59 ... be just slash but uh then uh at compile time it can be substituted with anything and it will just work fine
+1:02:05 ... all right so here is another thing so uh we need to now
+1:02:12 ... make make deer's work right we need to make make do make deers work so let's define this uh
+1:02:20 ... thingy in uh build dot h so it's gonna be something like make
+1:02:25 ... dears and it will accept the path right it will accept the path
+1:02:31 ... and uh let me see let me see and uh here's the thing so we do have make
+1:02:39 ... deer on linux uh it's actually a function right uh make deer two cool
+1:02:47 ... so but the thing is um if you're trying to create something like uh build
+1:02:54 ... beam and build is not created right and build is not created um
+1:03:01 ... you won't be able to create bin so essentially you need to parse this path you need to parse this
+1:03:08 ... path and create each individual thing separately you know what i mean
+1:03:13 ... uh integrated each individual thing separately so it's not particularly convenient to
+1:03:19 ... parse them from the string um right and especially kind of like sounds stupid that we just concatenated
+1:03:25 ... everything and now we need to split everything um unless we don't actually
+1:03:30 ... maybe we can uh come up with something more interesting for example we have a path and then we search for the next path
+1:03:37 ... separator we put zero there and just create that uh path
+1:03:42 ... then we'll put zero on the next one create that path and so on and so forth so that could be actually kind of kind
+1:03:48 ... of cool so uh but maybe maybe maybe not
+1:03:58 ... all right all right all right so let me see um yeah something like that could be
+1:04:03 ... cool but maybe also sophisticated it's too much sophisticated
+1:04:10 ... so hmm all right so let's just let's just
+1:04:17 ... implement that [Music]
+1:04:24 ... so we're gonna just uh create a new
+1:04:31 ... bunch of memories so it's gonna be esther len path
+1:04:39 ... plus one right so we also need to take into account the uh null terminator right and it's gonna
+1:04:45 ... be called not really path but uh so how should i code i really wanna
+1:04:52 ... um copy it i really want to copy this string um
+1:04:57 ... because i want to be uh modifying it so this thing can assume that it's not modifiable but we will need to modify it
+1:05:02 ... anyway so and i need to come up with a name for it so if this is called path this is path iterator what's called
+1:05:10 ... path iterator path iterator
+1:05:16 ... [Music] path iterator
+1:05:23 ... [Music] so and then i'm gonna do mem copy path iterator and then copy this entire thing
+1:05:31 ... and uh let's do something like path links path land right
+1:05:38 ... past len pass pass when and then in the past iterator
+1:05:46 ... the last thing here is going to be uh the nutrient
+1:05:53 ... right so we're gonna put the multimeter like this cool nice
+1:06:01 ... nice nice nice um
+1:06:07 ... so i need a way to find the next [Music]
+1:06:15 ... to find the next uh separator you know i have a better idea i think
+1:06:21 ... it's too complicated i think i'm gonna go with my original idea that instead of
+1:06:27 ... uh like doing it like that make deers is also gonna be a macro and it will accept
+1:06:32 ... the path arguments like that i think it's going to be like way easier to implement right so it's going to be magdiers and
+1:06:38 ... it will just iterate through each individual argument here um and then
+1:06:44 ... keep appending the uh the path keep appending the path and then keep creating folders uh
+1:06:50 ... like each individual one right and it's gonna be kind of similar to a path thingy here uh but it's gonna
+1:06:57 ... also automatically create folders as it goes right so and because of that it's going
+1:07:02 ... to be just make deer uh make deer say make deers implementation 69 ... 1:07:10 ... we args uh no so it's gonna be like an absolutely similar thing so
+1:07:17 ... and here it could be something like ignore and uh this stuff so and now we need to
+1:07:23 ... repeat this entire uh thing in here right we need to repeat this entire thing so what i'm
+1:07:29 ... thinking uh what i'm thinking is maybe i need to extract that to um
+1:07:35 ... [Music] to some sort of macro right so let's
+1:07:41 ... introduce something like for each uh va args va arg maybe the args so and this
+1:07:49 ... uh will accept the name of a single argument the argument list uh the argument list and the body
+1:07:57 ... right and it's gonna um accept the body alrighty so um yeah
+1:08:04 ... uh i think i'm gonna do do while um so it's going to be too wild so if
+1:08:11 ... you've never heard about do while do we have a like a do while we don't even have do while meg uh like
+1:08:17 ... comment because people will definitely ask what the [ __ ] is this and i'm kind of tired explaining it over and over again
+1:08:23 ... uh c macro do while uh alright so
+1:08:31 ... so is that a duplicate what's the use of do while what's already yeah it's people are
+1:08:37 ... dealing with this like even on stack overflow people keep duplicating this question over and over
+1:08:43 ... again um okay so i think i'm gonna just you know give the link to here so add cmd
+1:08:50 ... do while right so chad if somebody asks uh what the [ __ ] is the while just use
+1:08:57 ... the regular thingy here with suzanne you're dumb you don't know c just do uh like invoke a man do while
+1:09:04 ... and just explain uh people what the [ __ ] is this stuff because it's a really well known
+1:09:09 ... uh c meta right and i'm just tired explaining it over and over again
+1:09:16 ... [Music] all right
+1:09:23 ... so uh do while and do while we're gonna uh do this thing i'm just gonna literally copy paste this entire stuff
+1:09:29 ... um thank you this is useful really do you anaeronically find it
+1:09:35 ... useful i just arrived what's do i think no you didn't just arrive and i bought i saw
+1:09:41 ... you before all right so don't try to troll me uh okay and also i remember how
+1:09:49 ... i think i explained you or i know for sure you know about this method okay so you're not gonna trick me
+1:09:57 ... so let's continue um now [ __ ]
+1:10:09 ... cool so this is what we're going to do here and i think not you hate it
+1:10:16 ... okay maybe maybe you will be like him next time maybe you will finally debate me at some point
+1:10:22 ... just arrive what's that do while thing
+1:10:28 ... you
+1:10:37 ... thank you so much all right so essentially i just
+1:10:44 ... extracted all that to a separate uh to a separate micro capture
+1:10:50 ... all right uh so instead of doing that i can do uh for each va args so it's gonna be arg
+1:10:56 ... args and then i can just put that in the [ __ ]
+1:11:03 ... uh like this yeah look look how much simpler it looks now
+1:11:11 ... right so you define the args right and you just do for each arc in args and it also
+1:11:16 ... finalizes va end so after that um we can just get rid of this va end
+1:11:24 ... and just do it one more time one more time three args arg args and
+1:11:32 ... um i think i can just do it like that um
+1:11:40 ... uh yesu so does it look simpler right i think it looks simpler so you
+1:11:46 ... don't have all this va [ __ ] anymore you just define the args and you just iterate through each individual argument
+1:11:55 ... here we try to return before calling the end uh i would imagine that on different
+1:12:00 ... compilers different systems it would like cause different behavior as far as i know maybe it's not well
+1:12:06 ... okay i can imagine what's what's going to happen if the implementation of variatic arguments mutates this stack
+1:12:13 ... every time you iterate of an argument it's probably not going to end well because there will be no like a return address
+1:12:20 ... on the stack and you're gonna jump to a random [ __ ] or something did i guess it correctly uh i think it basically depends on how
+1:12:27 ... exactly you implement this iteration over the variety of harmonies
+1:12:32 ... [Music] so yeah yep i was there before okay i see
+1:12:40 ... that makes sense um all right so it was a pretty i can imagine
+1:12:46 ... you you effectively corrupted your stack right you effectively corrupted your stack and stack corruptions are a huge pain to
+1:12:53 ... debug usually like it's just nothing makes sense
+1:12:59 ... already so here's the path implementation here is the mate gears and uh yeah this one is going to be just
+1:13:06 ... import so and we're gonna do a similar thing
+1:13:11 ... actually so we are just iterating it like that just iterating it like that and then
+1:13:19 ... for each thing here uh yeah essentially we don't even have to
+1:13:24 ... return anything think about it so um
+1:13:30 ... but we can essentially yeah after that um
+1:13:37 ... let me think we always have a zero s plus one which means that i can simply do um
+1:13:45 ... result length equal slash zero
+1:13:52 ... uh not not this slash zero zero and just do make deer right just do make
+1:13:59 ... deer so it's gonna be a result and as far as i can remember make deer yeah it also accepts the mode
+1:14:06 ... does it accept the the permissions [ __ ] can i do something like zero seven seven seven five five i
+1:14:11 ... think i should be able to just do it like that and also what's gonna be the result uh returns
+1:14:16 ... uh minus one if something uh wrong happened okay if this thing
+1:14:23 ... if this thing is less than zero right we have to do printf uh std error and it's gonna be
+1:14:30 ... error uh could not uh create folder uh directory
+1:14:37 ... uh we're gonna provide the directory name and also an explanation what exactly happened so it's gonna be a result and
+1:14:44 ... um so yeah str error error no
+1:14:52 ... so and then oh we're gonna do exit one cool so that's it
+1:14:58 ... we might as well also do a little bit of vlogging right uh something like printf uh in four
+1:15:08 ... zero make deer uh s
+1:15:14 ... and it's gonna be just a result
+1:15:20 ... um okay cool
+1:15:26 ... [Music] why is integnor necessary as an argument it's actually a very good question
+1:15:32 ... uh so i'm assume that it's impossible to do it otherwise because va
+1:15:38 ... uh va start always assumes uh like accept an argument after which the
+1:15:45 ... periodic arguments start so if you don't have that argument i suppose you won't be able to call va
+1:15:51 ... start but i might be not knowing something so so you tell me if i'm doing something
+1:15:59 ... wrong so if you have a better approach please just let me know um all right so make deer and make deer
+1:16:08 ... will require uh what it will require this uh stuff it will require this kind of function so
+1:16:15 ... let's do build.h uh right and let's go
+1:16:23 ... so uh uh so it's gonna be like this uh i don't
+1:16:28 ... know we also need to include error node.h
+1:16:34 ... okay couldn't create file exists okay so it already tried to create that thing
+1:16:39 ... let's try to remove the uh the build thingy and i'm gonna try to or there we go
+1:16:48 ... we managed to create nested folders several times isn't that
+1:16:55 ... pogue i think it's got them [ __ ] poked so and what's funny is that we don't really want to
+1:17:01 ... fail if the folder already exists i think it's not that good of an idea
+1:17:08 ... so can we detect that it failed because the folder already exists
+1:17:13 ... uh so make deer like two uh let me see let me see is it possible
+1:17:19 ... yeah so essentially aeronaut is going to be able to e exist um so if it already exists i wanna
+1:17:25 ... throw just a warning uh instead of like failing completely right you know what i
+1:17:30 ... mean um so it's gonna be build.h
+1:17:36 ... uh so we're gonna try to do this thing uh so if error no equal e
+1:17:43 ... exist uh we're gonna do just a warning right so it's gonna be std error uh but
+1:17:49 ... it's gonna be worn worn uh directory already exists
+1:17:57 ... but it's not going to crash the whole application but if it's not due to that it exists
+1:18:05 ... we're gonna uh we're gonna crash so i think this is a little bit better
+1:18:12 ... [Music] um nova scotia minus
+1:18:20 ... minus 32 yes it's a yeah there we go so it says that that it already exists
+1:18:25 ... but if you remove this entire stuff right uh it will uh yeah it will first
+1:18:30 ... create it and on the second time it will throw warnings okay that's actually pretty cool so we already have some pretty epic functionality
+1:18:37 ... right you have you can have parts and you can also have all this [ __ ] like just create
+1:18:42 ... folders and whatnot so yeah where is the build.c
+1:18:48 ... so we managed to make this line first line working so that kind of
+1:18:53 ... altered the way you have to create folders so now you have to create folders like that this is how we create them
+1:19:00 ... so the next thing we want to make working is for each array so forgery has nothing to do with
+1:19:06 ... the building functionality it's more of a like a classical macro for iterating a
+1:19:12 ... race um so let's put it this way
+1:19:18 ... building a building uh the tool right so uh what we want to do
+1:19:26 ... we want to make this uh macro work somehow
+1:19:32 ... all right so let me go here and um so we have a lot of macros here so let's
+1:19:38 ... let's define them somewhere here so item items
+1:19:43 ... um do we want to also have like a type of that thing
+1:19:48 ... you want i don't want to also be able to specify the type maybe maybe it makes sense to specify the type let's actually
+1:19:54 ... like also accept the type so that means here uh you will have to do const
+1:19:59 ... char uh like this concert like this and uh yeah i think it
+1:20:06 ... does make sense all right so items and then you have a
+1:20:13 ... body cool all right so uh this is gonna be just a
+1:20:18 ... classical for each is it gonna be a classical for each it
+1:20:23 ... should be a classical for each but i'm not yeah let's wrap it into in do while one more time
+1:20:30 ... uh let's wrap it into a while one more time okay so it's gonna be four uh size i zero
+1:20:38 ... um so uh i less than uh size of
+1:20:45 ... items divided by size of items zero i think i also need to
+1:20:52 ... wrap it like this just in case it's an expression but you know arrays and expression is already a little bit weird but
+1:20:58 ... sure uh why not um okay so we have something like this
+1:21:04 ... might as well make it like slightly more readable hopefully um
+1:21:09 ... so something like this so this is how we iterate oh everything
+1:21:16 ... all right so after that i can define a type item and it's going to be
+1:21:22 ... equal to items i and then i invoke the body like in in the body we do all of our
+1:21:29 ... dirty business in here so that's pretty poog i think
+1:21:36 ... so that's gonna be the for each element in the array implementation so let me now try to run
+1:21:43 ... it and there you go so we uh created all of the folders here and we managed to iterate through each
+1:21:48 ... individual element of the array right so uh pretty straightforward
+1:21:54 ... so that's pretty cool next we need to make this work somehow right we already have
+1:22:01 ... path working but we don't have a concat working concat is like path but without um without the
+1:22:08 ... separators right so let's actually start um by implementing concat uh so it's gonna
+1:22:15 ... be something like building uh s right but we're gonna do uh concat
+1:22:24 ... tool dot c there we go so uh and concat by by the way is also
+1:22:29 ... going to be very addictive you will be able to continue as many uh strings as you want so it's gonna be very convenient thing to use
+1:22:36 ... uh all right so let's implement it super quick um
+1:22:41 ... so we have to define concat uh then concat impul 69 ... 1:22:48 ... vars no and let's do a concat uh implementation
+1:22:55 ... let's do a concat implementation so it's gonna be con const char um
+1:23:02 ... it's getting really cold in here holy [ __ ] what's the temperature in noes abs can
+1:23:09 ... you use size of type instead of item zero uh well yeah that's a good that's a good
+1:23:16 ... point um but there could be discrepancy what
+1:23:21 ... the if there is a discrepancy it's getting warmer but it's actually inside in here it's getting
+1:23:26 ... colder um uh you're welcome mana soimer
+1:23:35 ... yes yeah i think there's something wrong with my window frame because it
+1:23:41 ... when it gets like two minus 40 it gets really cold in here so um
+1:23:47 ... yeah uh all right so uh concat impul
+1:23:53 ... so this is gonna be ignore uh and we're gonna uh do it like this ignore
+1:24:00 ... uh okay so we also need to um
+1:24:08 ... accumulate all the length stuff right when i come a little bit like stuff
+1:24:13 ... so we uh list args and it's gonna be um
+1:24:20 ... for each uh v8 rx so this is gonna be arg args and then
+1:24:26 ... we're gonna define the body and in here we're gonna just do length plus ester len arg so we're gonna just
+1:24:34 ... accumulate everything cool um so let's allocate
+1:24:42 ... enough memory so it's gonna be length but plus one of course so it's gonna be a result uh and
+1:24:50 ... mem copy result and um
+1:24:58 ... well yeah we need to iterate uh the second time right we need to iterate the second time but it's gonna be similar so
+1:25:03 ... we're gonna start length with zero right and uh we're also gonna maintain the n please do not
+1:25:11 ... indent plea clicking for [ __ ] sake okay it keeps indenting it's so stupid mem cpy uh so
+1:25:19 ... result plus length result plus length uh we copy uh we copy argument and then
+1:25:27 ... n is the size of argument and then we just add it here and after that i can just return the result there we go so this is how we
+1:25:34 ... concatenate very editic amount of arguments using a single malloc by the way we iterate through each individual
+1:25:40 ... argument in the periodic list figure out the final size that we need and then we just concatenate all of them
+1:25:46 ... together and also i think uh i need to set something like this uh i wonder if i didn't [ __ ] up this
+1:25:53 ... zero new termination anywhere uh okay the one automation here is okay
+1:25:59 ... um okay so i think path impul yeah i've [ __ ] it up here
+1:26:06 ... i definitely [ __ ] it up here so i forgot a very important thing here that uh at the end of this entire stuff
+1:26:12 ... i have to do something like uh zero here otherwise it's not gonna work of course
+1:26:17 ... uh apart from that i think i think i didn't [ __ ] it up uh yeah okay congratulations seems to be
+1:26:24 ... working uh and as you can see it works right so basm.c was achieved through
+1:26:31 ... concatenating these strings okay so we we have concatenation working so the next thing we need to be able to
+1:26:36 ... achieve is cmd right we need to be able to run this cmd thingy so we basically have various
+1:26:44 ... arguments as um arguments for exec vp
+1:26:51 ... and we need to collect them into the array and then just call or just fork the
+1:26:57 ... process and then do exactly so of course on windows is going to be slightly different not slightly different but completely different
+1:27:03 ... uh but the idea is that on windows all of this function is gonna have
+1:27:08 ... different implementations so we're gonna use a conditional compilation to separate uh the platforms right so
+1:27:14 ... uh we're not implementing everything simultaneously first i implement something that works on my
+1:27:20 ... machine and leave the room for implementing things that work on other machines right so we're not trying
+1:27:25 ... to implement everything at once um all right
+1:27:32 ... so uh let's continue uh we need to implement this cmd so following the convention you see we
+1:27:39 ... basically have macros uh and all of them start with capital letters i think same you should also
+1:27:44 ... like be capital letters because it's definitely going to be a macro uh with variatic arguments and whatnot
+1:27:50 ... so yeah so far so good so far so good the code
+1:27:57 ... looks like cobble just the code looks like a problem
+1:28:05 ... all right and here i forgot semicolon so i like
+1:28:11 ... the simplicity of usage right it's not particularly type safe
+1:28:16 ... or self-explanatory like you will probably need to read documentation on all of these macros which is
+1:28:22 ... not ideal i usually don't like that but um i don't really really have much
+1:28:28 ... choice in pvrc um all right
+1:28:37 ... so uh let's continue so this is for each this is that and um
+1:28:43 ... [Music]
+1:28:50 ... okay so let's define a macro cmd right same thing it's going to be like this and of course it's gonna be seeing the implementation
+1:28:57 ... 69 the args is going to be normal okay so
+1:29:05 ... um so it's going to accept hint ignore and all this stuff
+1:29:12 ... okay so um the a list are exit for each
+1:29:19 ... va org
+1:29:25 ... ah emacs like do c mode developers even use their own
+1:29:32 ... mod 4c development
+1:29:37 ... because this kind of issue hasn't been fixed for a while i was i was trying to look into c
+1:29:43 ... mode or cc mode it's so overly complicated i think i understand why
+1:29:48 ... people don't touch it at all um you just use we just do because well i mean we're getting to the point where
+1:29:54 ... i'm gonna just use the visual studio code just to write this kind of simple stuff because it feels like the developers of that mod like don't program and see
+1:30:01 ... um all right so essentially what i want to do i want to count the um
+1:30:09 ... the amount of components here yeah yes i need to count the amount of components so it's going to be something like this
+1:30:14 ... count zero right and every time we do this thing
+1:30:22 ... here's that so now we know the amount of components here what i want to do i want to allocate an
+1:30:29 ... array right i want to allocate an array um for all of these companies here so we
+1:30:35 ... have to keep in mind what i'm trying to achieve i'm trying to prepare everything for exactly p function uh
+1:30:41 ... this one right so i'm preparing everything for this function so this function will accept arguments
+1:30:48 ... and file but what's interesting is that for a file you can just use the first argument of rgb
+1:30:55 ... so you don't really have to think much about it so yeah so we'll be allocating we are allocating size of
+1:31:00 ... const cons char multiplied by count but we also need to allocate
+1:31:06 ... additional argument for the null because it's a new terminated array right it's an automated array
+1:31:14 ... uh all right so and then we need to locate something like uh this so i'm gonna call it our argb
+1:31:21 ... arg v so this is how we're gonna go so this is rgb um right and after that
+1:31:28 ... i need to iterate this entire step one more time because yeah i couldn't allocate this array
+1:31:34 ... without iterating through the virtual arguments right because it's like uh
+1:31:39 ... how is this called successive access so there's a random axis and what's the
+1:31:45 ... opposite of random axis sequential yeah it's it has a sequential axis right
+1:31:51 ... so the various arguments has a sequential axis that's why to know its size i need to iterate it at least once
+1:31:56 ... luckily we can iterate it as many times as we want so uh yeah for each four args
+1:32:03 ... arg args all right and uh what i'm gonna do here i'm gonna just do uh
+1:32:11 ... our v count uh wait a second
+1:32:19 ... i have a cool idea what if i call count not count but rxe
+1:32:29 ... i think that's cool rxc so and uh i'm gonna just assign it like that there we
+1:32:34 ... go so now i have everything i need cool so yeah now uh i just need to fork
+1:32:42 ... the process right i just need to work the process and uh execute it uh so as a matter of
+1:32:47 ... fact i don't have to fork the process i can do exec vp i think
+1:32:52 ... yeah i can just do exactly p where i would do our v z uh arg v zero
+1:32:59 ... and then just arc v and that would work just fine except we have to be super careful that
+1:33:05 ... uh assert arc c has to be greater or equal than one otherwise like
+1:33:10 ... the sum of these assumptions here are not gonna work specifically this one uh might as well you know put it here
+1:33:17 ... just closer to where we make this some kind of assumption uh right but the thing uh is
+1:33:24 ... you will be able to run only one command right because execute doesn't uh spawn a new process what it does
+1:33:31 ... it replaces the image of the current process with the image of another program right so basically the program will
+1:33:38 ... continue executing as a different program and you won't be able to go back so once you execute that you won't be
+1:33:43 ... able to go back at all so that's why on unix you have to first fork the process
+1:33:49 ... figure out whether you your child or parent and if your child you have to replace your own image
+1:33:56 ... and so on and so forth you know classical unix way in on windows of course it's going to be different on windows i think you have a win api cisco
+1:34:03 ... not cisco we win api function called create process a or something like that and uh it creates
+1:34:10 ... a separate process so i didn't think it's that much of a hustle to do
+1:34:17 ... anyways so uh fork yeah so we need to call this function is
+1:34:23 ... there any examples uh yeah example c pipe or weight okay so
+1:34:30 ... let's take a look at the pipe uh example here we go so this is what we
+1:34:36 ... use here okay so here you fork then by the way if work returns a
+1:34:42 ... child pid equal to -1 that means uh fork failed and you have to report that
+1:34:47 ... properly so and then if a child peed equal to zero that means
+1:34:52 ... you are the child because it's uh basically splits the processes right so the program
+1:34:57 ... continues to execute but that actually splits into two separate processes so and you have to figure out whether
+1:35:03 ... you are a child or whether you're a parent right and the only way to do that is a child peed
+1:35:09 ... for for child is going to be zero right okay so let's quickly do that so i'm
+1:35:15 ... going to just copy paste this code [Music]
+1:35:22 ... so it's going to be peed underscore t and if something like this has happened uh i can do something like printf
+1:35:31 ... uh error um could not fork a child process
+1:35:38 ... so we can also uh try to explain why so it's gonna be also std error
+1:35:46 ... str error uh error no all right like that and we can also exit
+1:35:52 ... what one or what not so yeah if you if you fail to fork uh you have to
+1:35:57 ... die uh okay so now if you are a child right if you
+1:36:04 ... are a child what you have to do you just have to execute the uh the thing just execute the program
+1:36:11 ... if you are a parent you just have to wait for the child right so that's it so this is how you
+1:36:17 ... wait for all the children uh that's it believe it or not that's
+1:36:22 ... pretty much it should work you know what i also want to
+1:36:27 ... be able to log the program that we are executing i think uh don't forget i will try to
+1:36:35 ... but i mean it's necessary to to execute a program on linux you have to fork a child
+1:36:41 ... alright so i think i'm gonna
+1:36:49 ... i'm going to yeah i want to concatenate everything
+1:36:58 ... maybe the time has come to um factor out things like concat
+1:37:06 ... and path yeah the time has come to
+1:37:12 ... yeah to do that because right now i want to do like a path
+1:37:18 ... but i want to separate with spaces instead of um
+1:37:25 ... separate with with spaces instead of uh separators so maybe the thing we have to
+1:37:31 ... do we'll have to create like a path but more general and we'll define path in terms of that uh in terms
+1:37:37 ... of that more general thing here uh yeah i think that would be actually kind of cool
+1:37:43 ... uh so i want to make a cup of tea by the way uh because it's getting cold in here and i'm a little bit tired so i need a
+1:37:49 ... little bit of that caffeine boost if you know what i mean chat if you know what i mean so maybe somebody have uh somebody has
+1:37:56 ... any questions about what we're doing or anything like that feel free to ask the questions in the chat
+1:38:01 ... so how are you guys doing do you have any questions do you have any questions
+1:38:13 ... so what are we doing we're creating a build system in c so we're essentially trying to use
+1:38:18 ... c as the language for building c project projects and then fine cool we're glad
+1:38:24 ... to hear that um so that's good
+1:38:30 ... cool yeah uh what's that do i think very funny
+1:38:37 ... question um bill c is back well yes it kind of is
+1:38:44 ... but it's now it's called build.h
+1:38:50 ... warming up siberia no we do have a lot of forests in here of course in here
+1:39:05 ... um
+1:39:11 ... all right so i'm gonna go to the kitchen um turn on my kettle right and then i'm
+1:39:16 ... gonna be back don't go anywhere otherwise you're gonna miss the most interesting part of the development so
+1:39:23 ... yeah i'm gonna go super quick
+1:40:16 ... shut shut i think i figured out why it was so cold in here
+1:40:23 ... this is because i opened the window in the kitchen
+1:40:31 ... and the reason why i opened the window in the kitchen is because there was like a burning smell from from my neighbors
+1:40:37 ... because they burned something while cooking so and i forgot about that while i was
+1:40:43 ... actually uh streaming that's why it was so cold in here that explains everything
+1:40:49 ... weird is it not anyways so yeah open the window at -40 by the
+1:40:54 ... way so welcome to topeka streamer
+1:41:00 ... anyways um what was they cooking i didn't ask them
+1:41:07 ... um you're so funny today harrison what's my
+1:41:12 ... gut anyway uh i want to abstract away something
+1:41:19 ... it's a celsius it's minus 40 celsius uh in in the subaru right now the the bot shows uh
+1:41:25 ... i think minus 32 uh right you know the series
+1:41:31 ... but it's actually -40 right um yeah i checked today
+1:41:38 ... all right so what i want to do i want to turn path into a more general thing
+1:41:46 ... um so maybe we're gonna have something like cone cat with separator
+1:41:52 ... um so i'm gonna rename this to concat sep and this is a concat sep right it
+1:41:58 ... accepts the separator um so and is it gonna accept the
+1:42:04 ... separator here we might try to accept the separator here and since we have a separator by the way
+1:42:10 ... uh we don't need this ignore argument anymore i think i think that's cool so there you go
+1:42:16 ... [Music] all right
+1:42:24 ... so this is a comcast sip
+1:42:29 ... i'm using russia for there doesn't know to open windows in the wind i open windows in winter quite often actually
+1:42:35 ... because we have a pretty strong central heating uh which drives the
+1:42:42 ... dries the air really like very much and there's no way to turn it off sometimes and it just gets
+1:42:47 ... really difficult to live here so we need sometimes open windows in here even though it's -40 it is what it is welcome
+1:42:54 ... to siberia uh thank you so much deck of doom 12 for 27 months of tier 1 subscription thank
+1:42:59 ... you thank you thank you and welcome to our epic siberian club
+1:43:05 ... so yeah i'm going to go for myself some hot water
+1:43:12 ... [Music]
+1:43:42 ... [Music]
+1:43:47 ... um no oh just a second i think you forgot to
+1:43:52 ... check something forgot to check if i close the window yes yes very funny
+1:44:13 ... welcome back
+1:44:25 ... all right
+1:44:40 ... uh come get separator right so here um i think i'm gonna comment down
+1:44:46 ... everything here again crazy all right
+1:44:55 ... oh [ __ ] i'm sorry yeah i think i forgot to um change this
+1:45:02 ... thing um yeah i forgot to provide the argument of
+1:45:07 ... after which it all starts all right so we start accept that argument somewhere
+1:45:13 ... here so maybe i'm gonna actually accept this as a parameter here so this is gonna be a parameter
+1:45:23 ... new modes we have [ __ ] ton of new emotes yes uh where is bold
+1:45:32 ... i replaced him wait a second let me call him let me let me call him just a second
+1:45:44 ... oh it's me it's me again [Music]
+1:45:54 ... all right let's continue different person every time so um
+1:46:05 ... can we just can we just program and see please uh all right so you know guys but
+1:46:12 ... there's actually two two three
+1:46:17 ... for [ __ ] sake um all right
+1:46:26 ... cool where's the hairy one well i shouldn't uh
+1:46:34 ... no okay let's try to compile this [ __ ] maybe it will remind me what exactly it
+1:46:41 ... was trying to know uh okay so here we're gonna have
+1:46:46 ... ignore so here's the path separator all right
+1:46:53 ... um i think this has to be a separator const charcep and we also need
+1:47:01 ... const size t sep length is gonna be ester then
+1:47:08 ... right [Music] so separate length and maybe
+1:47:16 ... this one should be called steps count right that makes a little bit more sense
+1:47:23 ... chair is back sitting that didn't
+1:47:29 ... uh alright so what do we have here so we don't have ignore anymore but we do have a set
+1:47:38 ... um so steps count
+1:47:43 ... so this one seps count and then we can do
+1:47:49 ... sep 11 and then plus one all right so and in here yeah we have to provide
+1:47:55 ... this step uh sips count
+1:48:09 ... weather camera
+1:48:16 ... are you from camera
+1:48:26 ... paddock doesn't know i'm actually originally from norway kuznetsk so
+1:48:32 ... i'm not really from north brisk a fake no a siberian
+1:48:47 ... i mean i'm from siberia anyways you still have another suburban siberian city siberia is huge by the way we have a lot
+1:48:52 ... of different cities here so
+1:48:58 ... cheers um alrighty
+1:49:05 ... no friend of mine is sure friend of mine yeah yeah uh
+1:49:12 ... all right friend of mine
+1:49:21 ... so here's another thing so makes deer so this is ignore
+1:49:28 ... [Music] oh and this is another thing yeah since i copy pasted this entire
+1:49:34 ... stuff i'm gonna be duplicating it over and over again but maybe that's okay
+1:49:40 ... maybe that's okay so i'm gonna just do the count here
+1:49:51 ... sips count chat it's a miracle i close the window and it starts to get
+1:49:57 ... warmer in here who would the [ __ ]
+1:50:03 ... holy [ __ ] okay um so accept link uh
+1:50:14 ... um sip length star ester len
+1:50:23 ... very smart person um so oh yeah wait oh
+1:50:31 ... [ __ ] yeah i see i'm an idiot so yeah because of this i have to do
+1:50:38 ... that slightly differently so now we do have a path separator and maybe i want to actually code like this
+1:50:46 ... for the consistency right we're going to do that for the consistency
+1:50:54 ... so this is a path sep limb uh
+1:51:01 ... and what we do here we just use ignore in here is it gonna work now
+1:51:06 ... pass count
+1:51:13 ... rate or separator so it's going to be something like this
+1:51:20 ... just remove that are we there yet over there hello or doug zach i have no
+1:51:27 ... idea how to pronounce unique name but hello what are you doing here how did you
+1:51:34 ... find this secret stream how did you manage to join a sub on this stream are you a
+1:51:41 ... hacker this is a secret private stream how did you join that
+1:51:49 ... all right so uh heck we have a hacker in chat the [ __ ]
+1:52:00 ... um
+1:52:08 ... implicit declaration of fork sounds kind of funny to me for some
+1:52:14 ... reason so we need to include this [ __ ] for the fork i think but we do have uh
+1:52:21 ... types already it's okay what's that war you have a nice sense of humor mate
+1:52:29 ... i really like it uh okay so we have a pretty cool situation so um
+1:52:37 ... the function call expects this this type
+1:52:43 ... and so then we have a weight and if i take a look at the weight we have to introduce this thing so this
+1:52:51 ... is how much [ __ ] you need to import just to make it work on linux can your windows do that okay so we
+1:52:57 ... don't have path anymore so the thing is right path is going to be
+1:53:02 ... concat but with the separator
+1:53:08 ... so can cat with the separator
+1:53:14 ... all righty so and that's essentially what it's going to be
+1:53:20 ... define path concat sep um
+1:53:28 ... path sep uh va arts you see so we're just forwarding
+1:53:34 ... it there so this is what we're gonna have here and i think it worked generally
+1:53:41 ... now so the thing i want to do now
+1:53:48 ... is i want to be able to just log everything
+1:53:58 ... but i can can't easily just log everything unfortunately
+1:54:09 ... how can i i think i can
+1:54:14 ... so i can do something like do wild
+1:54:19 ... zozin what is the do while why are you using do while in here so i said are you dumb are you dumb
+1:54:27 ... just use the regular things susan what is with the while do while uh print f
+1:54:34 ... um and we're gonna do something like this uh it's gonna be in four
+1:54:41 ... s um it's gonna become cat sep but for this separator we're gonna
+1:54:47 ... just use a space and we're gonna just use va args like this i think that's gonna
+1:54:53 ... be okay all right so this is how we're gonna log everything here
+1:54:59 ... see this is how we log everything and know what why don't i use the same approach
+1:55:05 ... for my gears yeah i think i should use the same approach for my gears and completely get
+1:55:11 ... rid of this [ __ ] like separator and whatnot
+1:55:16 ... ah uh maybe not yeah if we make this has to be slightly
+1:55:22 ... different all right so uh did it work actually
+1:55:30 ... all right so something huh something was weird but
+1:55:38 ... okay um
+1:55:51 ... so did it actually execute anything so we do cpid vp i think i forgot uh
+1:55:59 ... the following thing so if this thing is less than zero we have to crash as well it's gonna be f printf
+1:56:07 ... uh something like std error uh as maybe error could not
+1:56:14 ... uh execute child process uh it's gonna be like this it's gonna be
+1:56:20 ... str error error no is it gonna work now and also of course you have to exit with one to
+1:56:28 ... indicate that should be the [ __ ] wacky uh could not execute child process no such file or directory
+1:56:33 ... oh okay so that explains it so essentially i think yeah i need to call this c compiler
+1:56:39 ... first right so that's what i need to do uh all right so that that should make
+1:56:45 ... sense there we go we did it chat
+1:56:54 ... this is the output of this piece of code like this is like a
+1:57:00 ... very small piece of code that just creates folders iterates over our array and just calls the compiler and this is how it looks like and uh
+1:57:07 ... what it does it creates the build folder within the build folder it puts all of the executable executables
+1:57:14 ... that it builds it calls to the uh to the compiler and everything so yeah
+1:57:19 ... and it's not as much as for example in in shell right so this is actually pretty steep
+1:57:24 ... it works i think that's pretty cool um all right so we
+1:57:31 ... can try to remove a build folder yet again right
+1:57:36 ... uh just rerun it and it logs everything so if you try to introduce some sort of a compilation
+1:57:43 ... error um i think uh let's let's introduce it in bm so it
+1:57:48 ... guarantees to fail like everywhere let's try to reveal it so it actually
+1:57:53 ... yeah yeah it's usable you can easily jump to the errors as well
+1:58:00 ... but interestingly enough interestingly enough
+1:58:10 ... it doesn't stop the uh the build process but the question is should it actually start the build process
+1:58:18 ... can we know what uh child returned through a weight function so we have
+1:58:24 ... weight uh so we can do yeah yeah so essentially you can take a look at the status um
+1:58:30 ... all right stop on the first error yeah we can implement that but not now but this is something to keep in mind
+1:58:40 ... child fail is not properly reported
+1:58:46 ... it is not properly reported all right so that's cool
+1:58:54 ... uh build dot c um where is the build.c
+1:59:01 ... wait here it is okay so the next thing we need to do we
+1:59:07 ... need to make this work but it already works right so it already should create everything
+1:59:12 ... uh right and then it tries to create the um the examples so and the next thing that
+1:59:19 ... is not going to work is for each file in directory right so it's similar
+1:59:25 ... to for each array for each element in the array but this one will actually trade through the files in
+1:59:30 ... director okay so let's implement this
+1:59:36 ... uh particular macro let's implement this particular macro
+1:59:42 ... so we're gonna have here we're gonna have a file then a deer path so this is what we have here
+1:59:48 ... we have deer path and adjust the body all right so just the body so it's gonna be do
+1:59:55 ... um and it's going to be slightly different all right so for linux uh we're going to
+2:00:01 ... use durant uh direct example
+2:00:08 ... okay i already looked into durant at some point uh yeah so this is a special interface
+2:00:15 ... that allows you to open a folder and iterate through the files in the folder
+2:00:21 ... which is quite convenient so let's just use that
+2:00:30 ... might as well actually take this entire example and copy paste it i think it's good it's gonna be okay so the only thing we
+2:00:36 ... need here is this uh huh and i'm gonna just copy-paste it here
+2:00:43 ... copy-pasting code from stackoverflow by the way classic am i right [Music]
+2:00:50 ... copy-pasting code from stack or floam all right so here we have to use
+2:00:57 ... deerpath now then we have while
+2:01:09 ... um so we also have need to have dp which is the rent
+2:01:16 ... point i think that's what it stands for uh
+2:01:23 ... the rent pointer we're gonna put it somewhere here we can also initialize it with no
+2:01:34 ... um so then we open that
+2:01:44 ... so i don't need full pattern here and don't need any of this stuff
+2:01:52 ... okay okay looks cool uh
+2:02:00 ... so this is how we do all of that and then
+2:02:05 ... this is the file so it's going to be constituent file equal dp
+2:02:14 ... dname all right and then i just do a voting
+2:02:20 ... cool so this is how we achieve all of that
+2:02:26 ... uh yep that should work if i understand everything correctly
+2:02:32 ... [Music] all right but we also need to include durant
+2:02:37 ... right yeah random.h
+2:02:44 ... so uh for now i'm not gonna call cmd uh i'm gonna just test that uh
+2:02:52 ... yeah building s
+2:02:58 ... example
+2:03:05 ... so and let's see okay so oh assertion has failed
+2:03:13 ... oh i see i think i know uh what instruction failed on uh
+2:03:19 ... i think it failed on dot and dot dot uh things so
+2:03:28 ... [Music] i think another thing that we have to ignore here is
+2:03:33 ... um still simply maybe something like example [Music]
+2:03:40 ... uh not equal dot yeah so basically everything equal to dot
+2:03:47 ... should be also ignored completely uh yep there we go
+2:03:54 ... uh so we iterated through each individual file in the uh example folder and we iterated
+2:04:00 ... only through the basm files anyway so uh and now uh we can just try to
+2:04:06 ... build all these examples uh so essentially we're gonna use previously build uh bosom utility uh and we're gonna
+2:04:13 ... put all of that into the build examples uh so let's quickly try to do that
+2:04:19 ... uh all right so uh something didn't really work same because we don't have a cmd anymore
+2:04:25 ... yeah yeah a lot of these assumptions were already changed as i was you know evolving this entire example
+2:04:32 ... yeah so we're building the tool chain and then uh fibbasm oh yeah okay so
+2:04:40 ... because it only gives us the the file name the only another thing you have to do is examples
+2:04:47 ... and then just join them together right you just have to join them together so we're building this stuff and there
+2:04:53 ... we go we just managed to build the whole
+2:04:58 ... virtual machine project with only c and it took us two hours by the way
+2:05:07 ... actually took more because i also had the research but apart from that yeah so there you go so um it works on linux of
+2:05:15 ... course but yeah and this is the entire source code of the build tool right so
+2:05:21 ... you have this flags in here you have a race and you have these tools that help you to
+2:05:27 ... manage the stuff and you can start to have conditional compilation um which is pretty cool um
+2:05:36 ... does it work with rust projects probably i'm pretty sure you can call a rust uh compiler from within
+2:05:45 ... this thing we can even try to do that so imagine that you have a main rs
+2:05:50 ... uh something like that is going to print ln hello uh rust right
+2:05:57 ... and then you can have something like uh build rust and we're gonna have c right and
+2:06:03 ... you include uh build dot h right so this is what you have here
+2:06:09 ... uh might as well actually put it like this and essentially what you need to do you need to do cmd rust c uh
+2:06:16 ... and uh you wanna build just main.rs right so you just do that uh right after that you
+2:06:23 ... build a rust uh i think uh did i save this thing i think i
+2:06:29 ... didn't save it and build the rust and then build the rust
+2:06:34 ... and then just call this entire thing and uh as you can see it runs this rust
+2:06:40 ... sea it will take some time because i it needs to warm up some some caches and stuff like that and after
+2:06:45 ... that you should have main executable right so something like
+2:06:50 ... main and hello rust yeah i mean you can just call the rust you know compiler from from c like that
+2:06:59 ... just to command rest c and there you go um
+2:07:04 ... and of course if you have a compilation error in here right so we forgot a semicolon you try
+2:07:10 ... to run it one more time and did it actually swallow oh i see because you don't have to have a
+2:07:17 ... semicolon here all right so let's actually do something like this and everything works right and yeah there we
+2:07:23 ... go so it's a build tool in c so you can use it with rust if you want to it's just like you can use it
+2:07:28 ... instead of shell essentially so yeah make sense
+2:07:41 ... okay so that's pretty cool so it took us how many 200 lines of code
+2:07:48 ... to make it work on linux um does it work on windows no it doesn't work on windows but i mean i started
+2:07:55 ... this project two hours ago so we haven't implemented much um all right so let me
+2:08:03 ... see so what's interesting is that how much windows support we need we don't need to do anything
+2:08:09 ... special on windows with concat uh we don't need to do anything special with path on windows either unless
+2:08:17 ... uh if um let's put it this way if uh win 32 then
+2:08:25 ... it's going to be define path sep like this otherwise like this
+2:08:34 ... and if uh i think it's win32 if i'm not mistaken and the past separate lengths could be
+2:08:40 ... defined like this anyway um one two three four uh one two three four
+2:08:45 ... so already path on windows works we already have a windows support
+2:08:52 ... for paths i think this is how you do that i think uh something src something cpp
+2:09:03 ... msvc no there was like a windows yeah it's underscore windows 32 ... 2:09:08 ... all right already cross platform yeah the paths already cross platform we wouldn't have to do anything special here
+2:09:15 ... make deers uh with make gears i'm not quite sure i think uh win 32 make deer
+2:09:24 ... uh must win disappear i also take slash i know that
+2:09:30 ... alright so the microsoft implemented posix
+2:09:36 ... functions name to make deer easy deprecated areas to underscore make deer alright so there's a little bit of
+2:09:44 ... yeah so you just can use that uh instead
+2:09:52 ... you can just use that
+2:09:57 ... and it would be okay uh in case of an error what does it return in case of an error
+2:10:04 ... so if it's problem creating test directory does it set error no
+2:10:12 ... okay okay so essentially on windows you just have to call uh you know to a different make deer or
+2:10:19 ... something it should be pretty straightforward [Music]
+2:10:26 ... so this is something that could be implemented okay um so to do
+2:10:34 ... uh make deers um make deers let's go to my gears
+2:10:41 ... does not work on windows and we're gonna just give the link to
+2:10:47 ... here right okay cool concatenation um nothing special cmd okay cmd is
+2:10:55 ... rather interesting cmd is rather interesting how can we implement that um okay windows create process
+2:11:03 ... or something is that how you create processes
+2:11:08 ... um is there any pitfalls in using this function do we have any windows developers who knows any
+2:11:15 ... pitfalls
+2:11:21 ... can i just you know call a separate program like this maybe
+2:11:28 ... [Music] all right channel file is not probably
+2:11:34 ... reported on [Music] linux
+2:11:39 ... is the old ansico okay apart from that anything else is that is that it is that the only pitfall in this thing
+2:11:46 ... [Music] um
+2:11:54 ... [Music] exec does it work on okay
+2:11:59 ... windows exactly let's see oh [ __ ] anymore thank you so much
+2:12:07 ... and oh [ __ ] that's a shaku okay does it have exact vp
+2:12:20 ... feel it does have exactly p all right um lose and execute new child process
+2:12:27 ... but does it replace the whole thing is a pitfall okay um
+2:12:36 ... lost and execute a new process passing an array of pointers command line arguments uh what is the parameter so does it work
+2:12:43 ... like on linux where it substitutes the current process but it says it executes
+2:12:49 ... new child process so okay so maybe we can just
+2:12:56 ... use this very scuffed posix layer of windows to like have support on windows and that's
+2:13:03 ... gonna be fine it's not a fork it starts a new process okay so this is something that we'll
+2:13:08 ... have to keep in mind thank you so much actually it's easier than i thought all right okay
+2:13:15 ... um to do cmd does not work on uh windows
+2:13:22 ... and we're gonna just put this thing here cool so this is something that has to be implemented and it's not that difficult
+2:13:28 ... to implement right so we just have to make 200 lines of code cross-platform it's not
+2:13:34 ... as difficult to make 200 lines of code across platform it's actually pretty easy
+2:13:42 ... but once you make it cross-platform uh it's way easier to maintain it cross-platform over time
+2:13:48 ... if you know what i mean all right
+2:13:56 ... you put a oh god damn it okay it happens to me every time thank you so much
+2:14:02 ... uh okay so now let me test this stuff one more time
+2:14:09 ... okay looks good so i'm going to try another thing i have a i have an extension for my build
+2:14:15 ... script for x8664 you see uh right so i build bosom to nasam
+2:14:21 ... and i also like call these additional things would it be possible for me to
+2:14:27 ... facilitate this thing as well oh yeah by the way since i'm using c now
+2:14:32 ... right since i'm using c i can split the phases into separate functions
+2:14:39 ... i can do that it's c i can use everything i can use in c so for example i can do build
+2:14:44 ... tool chain right i'm building the tool chain and everything related to building a tool chain could be separated
+2:14:50 ... into this function right so here's the build tool chain uh the build tool chain
+2:14:57 ... cool then i can do build examples right it's gonna be void and uh
+2:15:04 ... i can move this entire step to build examples here we go
+2:15:12 ... yes so i can have separate functions here furthermore for example on windows on windows
+2:15:20 ... you're probably gonna call uh this thing differently you probably don't not gonna call to cc you're gonna call to cl
+2:15:27 ... the flags are gonna be completely different everything is gonna completely different what you can do you can abstract it away
+2:15:33 ... something like build c file right so uh you can have something
+2:15:40 ... like path uh maybe input path and then you can have something like
+2:15:46 ... output path output path uh and depending whether you are on uh
+2:15:51 ... linux or on windows this thing could be implemented differently right so uh for for linux specifically
+2:15:58 ... we can implement it like this it's gonna be cmd uh cc c flat i might as well actually
+2:16:03 ... you know copy paste this entire thing like that of course
+2:16:09 ... so uh so input path input path input path
+2:16:15 ... [Music] so the input path essentially is going to be uh here input path
+2:16:24 ... and this is going to be the output path uh right after the path and you can even do
+2:16:29 ... it like that um and then you can say build c file so the input is
+2:16:37 ... this right and the output is this right you can remove this entire
+2:16:45 ... thing cool so uh and then if
+2:16:53 ... uh win32 wins 32 you're gonna have a completely different implementation of
+2:16:58 ... this function see what i mean
+2:17:06 ... so essentially building two chain uh doesn't care about the compiler at all because building c
+2:17:13 ... file on windows is going to be completely different uh and furthermore there's c flags and
+2:17:19 ... depending on whether you're on windows if win 32 you're going to have
+2:17:24 ... one thing define c flags otherwise uh you're gonna have a different thing
+2:17:29 ... [Music] right so um i think on windows you
+2:17:34 ... cannot call uh directly sale you call yes so this is a yeah yeah yeah it's
+2:17:40 ... true but it's besides the point [Music] uh we already require people
+2:17:48 ... to run our bad script from within the development environment of msvc i am aware of that we already have
+2:17:55 ... documented that this is a well-known thing thank you very much okay um so
+2:18:02 ... essentially so c flags um is gonna be this thing right so we have
+2:18:08 ... a c flex uh to be fair
+2:18:16 ... yeah i think it's okay i think it's okay so let's go this way um so in here it's gonna be like that
+2:18:25 ... uh slashes are a little bit difficult in here but i think we'll be able to pull that off uh this one is gonna be something like
+2:18:34 ... this uh do we even have uh wait a second
+2:18:41 ... clear replace this thing yeah so this is what we'll have to do here uh
+2:18:47 ... and yeah
+2:18:52 ... okay uh-huh and then this is how we're gonna
+2:18:58 ... do that as well so let's see flex [Music]
+2:19:05 ... this build system is not on github yet i started this project two hours ago give me a little bit of time and i'm gonna
+2:19:11 ... upload it on the github don't worry about it i literally just started working on it
+2:19:16 ... um all right so and in here so we have cl.xz then we put c flags in here if i'm not
+2:19:23 ... mistaken like that and then we just need to provide the input
+2:19:28 ... right so that's it we already made the build process
+2:19:33 ... a little bit more cross-platform we haven't tested it yet but that's basically the rough idea how the
+2:19:39 ... difference on windows and on linux will be right so you have this conditional compilation and
+2:19:45 ... this is a single script by the way that it works on both windows and linux
+2:19:51 ... like it's cool trust me and you can use functions to abstract everything away it's the same language
+2:19:58 ... it's the same language for all the platforms and [ __ ] it's amazing all right
+2:20:09 ... so let me try to compile that [Music]
+2:20:15 ... okay uh so it already compiles could not execute
+2:20:21 ... child process no such file or directory yeah okay uh if we have to swap them
+2:20:27 ... around right so so this kind of errors are easy to
+2:20:33 ... actually catch okay cool nice nice nice everything
+2:20:40 ... [Music] works so yeah so it's it uses windows [ __ ] but
+2:20:48 ... it's compilable on linux as well because of this macros and stuff like that so i think i want to try to start
+2:20:54 ... running it on windows machine just to test how it will compile and work and whatnot
+2:21:02 ... excuse me oh [ __ ] um
+2:21:07 ... all right so i need to get rid of some garbage i think
+2:21:13 ... uh defined windows okay sure uh we can also use depth right so
+2:21:24 ... yeah i think it's i think if defined and if death it's just the same thing so build h uh
+2:21:32 ... yeah win 32 thank you thank you so much
+2:21:40 ... yeah pretty cool
+2:21:46 ... all right so i think um i'm gonna start uh doing continuous integration [ __ ]
+2:21:53 ... my favorite kind of [ __ ] build.h well i'm going to commit here i'm going
+2:21:59 ... to commit this thing here um and on linux i also want to start
+2:22:06 ... actually yeah let's start with linux right let's start with linux um it's gonna be eco
+2:22:14 ... uh like this and then is it gonna work
+2:22:21 ... uh i'm gonna do gcco build dot xin uh build dot c
+2:22:28 ... all right we're building this entire thing and then we're calling this thing we might as well actually you
+2:22:35 ... know what uh remove this entire stuff can i can i just do it like that i think i can do it
+2:22:41 ... like that
+2:22:48 ... all right introduce initial uh implement
+2:22:56 ... limitation uh of build dot h
+2:23:02 ... okay and let's push that right into the repo and let's see how it's gonna work on continuous integration because that's
+2:23:07 ... kind of the point of this entire thing uh we're not replacing build yet we're
+2:23:13 ... just testing it out we're just testing it out
+2:23:23 ... github is and finally it showed the button holy [ __ ] okay uh
+2:23:29 ... all right so let's see let's see how it goes let's see how it goes okay okay so we're looking at the linux
+2:23:36 ... gcc let me actually close all of this garbage it's not needed anymore at least for now maybe later
+2:23:41 ... it's going to be needed again okay so it's installing some shite uh
+2:23:47 ... all right i'm just waiting
+2:23:52 ... okay oh [ __ ] it worked so it already built everything um all right so it works
+2:24:00 ... uh also it's very very blurry uh probably because it uses like open
+2:24:05 ... gel canvas or something like that okay so that's pogue
+2:24:10 ... now the most interesting part so we know that all that [ __ ] works on uh linux what about windows
+2:24:18 ... so on windows theoretically uh you should be able to just do cl xz
+2:24:25 ... uh build dot c right and i don't think you need anything else like it should be as
+2:24:31 ... simple as that and then you should be able to call build.exe and let's see what's gonna happen
+2:24:37 ... so uh i'm pretty sure it's not gonna build properly and this is exactly what i want
+2:24:42 ... i want this thing to not build because i want to see the compilation errors
+2:24:48 ... okay run build c build on a message scene okay
+2:24:57 ... so what i need here is the compilation errors so we can start a classical process of
+2:25:03 ... pushing changes to the continuous integration looking at the errors and fixing them accordingly so and maybe we'll get some interesting
+2:25:10 ... insights on how this entire chat works and then we're gonna fix it
+2:25:20 ... alright so i'm gonna click on the svc just to take a look at this thing
+2:25:28 ... does it say that it's that's really strange okay i think github being github yet again
+2:25:36 ... okay [Music]
+2:25:43 ... all right ryan checkout [Music]
+2:25:50 ... counting objects so it's doing alrighty so i think we're doing the
+2:25:56 ... thing build all and examples
+2:26:05 ... okay now we're talking okay that's cool so it's we couldn't
+2:26:11 ... understand this [ __ ] because on in bat right and bat we use
+2:26:17 ... ram as far as it all uh so yeah this is how we commented out on top
+2:26:23 ... of that uh it doesn't know where to find all of this [ __ ] right so uh we need to now in build
+2:26:30 ... h uh hide that away on windows if uh def win 32 ... 2:26:37 ... we probably have to include the windows chat right include windows [ __ ] dot page
+2:26:45 ... then otherwise we include all the linux shed right then and
+2:26:52 ... if uh win32 there we go uh and uh let's figure out
+2:26:58 ... what's gonna be the windows [ __ ] i think windows shed is actually well known uh and we do that on in something right
+2:27:05 ... so uh so windows yeah so first you find
+2:27:12 ... windows 32 lean and mean uh whatever the [ __ ] is that supposed to mean then you include the windows
+2:27:17 ... h you know the classic stuff okay cool
+2:27:25 ... yeah it should be okay where's no mean max i have no idea what
+2:27:31 ... that is uh win32 no oh yeah i remember i remember this one that's actually a good no mean max
+2:27:40 ... sure uh i mean we're programming in on on pure c
+2:27:47 ... we don't have min max there anyway so i mean but we can include it
+2:27:56 ... yeah whatever okay ah all right so
+2:28:02 ... so this one is going to be a fix bad comment uh another one i'm sorry i'm
+2:28:08 ... simple that's okay i also used to be a super sports dev it's just a phase my friends okay um
+2:28:17 ... include windows shite and let's push that right in here
+2:28:32 ... literally run in the builds
+2:28:40 ... this branch conflict has to be resolved [Music]
+2:28:46 ... and heiser i hope i pronounce your nickname correctly
+2:28:51 ... uh thank you so much for uh twitch prime subscription your first subscription by the way thank you very much
+2:28:57 ... and welcome to our branch conflict club that's right uh that's what we do every day we're resolving branch conflicts
+2:29:03 ... what the hell are you talking about
+2:29:09 ... are you sure about that mate uh the [ __ ] uh okay so i'm gonna ignore that um
+2:29:18 ... and let's take a look at this stuff all right
+2:29:24 ... oh yeah ss size classic all right so let's actually remove s size uh s
+2:29:30 ... size um okay so we can just do integer instead
+2:29:39 ... there was also a size fix in something really i mean as size is just literally integer right
+2:29:45 ... is it not so we can just use integers and like it's uh or furthermore we can just the size t
+2:29:51 ... uh zero all right and then after we counted everything i can just do seps
+2:30:01 ... seps count minus -1 whatever seriously
+2:30:10 ... s size
+2:30:15 ... i think anything else is literally bike sharing at this point uh s size
+2:30:23 ... okay uh okay it seems to be seems to be working
+2:30:32 ... it's a science equivalent of size to yes like it's just like it's not even worth this much attention
+2:30:40 ... so yeah get rid of size two
+2:30:56 ... [Music] so why is it conflicting like github are you drunk or something
+2:31:01 ... the [ __ ] um oh did you forget to fetch those stuff i might be actually
+2:31:07 ... forgetting to okay i see i think i know what the [ __ ] is going on
+2:31:12 ... um origin master okay
+2:31:20 ... i see i see yeah yeah i mean at some point i can just rebase
+2:31:26 ... it right it's not that big of a deal so yeah so now i know it's not it's not the github that is drunk it's me
+2:31:33 ... even though i don't drink so um maybe i don't even need to force push
+2:31:39 ... to be fair i can just emerge and resolve the conflict it's just not that big of a deal seriously
+2:31:46 ... [Music] drunk suzy well drunk voicing is actually not that interesting real person trust me
+2:31:53 ... so uh i just get very tired and sleepy so
+2:31:59 ... that's it so trust me me sober as a person is way more interesting than
+2:32:04 ... me drunk so yeah when i'm drunk i just want to sleep that's it
+2:32:11 ... [Music] when i'm drunk i can stop telling everyone i'm drunk
+2:32:19 ... just like after five hours streaming yeah exactly that's why i don't drink i don't need to drink i just need to stream
+2:32:31 ... [Music] when in russia vodka doesn't count as
+2:32:36 ... drinking very funny we're still waiting for the svc build it doesn't want to start let's
+2:32:44 ... start i think github is suspecting
+2:32:50 ... something you never drink i don't drink anymore
+2:32:56 ... uh alcohol at all i used to drink i don't drink anymore
+2:33:11 ... well sometimes i drink vas but according to russian laws it does not count as an
+2:33:16 ... alcohol drink so and to be fair you need to drink
+2:33:22 ... [ __ ] ton of quas to actually get drunk on it i think uh your body decomposes the alcohol
+2:33:28 ... faster than you can actually consume it by drinking course
+2:33:36 ... developer r please speak english nobody understands you so it's a english speaking stream
+2:33:42 ... [Music] but hello my comrade how are you doing
+2:33:48 ... welcome to the stream [Music] drinking in 2021 yeah
+2:33:58 ... finally it started the build huh [Music]
+2:34:16 ... hello so that means hello yeah it literally means
+2:34:22 ... hello okay oh yes that's
+2:34:30 ... super cool that is super cool um yeah we're starting to have like pid and
+2:34:35 ... dot syntax a missing semicolon are you serious is that what you're trying to okay
+2:34:42 ... um so pid uh pdt and then it says missing
+2:34:50 ... semicolon at 191 really so it cannot find the name
+2:34:56 ... peed underscore t and the next error it tells us missing semicolon nice compiler by the
+2:35:03 ... way what a nice compiler oh [ __ ] um [Music]
+2:35:11 ... uh we are developing a new a build system in c uh
+2:35:17 ... all right so let me think how we're gonna do all of that
+2:35:25 ... so maybe i'm going to create like a separate function that just accepts the arg b
+2:35:32 ... it just accepts the arc b and depending on the operating system it's going to do that differently right i think
+2:35:40 ... all right all right so if def win 32 ... 2:35:47 ... it's actually on the other side i think yeah so
+2:35:53 ... how we're going to call this function by the way um [Music]
+2:35:59 ... build h exec so this is how we're going to call it
+2:36:04 ... uh construct v so and it's gonna be new terminated all
+2:36:10 ... right and on windows is gonna be one thing on linux is gonna be another thing
+2:36:17 ... um else and if
+2:36:26 ... so and let's actually quickly do that
+2:36:32 ... uh so this is gonna be like this uh do we need anything else i don't think we need anything else i can literally just
+2:36:39 ... copy paste this entire stuff to there like this is on linux and
+2:36:44 ... whatnot right so this is argv um and
+2:36:52 ... i just do build h exec rgb there we go so basically it's gonna be a
+2:36:57 ... cross platform version of this entire [ __ ] and uh then i'm gonna put this thing
+2:37:03 ... here right okay
+2:37:10 ... cool so let me see if it's gonna compile or not
+2:37:18 ... no file or directory ready
+2:37:24 ... are you serious
+2:37:32 ... uh i don't know what happened but that was weird okay all right so
+2:37:39 ... everything seems to be working so um let me see let me see can i now
+2:37:47 ... go there what other programming languages do you
+2:37:53 ... know i don't know any programming language i just copy paste code from stack overflow i don't need to know any
+2:37:59 ... programming language uh right because first of all i'm not a programmer
+2:38:04 ... so only programmers need to know um programming languages i'm not a programmer and second of all if i need to write
+2:38:10 ... some code i just copy paste stuff from a secular flow or from ms you know msdn
+2:38:16 ... so yeah
+2:38:24 ... is there an example oh there is nice
+2:38:32 ... is that an example this doesn't look like an example okay there we go
+2:38:54 ... this point is rich only if exec fails
+2:39:00 ... run the phone program execute
+2:39:11 ... [Music] is it possible to fork
+2:39:20 ... so yeah it's very interesting so um exactly p doesn't fork
+2:39:29 ... but how do you even fork so that's a good question anyway uh we can try to do that so it's
+2:39:34 ... gonna be just exactly p and um we can just give it a try
+2:39:41 ... um exactly p
+2:39:49 ... yeah where is the example yeah okay cool
+2:39:54 ... uh rgv so oh by the way i need to read more about exactly p does it end with a null terminator or
+2:40:02 ... something it must end with an ultimate that's for sure a new child process parameter array of
+2:40:09 ... pointers to parameter more information about this and other
+2:40:16 ... um no okay executive function validate their names if the command
+2:40:21 ... is a new pointer there argue is a new pointer pointer to empty a string uh hello negative plasma welcome
+2:40:29 ... to our stream and thank you for the rate so uh is a new
+2:40:36 ... pointer okay i think i think i'm going to assume that it's not terminated so and another thing i'm going to do is
+2:40:42 ... just going to argue uh like this and hopefully that will work probably
+2:40:48 ... so and it also can return like a negative thingy so and this is basically what we want to
+2:40:54 ... check here uh so yeah essentially
+2:41:02 ... so and what's the type it accepts here it accepts the same type so maybe it
+2:41:08 ... makes sense to also cast it like that um all right
+2:41:16 ... so let me see if it compiles did i do the right yeah yeah yeah it actually uh read it properly
+2:41:24 ... all right oh [ __ ] oh my god
+2:41:33 ... i'm an idiot oh my god i'm a such a oh my god holy [ __ ]
+2:41:41 ... i was doing everything in the wrong branch holy [ __ ] why am i so dumb oh my god
+2:41:59 ... oh just a second all right i'm gonna be
+2:42:10 ... back
+2:42:25 ... all right let's continue [Music]
+2:42:38 ... so uh okay i'm back and let me take a look at the diff between these files it's gonna be u
+2:42:44 ... build dot c and see pack
+2:42:51 ... uh and there's not that much difference okay so that's that's fair i think c
+2:42:57 ... shouldn't be that different uh okay so it's not as bad as i
+2:43:03 ... thought it would be so i can just do something like this and i can rename it back we can remove this thing
+2:43:09 ... cool so it wasn't that bad all right so we managed to fix all this
+2:43:22 ... cool uh so what did we do here um we introduced
+2:43:29 ... cross platform exec introduce uh introduce cross
+2:43:37 ... platform exec and let's push that right into the repo
+2:43:42 ... [Music] alright so uh let's
+2:43:48 ... see oh my gosh let's see around
+2:43:55 ... [Music] oh [ __ ] i need to pee
+2:44:02 ... okay let's go to windows branch
+2:44:08 ... [Music]
+2:44:14 ... uh what the [ __ ] happened with my page okay i see
+2:44:20 ... it keeps jumping around holy [ __ ] okay show me show me what you've got show me can you compile this [ __ ] you
+2:44:27 ... can do it i believe in you might as well actually try to refresh
+2:44:33 ... everything just in case and it keeps building things like took already 20 seconds to build okay it felt nice
+2:44:41 ... it compiled okay so now it fails on a completely different place so my entire cross-platform [ __ ]
+2:44:48 ... compiled uh amazing so yeah now we're trying to use dear rand yeah
+2:44:58 ... so dear end is actually kind of easy to do on windows um because we implemented
+2:45:05 ... like a mini version of durant for windows at some point for something and for nothing
+2:45:11 ... and i think i'm gonna actually bring that mini version of durant here so it looks like this so it's like
+2:45:18 ... around 67 lines of code but it implements like a very small subset of direct
+2:45:26 ... that we already use anyway um so i think i'm gonna just literally copy paste this entire thing
+2:45:32 ... i wanna actually kind of release this mini derand uh as a like header library at some
+2:45:38 ... point because i usually don't use more than this small subset of direct anyway
+2:45:44 ... and this is a very cross platform subset of direct so um i don't know but yeah let's
+2:45:50 ... actually go to phrase this entity i think and i'm going to literally bring it here so here um yeah
+2:45:58 ... um let me put it this way
+2:46:04 ... and i need to copy paste it one more time i'm gonna put it here so here is the way
+2:46:10 ... we're gonna treat it so if this thing is a windows
+2:46:16 ... we're gonna use this entire thing uh huh so otherwise otherwise we're gonna
+2:46:23 ... include the rant uh during the page right
+2:46:29 ... uh and if um win 32 and that's pretty much
+2:46:35 ... it that's the whole thing which is cool right then we can remove this thing
+2:46:41 ... from here completely so yeah if it's windows you use that as a direct if it's not windows
+2:46:47 ... you can just include the rent here like that so and that should make the deer
+2:46:55 ... thingy work on windows uh yeah yeah so it should make this
+2:47:00 ... chunk of code work on windows uh seamlessly uh all right so let's let's try to
+2:47:05 ... compile that see if it compiles um
+2:47:12 ... include mini rent for windows yeah i'm going to call this
+2:47:17 ... library mini rent so there's a d-rand and this is a mini rent uh essentially
+2:47:22 ... like a small subset of d-rent implemented for windows so i really like this name mini-vent
+2:47:31 ... i probably can do it right now or today or something it could be like a just literally header library
+2:47:38 ... huh so and actually this is the third place where i use it first i uh use it on windows all right
+2:47:46 ... then i uh first i used it for nothing and then i used it on something and then i use it like here so
+2:47:52 ... this very small subset of deer end is very important right so it could be
+2:47:59 ... yeah this i think i think it's pretty cool uh anyway so let's see if it compiles so right now
+2:48:05 ... we're just trying to bootstrap the first phase of the
+2:48:10 ... uh of the build right bootstrap in the first phase and um i'm not sure if it's gonna run
+2:48:16 ... properly at all we'll see we'll see we'll see [Music]
+2:48:21 ... if it will bootstrap properly uh on windows it will be actually pretty cool already so the only doubts
+2:48:28 ... that i have about windows is the the exec i think exec is not going to
+2:48:35 ... work on windows i think well it does create a separate process but i didn't think it
+2:48:41 ... actually do that correctly okay so windows already fails let's take
+2:48:48 ... a look at where exactly it fails [Music]
+2:48:55 ... all right so it still fails with direct 26 ... 2:49:03 ... so 26 deer huh
+2:49:12 ... declared identifier and declared is this because of this tract [ __ ]
+2:49:20 ... do i have to i think i have to do it like that so it was used usually on uh c
+2:49:27 ... maybe that requires it to be like that but that's really strange like i literally define the structure
+2:49:33 ... here uh missing before
+2:49:40 ... huh that's really strange but i mean on windows it shouldn't matter i think
+2:49:47 ... or unless it's it is tries to build it in some sort of like a c mode or something okay let's actually
+2:49:52 ... try to to fix that try
+2:49:59 ... to fix msuc compilation error but i'm not sure if it will
+2:50:08 ... help uh all right so i'm going to push that right to the ripple and i need to make a small break
+2:50:15 ... there is a c mode okay so maybe it is because of the c mode we're about to find out
+2:50:22 ... all right so it's gonna be like that and uh it's gonna be so one all right uh let's
+2:50:27 ... make a small break and you guys have uh
+2:50:34 ... fun [Music]
+2:52:04 ... hey yo what's up welcome back uh so
+2:52:13 ... uh let's continue so let's see uh where exactly msvc has failed now um
+2:52:23 ... alrighty what we've got what do we got it did a really weird thing there
+2:52:31 ... okay so the error is different which means that yes it was because of some sort of a c mode perfect uh 54.
+2:52:39 ... um okay so
+2:52:45 ... i used struct in here but then i didn't use it here uh all right so
+2:52:54 ... try to fix msvc ever uh yet again but
+2:53:01 ... this time it's a different one and i think it will
+2:53:08 ... work because i learned uh learned about the ms vcs
+2:53:16 ... c mode uh and let's push that right into the week and see how it's gonna go
+2:53:22 ... all right confidence yes now i'm a little bit more confident than i was before than it was in the
+2:53:29 ... previous comment that's basically what it is uh all right
+2:53:37 ... so i feel like i'm like programming in 80s doing batch processing on a remote
+2:53:43 ... machine uh making small changes and sending them to the mainframe and waiting for waiting for the results
+2:53:49 ... or something like that that's what i feel like right now it's just it's pretty cool
+2:53:57 ... uh all right so if i remember correctly to come uh to compile as c on the svc it
+2:54:03 ... wants a tc flag but i didn't provide it but it still has some sort of a c mode
+2:54:09 ... uh all right oh okay so
+2:54:16 ... what's interesting is that the previous time i wasn't confident that it will fix the problem and it fixed it
+2:54:21 ... now i was confident that it fixed the problem but it didn't [Music]
+2:54:29 ... this is like a summary of my entire [ __ ] life anyway so i think i kind of know what exactly
+2:54:34 ... happened uh because yeah the rant type is never defined because it's defined in a header
+2:54:41 ... right um so yeah so we have a header and this is where it
+2:54:47 ... is the holy [ __ ] and this is where we also have this type difference
+2:54:54 ... [ __ ] classic i see i see i see i see i see all right so and uh yeah let's let's
+2:55:00 ... just define this thing here it's gonna just uh max path do we even have a max path in windows
+2:55:07 ... uh windows max path so name files namespaces uh
+2:55:16 ... max path i think i think we do have max pass there so um
+2:55:22 ... [Music] okay uh richard lao uh thank you so much for uh
+2:55:30 ... tier 1 subscription your first subscription by the way and welcome to epic max path club oh wait a second
+2:55:37 ... is it no it says max path so it's like literally says max pat but i'm not sure if i can rely on this thing
+2:55:45 ... let's give it a try if it fails it fails um all right yeah so it also has plus one
+2:55:52 ... for some reason but whatever uh so okay try to
+2:55:59 ... fix msvc build but for real this time uh but i'm not
+2:56:06 ... gonna be confident just uh in case
+2:56:14 ... uh let's push that all right [Music]
+2:56:23 ... not gonna confidence ah sure
+2:56:36 ... hold on
+2:56:42 ... okay so let's see what's gonna what's the msvc build gonna tell us this time
+2:56:50 ... what's up with your club what's up what's up [Music]
+2:56:57 ... what's wrong with being confident well i was confident and the build failed and i wasn't
+2:57:04 ... confident and built succeeded so i extrapolated these two
+2:57:10 ... these two points and now i'm trying not to be confident anymore
+2:57:20 ... okay well does this mean that it builds
+2:57:26 ... successfully all right this is very interesting
+2:57:38 ... i think it builds it successfully wrong call a function so that means it's a runtime error perfect
+2:57:44 ... so this is exactly what i want to see uh all right so let's do build c and
+2:57:51 ... we're gonna try to do the following thing so i'm gonna comment out this thing
+2:57:57 ... and i'm gonna only call to build beam just to see if it creates this thing
+2:58:04 ... correctly so we're gonna uh you know uh path is already including null terminator
+2:58:10 ... um sure um okay so we're gonna try to to do
+2:58:17 ... these things so let's just try to create folders uh yeah we're creating photos
+2:58:24 ... i saw this errors every time when i was trying to execute x86 okay that's actually pretty cool that it's a well-known thing that means
+2:58:30 ... it's a runtime thing uh try uh try to
+2:58:39 ... starting msvc around time error by
+2:58:46 ... secting limiting the build to
+2:58:52 ... a bare minimum just to see just to see if
+2:59:01 ... the creation of folders work uh commits
+2:59:07 ... stating the message here and then bisecting limiting the bill to a bare minimum just to see the creation where where is the perpetrator do they make
+2:59:13 ... any mistakes here uh it's i think it's a pretty good commit i'm just explaining everything what i do
+2:59:20 ... it's it's a good commit right then later um people who will study my work
+2:59:27 ... nobody's been studying more but then somebody who want to see why the [ __ ] these changes were
+2:59:34 ... made they can look back in history and like see everything what i was trying to do
+2:59:40 ... wouldn't it be easier to have a virtual machine to test a windows build instead of creating and tons of commit
+2:59:45 ... i don't think so because um i don't have a place to run this virtual machine i have a single laptop
+2:59:52 ... uh and it barely works with me just streaming on it uh so if i try to run a
+2:59:59 ... virtual machine it's going to be a [ __ ] disaster right so uh oh maybe i can set it up on
+3:00:05 ... a separate like a vps but that takes time but i already have it set up on the ci
+3:00:11 ... so i think it's a good enough solution [Music]
+3:00:18 ... all right so let's see um but it didn't output but
+3:00:26 ... maybe the output is buffered uh a good look so maybe it was buffered and then it crashed with some sort of a signal
+3:00:32 ... that didn't give the process an opportunity to flash the buffer so it could be well
+3:00:40 ... it is i don't think it's guaranteed that the buffer has has to be flashed a new line so i encountered this situation when the
+3:00:47 ... buffer was not flashed in your line and i also was troubleshooting for a long time so
+3:00:54 ... in any case checking specifically for that won't hurt right so it won't hurt
+3:01:02 ... [Music] um all right so let's see
+3:01:15 ... all right he's doing things
+3:01:22 ... job safety policy on commit messages yes uh okay we're building and
+3:01:32 ... also keep in mind that this is a github actions they do all sorts of crazy [ __ ] with the output of the commands
+3:01:38 ... so sometimes the std out and std error are in a completely different order than
+3:01:44 ... it should be so um yeah i wouldn't i don't think i uh
+3:01:49 ... you know you should rely on the on the output for these particular situations
+3:01:54 ... you should rely on but not too much right you need to question the output all the time
+3:02:03 ... there you go here's your output it just printed make deers and it created the gears so exactly as i predicted exactly as i
+3:02:11 ... predicted it's a [ __ ] classic situation all right so yeah that's pretty cool
+3:02:26 ... so uh the next thing i think we need to try to do is well i mean definitely this for each
+3:02:33 ... works so it probably fails somewhere here it probably fails somewhere here let's
+3:02:39 ... find out
+3:02:45 ... [Music]
+3:02:56 ... okay enable full uh build
+3:03:03 ... of the tool chain let's see if the msvc build
+3:03:11 ... fails somewhere there and it's quite important because it
+3:03:17 ... might be failing on the example building because an example building we call this weird
+3:03:22 ... win32 functions um
+3:03:27 ... uh why there is no slash or or whatever msvc is using because we do that through the flags so on
+3:03:35 ... windows you can do fo and provide the folder so all the executables will be dropped
+3:03:42 ... here so and the name of the executable is going to be the name of the file
+3:03:47 ... but instead of c extension it's going to be dot exe extension so that's the difference here so we can
+3:03:52 ... just do it like that and just don't provide output and it will always be put there
+3:03:58 ... uh actually it's not f o f o if is for object files for executables you need f
+3:04:03 ... e right so it's like that it's kind of weird it's msvc
+3:04:09 ... but yeah [Music] all right so did they commit everything
+3:04:15 ... i think already commit everything and let's push that
+3:04:22 ... yeah it outputs to name that exit by default it's [ __ ] microsoft
+3:04:30 ... alright so at least we already have a cross-platform make
+3:04:37 ... deer's function which is very important because we have at least
+3:04:42 ... something you know cross-platform um all right so because later then we can
+3:04:47 ... expand the cross-platforms you always have to start with this with these small steps right
+3:04:53 ... small steps
+3:05:08 ... um to two okay so i i should probably open the log
+3:05:14 ... right now i don't know what i'm waiting for let's open it uh
+3:05:19 ... all right so now and it fails exactly because of that uh okay so let me try another thing uh
+3:05:27 ... i have an idea where exactly it fails so it probably fails somewhere in exec
+3:05:33 ... dot h all right so let's make this weird hypothesis do
+3:05:39 ... you fail somewhere here right uh all right um
+3:05:48 ... disable x build exact for windows
+3:05:56 ... [Music] let's test the hypoth
+3:06:01 ... versus that the crash is caused caused
+3:06:08 ... by exec vp because uh because
+3:06:16 ... it is the most obvious candidate all right and let's push that
+3:06:25 ... [Music] who can help me with the questions and see i don't know i don't program and see
+3:06:31 ... uh unfortunately i wish a program didn't see i could get a lot of money but i'm
+3:06:37 ... probably sorry mates sorry
+3:06:46 ... we all program in javascript in here so yeah it is what it is
+3:06:53 ... [Music] but i mean in 2021 you don't really need c anyway right so you need javascript
+3:07:01 ... everything is in javascript
+3:07:14 ... yes
+3:07:21 ... it worked right so it locked this [ __ ] cl something something cl
+3:07:29 ... um right which is pretty cool so these are
+3:07:34 ... reasonable uh command lines i think but the problem here is that
+3:07:42 ... uh-huh that's that's cool so yeah that was the candidate so this is the problem so we just call this
+3:07:48 ... function correctly maybe i need to read more about how to use it maybe i can do also i mean i already
+3:07:54 ... have it opened so uh exec vp example
+3:08:02 ... uh how to use exactly example windows uh
+3:08:09 ... it feels like all right so maybe
+3:08:18 ... first function is a function you wish to execute
+3:08:23 ... [Music]
+3:08:32 ... um all right command a path of the file to
+3:08:38 ... execute the success of the function do not
+3:08:44 ... return the calling process do not return to the calling processor case so you still need to fork a return
+3:08:49 ... value indicates an error each of this function loads and execute a new process passing an array of
+3:08:55 ... pointers to command line argument and using uh the path environment variables to
+3:09:00 ... find the execute the file path to execute the validate there
+3:09:05 ... in the parameters the command name if the command name is important or arguing is no point the pointer to empty array or
+3:09:11 ... it contains an empty string as the first argument these functions invoke invalid parameter handler
+3:09:18 ... described here if the execution is allowed to continue um okay
+3:09:26 ... i think i already looked into that but i want to look at it one more time uh this is a message
+3:09:34 ... okay okay loads and executable and new process all exact functions use the same
+3:09:39 ... operating system function create process the exact functions automatically
+3:09:44 ... handle multibyte blah blah blah okay the parameter specifies the file to be
+3:09:51 ... executed as the new process
+3:09:58 ... parameters are passed to the new uh by giving one more
+3:10:03 ... all right so holy [ __ ] uh
+3:10:09 ... exactly uh useful when the number of parameters the process of available points pointers to the parameter passed as an
+3:10:15 ... rv the parameters u is usually pointed to command name uh the parameter one through n pointer
+3:10:21 ... to the okay uh the new parameter list okay
+3:10:27 ... that's exactly what i wanted to know [Music]
+3:10:33 ... so so this is my environment
+3:10:38 ... so [Music] so this is args this is essentially what
+3:10:47 ... i do here [Music]
+3:10:53 ... and yeah this is exactly the thing i do here believe it or not i have an idea
+3:11:01 ... um it could be because the cl run in cl process fails
+3:11:10 ... it could be because of that uh build uh msvc where is the message
+3:11:20 ... so it should be okay
+3:11:26 ... is there any external commands that i can run in cmd
+3:11:33 ... um just to test that they can execute external command and whatnot
+3:11:40 ... i'm not sure if you can easily do that so what i can execute there does anyone
+3:11:47 ... know system is that a cmd command um so we can do this
+3:11:58 ... you have system spawn well this is not what i'm asking
+3:12:05 ... is there any command in windows that i can execute instead of cl just to test if it works or not
+3:12:11 ... what i guess talking about but spawn is actually something interesting it sounds
+3:12:16 ... okay eco right eco is it a separate executable in windows
+3:12:22 ... or is it a building cnt command this is the good question um
+3:12:29 ... is it built in command of cmd or is it a separate problem
+3:12:38 ... okay so that means it's useless all right so somebody mentioned spawn uh i'm kind
+3:12:44 ... of curious what it is let me let me check it out spawn [Music]
+3:12:56 ... create and execute a new process they automatically handle multi-bed okay
+3:13:02 ... okay dear.exe okay sounds interesting uh is there example for this oh [ __ ]
+3:13:15 ... um if you call spawn okay what's the difference between exactly p and spawn create and execute a
+3:13:23 ... new process they automatically handle this is not what i care about uh okay sounds like an interesting thing
+3:13:29 ... maybe that's this is what we're gonna use here
+3:13:37 ... array of pointers each of the functions and executes it
+3:13:43 ... and pass is uh okay to use the uh this functions will be the parameter
+3:13:50 ... i think exec uses this uh thread versus spawn create a new thread
+3:13:59 ... okay but isn't is it really what i need because it
+3:14:04 ... doesn't really explain the difference okay so um
+3:14:11 ... underscore exec versus spawn
+3:14:16 ... so what's up with that
+3:14:35 ... it would be nice like some summary what's the difference between them why do we need separate functions
+3:14:43 ... what's the difference between them inherit from column process pointer to this is that the same thing or is that a
+3:14:49 ... different one okay we can try to just do spawn instead
+3:14:56 ... of exec and see maybe it will work
+3:15:02 ... spawn vp i think that's what we need
+3:15:10 ... so it's gonna be like that
+3:15:20 ... replaces the current program with the spawn creates a new process okay so this is exactly was my hypothesis um
+3:15:27 ... [Music] cool but i just wanted to have a confirmation
+3:15:32 ... right somewhere because uh this is always the most obvious difference between them like spawn creates a new
+3:15:38 ... thing and exactly replaces one uh but they want we need like explicit
+3:15:43 ... differences between uh i also another thing can you wait for uh for the process uh the return value
+3:15:51 ... from the synchronous phone oh this is actually cool so can i just
+3:15:56 ... uh oh [ __ ] you also have to specify the uh the the mode
+3:16:02 ... uh all right so maybe we can also do holy [ __ ] this is exactly what i need here so i think we're gonna do it like
+3:16:08 ... that yeah p wait alright so we wait for this thing uh oh [ __ ] that's super cool um
+3:16:18 ... okay i'm also gonna put this thing here thank you so much whoever mentioned
+3:16:23 ... spawn this is exactly what i needed here uh
+3:16:28 ... all right so let me try to build that on linux all right this is the linux build uh try to use
+3:16:37 ... spawn instead of exact for windows uh spawn
+3:16:45 ... i i'm pretty sure i pronounced it incorrectly i really apologize for my pronunciation uh um should
+3:16:54 ... create a new process instead of replacing it uh like exactly
+3:17:04 ... also with the weight thingy where's the where's
+3:17:09 ... the weight where's the weight with uh
+3:17:15 ... weight mode it should be synchronous and
+3:17:22 ... wait for the child to die finish okay
+3:17:30 ... all right let's push that right into the repo cool
+3:17:44 ... now let's take a look at that shite um
+3:17:54 ... um cool i need more tea because that's your
+3:18:02 ... mom file just
+3:18:10 ... ah got him all right uh oh [ __ ] p
+3:18:18 ... weight is not available uh do i have to include some [ __ ]
+3:18:27 ... uh the return value from asynchronous
+3:18:33 ... that's really did i really [ __ ] it up so badly
+3:18:40 ... ah
+3:18:45 ... got him um
+3:18:51 ... wait not found why it's working in shell script
+3:18:57 ... are you [ __ ] serious dude i mean p like this entire thing
+3:19:04 ... uh [Music] all right wait i
+3:19:10 ... i don't have it like where can i get it do i have to include something special
+3:19:15 ... oh [ __ ] okay that's cool so so let's include that stuff here as well
+3:19:22 ... process so i assume process is also windows thing right
+3:19:28 ... so process.h um all right that's interesting cool
+3:19:36 ... um wait
+3:19:41 ... include process dot h for windows
+3:19:49 ... according to
+3:19:54 ... this should fix the no key weight
+3:20:01 ... error right
+3:20:10 ... that's how you write a good commit messages chats right not just as the fuzz the fastest
+3:20:17 ... whatever right so you have to explain what you're doing you have to explain your entire thought
+3:20:26 ... process is it is that is that what the podcast said
+3:20:38 ... this is so funny
+3:20:45 ... all right um okay so we're waiting for the uh for the windows oh [ __ ] it also
+3:20:53 ... failed what the [ __ ] uh it also failed and for the same
+3:21:01 ... reason um that's very interesting so sp
+3:21:13 ... [Music]
+3:21:25 ... you know what i forgot
+3:21:37 ... i forgot to terminate the arguments
+3:21:43 ... yes it is that's why it's fun um so that's the cost of maintainability uh
+3:21:50 ... so essentially um yeah so what i forgot to do here is uh
+3:22:02 ... [Music]
+3:22:10 ... okay it seems to be compiling now all right
+3:22:16 ... no terminate terminates arguments in cmd impul
+3:22:24 ... i have no idea why this worked on linux
+3:22:32 ... but that i think breaks the windows uh windows
+3:22:39 ... builds thank you linux very cool
+3:22:46 ... okay let's push that
+3:22:58 ... just stop
+3:23:20 ... descriptive comment messages yes
+3:23:26 ... oh [ __ ] it it [ __ ] works
+3:23:33 ... it's [ __ ] builders it built tool chain the [ __ ] it actually built the two
+3:23:40 ... chains successfully holy [ __ ] i'm so proud of myself um
+3:23:48 ... holy [ __ ] this is amazing uh alright so let's try to enable the
+3:23:56 ... the rest of the [ __ ] um so let's build the examples now um
+3:24:03 ... this is so [ __ ] cool it's a like this script works both on linux and
+3:24:12 ... windows and not only windows but msvc stuff msvc the most [ __ ]
+3:24:20 ... annoying [ __ ] to deal with it works there it's [ __ ] amazing uh alright so i didn't expect that to
+3:24:28 ... manage to pull that off not script yeah probably um
+3:24:34 ... enable examples building examples building to
+3:24:41 ... uh before works in the github actions well i mean uh we have people who use windows to
+3:24:47 ... test that out how do you build on github like that you use something called github actions
+3:24:54 ... uh github actions just google them up and uh there's a lot of documentation on how
+3:24:59 ... to set them up for your permission so
+3:25:05 ... uh yep yeah oh [ __ ] i'm sorry i was about to close
+3:25:12 ... this tab but i closed the chat instead uh rage rage quit the chat uh i didn't
+3:25:18 ... mean to okay uh to test windows builds it should work now
+3:25:27 ... okay let's see close the chat
+3:25:33 ... ha ha uh all right let's see let's see what's
+3:25:39 ... gonna happen [Music]
+3:25:47 ... [Music] alrighty alrighty alrighty so we're
+3:25:52 ... waiting so i think it's gonna be success i think it's gonna be success
+3:26:01 ... oh [ __ ] oh is that it is that an error no no it's not an error
+3:26:06 ... okay we're this is some [ __ ] but now we're doing the build we're doing build.c hopefully hopefully we're doing build
+3:26:13 ... let's see uh okay we're running the build.c i think
+3:26:19 ... so the compiler actually did they did its stuff
+3:26:27 ... we're building all of these things here and we successfully build examples uh
+3:26:36 ... okay build is successful right error the lock was not found it may have
+3:26:42 ... been deleted passed on retention settings and if i refresh the page
+3:26:51 ... it's gone welcome to 2021 web development isn't that amazing
+3:26:58 ... beautiful world of 2021 uh web so there we go this is the full build uh
+3:27:04 ... yep it works both on linux and windows
+3:27:09 ... so what do we have to say now dollars
+3:27:16 ... okay uh let's continue uh
+3:27:23 ... and yeah that's the whole thing right uh that's the whole thing
+3:27:29 ... we can also try to run tests and whatnot let's run the tests why not help let's
+3:27:35 ... run the tests is it felony if you have an errors an example it probably should
+3:27:40 ... well it fails on linux that's for sure um even if it doesn't fail it's actually
+3:27:47 ... super easy to fix so what else i wanted to test yeah let's
+3:27:52 ... actually run it on mac os now so we have workflows uh
+3:27:59 ... all right all right so we also want to try clang [Music]
+3:28:08 ... so we don't have a free bsd so but mac os is actually super close to freebsd so i think
+3:28:14 ... i think we're gonna do it like that so it's gonna be clang o build xz
+3:28:21 ... uh build dot c there we go
+3:28:27 ... and after that of course you just have to do build.exe
+3:28:36 ... enable enable uh build dot c
+3:28:43 ... on mac os let's push that
+3:28:54 ... you guys ready guys ready we're going to test that on mac os
+3:29:01 ... all right
+3:29:26 ... set up a job
+3:29:35 ... so i'm just thinking what's going to be the next step so we have this build thingy um should it become the production thing
+3:29:42 ... um maybe uh build all examples
+3:29:50 ... so it's running the commented out thing uh oh wait all right so
+3:29:57 ... it already built everything it's executing that uh it just takes a little bit of time probably accumulating the
+3:30:03 ... output uh you know the usual web stuff
+3:30:08 ... um did it went to some sort of like infinite loop or something not quite sure what the hell
+3:30:15 ... is going on [Music] um yeah he's just trying it's best
+3:30:21 ... he's trying his best um output everything
+3:30:28 ... like every time um so another
+3:30:36 ... interesting thing that we probably would oh [ __ ]
+3:30:42 ... the [ __ ] was that github actions are just like so bad holy [ __ ] okay
+3:30:50 ... uh expand from macro yeah so overall well there were a couple of
+3:30:56 ... warnings with conversions and [ __ ] but that can be omitted for now uh what's important is that
+3:31:02 ... everything worked on mac os uh you see the lock is correct so we managed to build everything in the
+3:31:08 ... mac os so we have a build in c that works on um linux windows and macos
+3:31:15 ... isn't that neat i think it's getting amazing another thing we can try to do now we
+3:31:21 ... can try to run the tests run tests so this is going to be the function
+3:31:26 ... uh run the tests and the way we're gonna run them right so um
+3:31:34 ... [Music] so uh right now we have a separate
+3:31:40 ... script in here uh that iterates through all of the files uh from here so here is the example
+3:31:48 ... uh but think about examples is that we remove that basm thingy from there um
+3:31:56 ... which is kind of not particularly convenient but anyway uh what we have to do here is
+3:32:03 ... for each file in directory so it's gonna be um i guess we're going to call it example
+3:32:09 ... and the directory we're looking into is yeah we're also looking into the example so i suppose
+3:32:15 ... we're looking into the examples and here is the body it's kind of similar to building the examples though
+3:32:20 ... right it is very similar to building the examples um you know what
+3:32:28 ... here's an interesting thing so we are not working correctly with uh
+3:32:36 ... with this stuff so in an example we have to actually remove
+3:32:41 ... uh the extension right we have to actually remove the extension [Music]
+3:32:47 ... so here is examples and then we need to remove extension and replace the extension with bm so let me think how we can do all of
+3:32:55 ... that um so how do you
+3:33:01 ... yeah we can introduce something like remove x right just to remove x uh which
+3:33:07 ... does not necessarily have to be like a macro but it will create a new string and remove the
+3:33:14 ... extension for you uh and it could be a temporary solution for now i think it could be yeah it could be an idea
+3:33:23 ... so all right so let's go to the build dot uh h and implement that somehow so it's
+3:33:29 ... gonna be const char jar maybe maybe like that to distinguish
+3:33:34 ... that it's not a macro at least for now okay so remove extension is gonna be
+3:33:42 ... something like that um and the way we're gonna do that we're gonna just iterate starting from the
+3:33:48 ... back and uh find the dot right we're gonna try to find the dot uh
+3:33:55 ... and what's gonna happen if we're not gonna find the dot that's a good question i think we're not gonna do anything
+3:34:02 ... all right so uh that's gonna be the easiest way to do so
+3:34:08 ... maybe it's gonna be size t and esther then uh path
+3:34:14 ... all right so and while so maybe it could actually go to the
+3:34:21 ... negative part i'm not sure while n is um greater or equal than zero
+3:34:30 ... greater or equal than zero well because of that it could be
+3:34:35 ... actually size right so while it's greater than zero uh what do
+3:34:40 ... we do and a path n minus 1 ... 3:34:47 ... uh is not equal to dot we keep uh subtracting one from it
+3:34:54 ... right so this is basically how we search from the back uh for the dot so and
+3:35:00 ... if m is still greater than zero only then we're going to try to do something otherwise we can just return
+3:35:07 ... uh return the path as it is without modifying anything uh go in reverse
+3:35:15 ... so you can have a dot in the name isn't that what it is
+3:35:25 ... [Music]
+3:35:31 ... so we're going to do malloc then we allocate n actually plus 1 for the multimeter
+3:35:38 ... so this one is going to be resolved
+3:35:44 ... of course this one is going to be the return result mem copy result path and
+3:35:52 ... uh and then result uh result and zero there we go
+3:35:59 ... cool nice nice tonight so uh now so usually
+3:36:06 ... oh yeah let's give it a try
+3:36:11 ... okay so dot is included somehow right dot is included um
+3:36:21 ... so we shouldn't actually include that
+3:36:26 ... why did it include the dotto
+3:36:33 ... excuse me because i would expect n so if you have hello dot bosom
+3:36:40 ... right so size is essentially like this
+3:36:46 ... right size is essentially this
+3:36:54 ... right so that means i allocate like five and plus one for additional
+3:37:01 ... stuff then i copy n
+3:37:08 ... but then i set n to zero so i know n points ah
+3:37:14 ... it's because of this thing
+3:37:21 ... okay so
+3:37:30 ... all right so that means maybe we can uh actually
+3:37:35 ... put it like that so allocate n uh and maybe n minus one i'm not sure if i'll fall
+3:37:42 ... into some trap because i'm really tired right now so i might be missing something uh but maybe
+3:37:48 ... it's gonna work for a particular case okay so i'm pretty sure i'm missing some kind of some kind of corny case here so it's probably dangerous but
+3:37:54 ... i don't care because it's gonna work anyway for now at least uh so if there is any mistake feel free
+3:38:00 ... to submit like a pull request or issue uh when we release that of course uh all
+3:38:06 ... right so this is uh the windows um this is the examples and now uh to test the examples i should
+3:38:14 ... be able to do the following thing right we do very similar stuff right when we run the tests but instead
+3:38:21 ... of building the test we what we run we run bmr so we're running bmr
+3:38:35 ... run tests and we provide the program and the program is located in
+3:38:40 ... uh build examples uh example
+3:38:48 ... but it has to be bm actually so that means we have to remove
+3:38:53 ... extension from here uh and
+3:38:58 ... concat this entire thing with a bm that's how we're gonna do
+3:39:05 ... i'll go about that right so we iterate all the examples we removed extension from that
+3:39:13 ... uh so might as well actually do something with this const chair example
+3:39:20 ... base and this is what we're going to have here example base example base there we go
+3:39:27 ... uh and then i compare this entire thing with the path
+3:39:35 ... test uh examples i suppose
+3:39:42 ... yeah oh wait a second
+3:39:47 ... yeah i [ __ ] up here i [ __ ] up so i have to do it like this
+3:39:53 ... [Music] so it's completely like different [Music]
+3:40:02 ... uh different like paradigm i'm not sure how to explain it
+3:40:09 ... so we have to put it here uh against build test build test and this is concat
+3:40:17 ... example base but it's gonna be expected out there we go so this is how we're
+3:40:23 ... gonna run the tests oh boy okay so let me try to get rid of the build uh folder here
+3:40:29 ... uh all right so and then uh let's just run this entire stuff
+3:40:34 ... uh-huh so we're building the tool chain then we're building everything here so in the build folder i can take a look
+3:40:41 ... at the find so here's the full tree that was built here successfully
+3:40:47 ... and now in build build.c i'm going to enable this thing right
+3:40:54 ... so and let's go ahead and do that and unknown flag okay
+3:41:02 ... yeah yeah so that means i have to provide additional flag in here so it's gonna be p so this is the p flag and this is the
+3:41:08 ... flag expected output right so this is the expected output
+3:41:14 ... and there we go so now we're also running yes this is perfect so we are
+3:41:21 ... building the tool chain building the examples and then we're testing the examples just
+3:41:28 ... to check whether they produce the expected output or not and all of that from within just c
+3:41:33 ... without any shell or anything and in theory it should also work on windows 2.
+3:41:39 ... because we have a set of cross platform tools in here so that's pretty that's pretty pogue
+3:41:45 ... that's pretty poor alrighty so let me see let me see um
+3:41:57 ... so and that will enable us with getting rid of all these build scripts and whatnot um
+3:42:03 ... by the way let's test if it's gonna fail if it crashes or something right so i'm gonna go to the fibonacci
+3:42:08 ... sequence and uh just remove nine from here and let's see is it gonna stop uh
+3:42:16 ... all right so yeah i mean it failed but it didn't stop right and i think yeah so for now it
+3:42:23 ... didn't even produce any error yeah so essentially if it fails it doesn't produce any error uh
+3:42:29 ... but it's a separate yeah separate thing that we have to then implement at some point
+3:42:38 ... um right and then we can go here put nine here and rebuild everything from
+3:42:43 ... scratch all right and then it builds everything
+3:42:48 ... and everything is okay so that's pretty cool
+3:42:57 ... all right um so uh what to do is do we have here
+3:43:03 ... so remember i had some to do this for yeah maybe it doesn't work on windows by the way this one is done
+3:43:09 ... uh it does work on windows now right
+3:43:19 ... wait wait a [ __ ] second
+3:43:26 ... well it does work on windows like this just this call just works on windows
+3:43:32 ... apparently okay i'm i'm fine with that sure
+3:43:38 ... like i thought i would have to do underscore make deer but apparently it just okay sure uh to do
+3:43:45 ... uh this thing works on windows so i can say that for sure uh shellfire
+3:43:52 ... is not properly reported from the minutes okay um also let's see if the child fail is
+3:43:58 ... properly reported on windows right so
+3:44:07 ... let's commit that run tests
+3:44:14 ... using build.c uh let's push that
+3:44:22 ... are you guys ready we're gonna test all of that out on windows
+3:44:29 ... i really like that it's going somewhere the entire build system is really going somewhere
+3:44:34 ... i like the place where it's going and you can use everything and see like
+3:44:41 ... you can use structures you can use if loops um arrays
+3:44:46 ... functions you can organize things you can maybe have even special libraries that do things maybe
+3:44:52 ... you can have a gui that shows you something while building so yeah you can do that
+3:45:00 ... so i think it's pretty cool [Music]
+3:45:08 ... why not why not it's not i don't know like implementing gurus kind of will require
+3:45:14 ... special dependency equipment could not execute child process exact format ever
+3:45:23 ... that is very interesting but at the same time it worked
+3:45:30 ... uh oh it already exists right it builds everything
+3:45:40 ... oh [ __ ] i think it fails okay i think it fails
+3:45:49 ... on windows alright so i'm gonna go
+3:45:56 ... just re-run this entire well no no it doesn't doesn't fail in windows like it should work uh let me could not execute
+3:46:04 ... the child process exact format error but it's kind
+3:46:10 ... of difficult to uh
+3:46:17 ... it's kind of difficult to pinpoint like where exactly like why is it failing like that
+3:46:25 ... um [Music]
+3:46:34 ... did they really [ __ ] it up it could be yet another like a zero
+3:46:41 ... thing yeah i probably need to uh need to get this thing right unfortunately uh
+3:46:48 ... no terminated thing it could be a yet another new terminated thing so do we have any errors in here so
+3:46:54 ... here's the length right here's the length
+3:47:04 ... [Music] and uh we're going in the opposite
+3:47:09 ... direction we're going in the opposite direction then we allocate enough memory we memo
+3:47:16 ... copy everything there
+3:47:26 ... but i don't see any particular errors in here it's just it fails specifically on bmr
+3:47:36 ... it fails specifically i couldn't execute exec format error
+3:47:44 ... um
+3:47:51 ... [Music] could not execute
+3:48:03 ... why is that a format error why would it be important i don't think so
+3:48:12 ... i have an idea we can try to do the following with the thing
+3:48:20 ... [Music] all right
+3:48:29 ... oh yes
+3:48:42 ... i'm trying to get rid of these things it's kind of difficult uh all right so let me see if it's gonna
+3:48:49 ... work okay that's cool um
+3:48:57 ... [Music] try to remove some
+3:49:03 ... of the arguments of bmr
+3:49:08 ... i'm not sure what i'm testing here
+3:49:15 ... but i'm trying to check a hypo this is that
+3:49:21 ... it's related somehow to new termination stuff in
+3:49:27 ... [Music] where you can cat in a remove extension
+3:49:33 ... this is what i'm trying to do here i'm not sure if it will will relate it
+3:49:41 ... so yes yes yes sir pretty strange
+3:49:56 ... [Music] okay let's take a look at windows stuff
+3:50:05 ... interesting interesting interesting okay so we're bootstrapping the build bootstrap in the
+3:50:12 ... build we're running the build as far as i can tell this is very very interesting so we're
+3:50:19 ... building the tool chain so the tool chain the bmr oh [ __ ] i know what it could what
+3:50:26 ... could it be uh it could be the same thing it could be the same thing as
+3:50:34 ... with a arch 64.
+3:50:41 ... yeah so essentially it tries to yeah yeah i know i know i know okay okay
+3:50:46 ... okay chat chat please don't make fun of me when i tell you that
+3:50:53 ... chat please i think this is because um pmr
+3:51:01 ... ironically allocates around three gigabytes of static memory
+3:51:10 ... [Music] because it okay so it has
+3:51:18 ... uh we have a notion of an arena okay oh okay uh all right
+3:51:25 ... so uh in dm yes arena uh yeah so here's the arena
+3:51:31 ... capacity uh the size of the arena is one gigabyte right so the first thing we need to do
+3:51:36 ... in there we need to load the thing uh maybe two gigabytes right so and we
+3:51:43 ... create two separate arenas and each arena is essentially a one gig of memory
+3:51:48 ... um yeah so so yesterday nico was trying to run
+3:51:57 ... on uh on arm 64 as far as i know right and it failed there because of the
+3:52:04 ... same reason so i i did a really quick and dirty hack um so that's basically what happened
+3:52:12 ... i think the easiest uh fix for now could be to just you know reduce the size of the arena or we can make the size of the
+3:52:19 ... arena like uh 500 ah like
+3:52:26 ... yeah maybe it could be 640 a kilobyte it doesn't really have to be
+3:52:31 ... that big right it doesn't really have to be that big uh it's just like on all these platforms
+3:52:37 ... the virtual memory might not be actually functioning correctly or something i mean it's functioning correctly but um
+3:52:45 ... essentially in linux it's kind of easy with virtual memory because it basically it makes it look
+3:52:50 ... like you have infinite amount of memory so which is kind of cool feature of linux but sometimes it may not work on
+3:52:55 ... windows i think uh and maybe on arm64 too who knows
+3:53:05 ... so let me see uh all right let me
+3:53:12 ... try to do it one more time
+3:53:18 ... try to reduce the size of the arena to test
+3:53:24 ... uh we are trying to test the hypothesis
+3:53:32 ... that this is due to uh bmr allocating too
+3:53:39 ... much static uh memory so this is yeah i have to be really
+3:53:44 ... careful with these static arenas have to be really careful with the static arenas so uh
+3:53:50 ... let me let me see the [ __ ] tells me though
+3:54:01 ... okay good [Music]
+3:54:07 ... i need a cup of tea i really really need a cup of tea but
+3:54:14 ... yeah but i almost done
+3:54:24 ... okay so we're building everything and why don't you scroll
+3:54:33 ... okay it worked yes that was it that was actually thank
+3:54:39 ... you columbus for testing it on windows and reminding me that uh this is sort of a peptide situation
+3:54:47 ... that i invite myself to get into interesting interesting
+3:55:00 ... all right another thing i wanted to test i wanted to test if uh
+3:55:08 ... if i break something what will happen
+3:55:16 ... okay so all right
+3:55:21 ... break fib test we are trying to see
+3:55:29 ... if the windows build will fail on failing tests
+3:55:36 ... okay let's push that
+3:55:41 ... [Music]
+3:55:54 ... so
+3:56:00 ... [Music]
+3:56:08 ... mm-hmm so if it doesn't fail i'm going to create a to do for um
+3:56:15 ... [Music] for reporting the error for windows 2.
+3:56:22 ... um tool chain till chain is going fine uh and
+3:56:29 ... okay so it's the same uh problem as uh with linux nice nice nice um so child file is not probably
+3:56:37 ... reported on linux chat file is not properly reported on windows either
+3:56:44 ... cool so uh the thing i wanna do now maybe i'm gonna windows
+3:56:51 ... maybe i'm gonna uh commit like push that to a separate repo right
+3:56:59 ... uh but before i i will uh i will put that on a separate repo i
+3:57:05 ... think i want to prepare the repo i want to put a readme with an explanation uh with the reasoning behind
+3:57:12 ... the uh the project because like this idea of using c as the build tool for c
+3:57:18 ... projects like uh weird out people people starts to like actively
+3:57:23 ... contest it or something uh for some reason without even understanding the context so yeah i want to write like a readme
+3:57:31 ... where i explain what's the goals of the project what's the possible use cases why you should use it
+3:57:36 ... why you shouldn't use it and stuff like that and then every time somebody asks one of the questions that
+3:57:42 ... i ask for like millions of time i can just redirect them to with me but in any case apart from that um
+3:57:51 ... apart from that uh it works so this is a cross-platform building tool right it can work on linux
+3:57:58 ... it can work on windows it can work on mac os it can work with any compiler including
+3:58:03 ... msvc um right it's just like uh yeah it's just like a general framework for you to
+3:58:11 ... make build scripts but in c and it requires only one stage of bootstrapping where you just bootstrap the build tool itself
+3:58:19 ... without any special things or anything and then the tool boots keeps building everything what's
+3:58:25 ... interesting is that if for the build tool we ever need something more complex than
+3:58:31 ... just cc built i think we will implement that in several stages of the
+3:58:37 ... bootstrapping so you will only have to bootstrap manually the first stage
+3:58:42 ... and every anything else is gonna basically build ourselves out of this stage so it's
+3:58:47 ... gonna be almost like booting up the operating system or bootstrapping the compiler or something
+3:58:53 ... so if the building or the building tool will become too complex it's gonna it's gonna happen in several stages and
+3:59:00 ... you all only will have to do the first stage so this is gonna be basically the policy
+3:59:05 ... all right so after this stream uh so yeah after this stream i'm gonna just you know eat something and i'm going to
+3:59:11 ... put that only on the github as a separate project and yeah then
+3:59:17 ... we're going to try to integrate it completely into the virtual machine project and
+3:59:24 ... see how it goes right so i'm not 100 sure if this is a good idea to use c
+3:59:30 ... for building projects uh it's more of a research project as anything pretty much anything else i do
+3:59:35 ... on this on this channel um but in any case boys and girls
+3:59:42 ... it is time for me to go i already streaming for four hours and yeah thanks everyone who's watching
+3:59:48 ... me right now i really appreciate it have a good one and i see you tomorrow tomorrow uh we're going to
+3:59:55 ... continue doing a virtual machine so even though today we did the build tool it was still related to virtual machines so it's a part
+4:00:01 ... of the virtual machine series anyway so tomorrow we're going to continue doing virtual machine and
+4:00:06 ... build tool so check out our schedule page for more information on different projects we're working on
+4:00:13 ... check out our votes channel where we upload uh the recordings of our stream this stream is going to be there but
+4:00:18 ... tomorrow we even have a special separate playlist for virtual machine
+4:00:25 ... for virtual machine development maybe i'm going to create another playlist for build tool right so basically you
+4:00:32 ... can add the same video to several playlists so we're going to have like overlapping playlists so you can have playlists
+4:00:38 ... related to virtual machine or maybe if you care only about uh build development it's going to be also a
+4:00:44 ... separate list a separate place uh also check out our discord server for offline discussion
+4:00:50 ... with the community thanks everyone for watching love you
+
