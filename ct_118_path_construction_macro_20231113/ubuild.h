@@ -1,5 +1,5 @@
 /*
- * ubuild.h / v3
+ * ubuild.h / v4
  * from: New Build System in C — Part 1
  *       https://www.youtube.com/watch?v=n47AFxc1ksE
  *       v1 at 01:01:35 / 04:01:25
@@ -66,8 +66,8 @@ const char *concat_sep_impl(const char *sep, ...) {
 
 	/* determine the lenghth of arguments */
 	size_t sep_len = strlen(sep);
-	size_t length = 0;    /* length of arguments */
-	ssize_t seps_count = -1;    /* number of separators - starts with -1 since there is one less seps_count than args */
+	size_t length = 0;            /* length of arguments */
+	ssize_t seps_count = -1;      /* number of separators - starts with -1 since there is one less seps_count than args */
 	va_list args;
 
 	/* v2 */
@@ -141,7 +141,7 @@ void mkdirs_sep_impl(const char *sep, ...) {
 		printf("[INFO] mkdir %s\n", result);
 
 		/* man 2 mkdir */
-		/* for WIN it anly takes one argument -- NO mode */
+		/* for WIN it only takes one argument -- NO mode */
 		if (mkdir(result, 0755) < 0) {
 			if (errno == EEXIST) {
 				fprintf(stderr, "[WARN] directory %s already exists\n", result);

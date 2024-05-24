@@ -25,9 +25,10 @@ int main(void) {
 	printf("%s\n", PATH("RUUT", "home", "rgregor", "tests"));
 	HL3
 
-	// MKDIRS("/", "RUUT", "home", "rgregor", "tests");
+	// MKDIRS_SEP("/", "RUUT", "home", "rgregor", "tests");
 	MKDIRS("RUUT", "home", "rgregor", "tests");
 	HL3
 
 	return 0;
 }
+
