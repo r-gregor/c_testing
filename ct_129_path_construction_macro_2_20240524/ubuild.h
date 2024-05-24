@@ -1,3 +1,5 @@
+#ifndef _UBUILD_H
+#define _UBUILD_H
 /*
  * ubuild.h / v6
  * from: New Build System in C — Part 1
@@ -203,3 +205,4 @@ void mkdirs_sep_impl(const char *sep, ...) {
 	} while(0);                                     \
 }                                                   \
 
+#endif

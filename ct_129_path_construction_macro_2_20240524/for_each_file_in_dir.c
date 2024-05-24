@@ -14,9 +14,9 @@ int main(void) {
 	for (int i = 0; i < 2; i++) {
 		printf("---\nFiles in %s:\n", fnames[i]);
 
-		FOREACH_FILE_IN_DIR(dn, fnames[i], {
-			if (*dn != '.' && *dn != '..') {
-				printf("%s\n", dn );
+		FOREACH_FILE_IN_DIR(fname, fnames[i], {
+			if (strcmp(fname, ".") != 0 && strcmp(fname, "..") != 0) {
+				printf("%s\n", fname );
 			}
 		});
 		printf("\n");
