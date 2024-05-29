@@ -1,6 +1,16 @@
 20240524:
-	join all inetrfaces into single heade: buil.h
+	join all inetrfaces into single heade: ubuild.h
 	update *.c and Makefile acordingly
 
 ---
+
+
+
+===
+REFERENCES:
+- variadic functions in c:
+	https://en.cppreference.com/w/c/variadic
+	https://www.geeksforgeeks.org/variadic-functions-in-c/
+---
+
 
