@@ -1,9 +1,14 @@
+source: New Build System in C — Part 1 (Tsoding Daily)
+        https://www.youtube.com/watch?v=n47AFxc1ksE&list=PLpM-Dvs8t0VY73ytTCQqgvgCWttV3m8LM&index=17&t=5227s
+
+---
 20240524:
 	join all inetrfaces into single heade: ubuild.h
 	update *.c and Makefile acordingly
 
 ---
-
+20240530:
+	TODO: create simple (test) build system from content up to 2:05:30 / 4:01:25
 
 
 ===
@@ -12,5 +17,4 @@ REFERENCES:
 	https://en.cppreference.com/w/c/variadic
 	https://www.geeksforgeeks.org/variadic-functions-in-c/
 ---
-
 
