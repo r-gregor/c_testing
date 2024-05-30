@@ -199,7 +199,6 @@ void mkdirs_sep_impl(const char *sep, ...) {
 			while ( (dp=readdir(dir)) ) {           \
 				const char *file = dp->d_name;      \
 				body;                               \
-				                                    \
 			}                                       \
 			closedir(dir);                          \
 	} while(0);                                     \
