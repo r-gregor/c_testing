@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-# Build_And_Run.sh
+# build.sh
 # 20240530
 # MAIN -> filename with entry point! Does NOT have to be "main"
 # ---
@@ -29,8 +29,7 @@ echo -e "---\n[INFO] Building '${nm}' ..."
 ${CC} ${CFLAGS} -o ${bindir}/${MAIN} ${CFILES}
 
 if [ $? -eq 0 ]; then
-	echo -e "[INFO] Build successful, running '${MAIN}' ... \n---\n"
-	${bindir}/${MAIN}
+	echo -e "[INFO] Build successful\n---"
 else
 	echo -e "---\n[INFO] Build NOT successful."
 fi
