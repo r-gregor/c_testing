@@ -16,5 +16,5 @@ fi
 
 fname=$1
 
-gcc ${fname}.c -o linuxexecutables/${fname}
+gcc "${fname}".c -o linuxexecutables/"${fname}"
 

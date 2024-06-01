@@ -16,5 +16,5 @@ fi
 
 fname=$1
 
-gcc ${fname}.c -o winexecutables/${fname}.exe
+gcc "${fname}".c -o winexecutables/"${fname}".exe
 
