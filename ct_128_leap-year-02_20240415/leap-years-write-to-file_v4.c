@@ -65,7 +65,7 @@ void write_leap_years(int starty, int endy) {
                   "divisible by 400. This rule has been in effect since 1582 when the Gregorian\n"
                   "calendar was first introduced.\n"
                   "\n"
-                  "    February 2000          February 2100          February 2400\n"
+                  "       February 2000          February 2100          February 2400\n"
                   "Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa\n"
                   "       1  2  3  4  5       1  2  3  4  5  6          1  2  3  4  5\n"
                   " 6  7  8  9 10 11 12    7  8  9 10 11 12 13    6  7  8  9 10 11 12\n"
