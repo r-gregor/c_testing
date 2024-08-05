@@ -119,14 +119,14 @@ void show_intro() {
 	"calendar was first introduced.\n"
 	"\n";
 
-	char *intro2 = "    February 2000          February 2100          February 2400\n"
-	"Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa\n"
-	"       1  2  3  4  5       1  2  3  4  5  6          1  2  3  4  5\n"
-	" 6  7  8  9 10 11 12    7  8  9 10 11 12 13    6  7  8  9 10 11 12\n"
-	"13 14 15 16 17 18 19   14 15 16 17 18 19 20   13 14 15 16 17 18 19\n"
-	"20 21 22 23 24 25 26   21 22 23 24 25 26 27   20 21 22 23 24 25 26\n"
-	"27 28 29               28                     27 28 29\n"
-	"---\n";
+	char *intro2 = "       February 2000          February 2100          February 2400\n"
+	               "Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa\n"
+	               "       1  2  3  4  5       1  2  3  4  5  6          1  2  3  4  5\n"
+	               " 6  7  8  9 10 11 12    7  8  9 10 11 12 13    6  7  8  9 10 11 12\n"
+	               "13 14 15 16 17 18 19   14 15 16 17 18 19 20   13 14 15 16 17 18 19\n"
+	               "20 21 22 23 24 25 26   21 22 23 24 25 26 27   20 21 22 23 24 25 26\n"
+	               "27 28 29               28                     27 28 29\n"
+	               "---\n";
 	
 	printf("%s", intro1);
 
@@ -136,7 +136,7 @@ void show_intro() {
 			printf(INVERSE);
 			printf("%c", *c2);
 			printf("%c", *(c2 + 1));
-			 printf(RESET);
+			printf(RESET);
 			c2 += 2;
 		} else {
 			printf("%c", *c2);
