@@ -1,5 +1,5 @@
 /*
-	* fname: display_fname_reduced_v4.c
+ * fname: display_fname_reduced_v4.c
  * 20240806_01_en -- v1
  * 20240806_02_en -- v2: put base logic into function display_fname_reduced()
  * 20240806_03_en -- v3: multiple filenames
@@ -43,41 +43,41 @@ void display_reduced(char *original, size_t maxlen) {
 	}
 
 	char *fname = original;
-	char *rfname = NULL;
+	char *rdc_fname = NULL;
 
 	if (strlen(fname) <= maxlen) {
-		rfname = fname;
+		rdc_fname = fname;
 		printf("Original: '%s', length: %ld chars\n", fname, strlen(fname));
-		printf("Result:   '%s', length: %ld chars\n", rfname, strlen(rfname));
+		printf("Result:   '%s', length: %ld chars\n", rdc_fname, strlen(rdc_fname));
 		return;
 	}
 
 	/*
-	 * max chars to be displayed +1x '\0' + mid_len + 2x ' ', at both ends of dots ...
+	 * max chars to be displayed  + mid_len + 1x '\0'
 	 */
 	char *middle = "[@]";
 	size_t mid_len = strlen(middle);
-	rfname = calloc((maxlen + mid_len + 3 + 2), sizeof(char));
+	rdc_fname = calloc((maxlen + mid_len + 1), sizeof(char));
 	int pos = 0;
 	int first_part = maxlen - LAST_CHARS - mid_len;
 	while (pos < first_part) {
-		rfname[pos] = fname[pos];
+		rdc_fname[pos] = fname[pos];
 		pos++;
 	}
 
 	for (int k = 0; k < mid_len; k++) {
-		rfname[pos++] = middle[k];
+		rdc_fname[pos++] = middle[k];
 	}
 
 	int last = LAST_CHARS;
 	while (pos < MAX_CHARS) {
-		rfname[pos] = fname[strlen(fname) - last];
+		rdc_fname[pos] = fname[strlen(fname) - last];
 		pos++;
 		last--;
 	}
 
 	printf("Original: '%s', length: %ld chars\n", fname, strlen(fname));
-	printf("Result:   '%s', length: %ld chars\n", rfname, strlen(rfname));
-	free(rfname);
+	printf("Result:   '%s', length: %ld chars\n", rdc_fname, strlen(rdc_fname));
+	free(rdc_fname);
 }
 
