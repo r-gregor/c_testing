@@ -6,8 +6,8 @@
  * 20240806_04_en -- v4: sep_char = 'string'
  * 20240806_05_en -- v5: rdc_fname from malloc-ed to pointer to buffer
  * 20240806_06_en -- v6: getting rid of MAX_CHARS
- *                       check for minimal filename length, accept as comman argument
- * 
+ *                       check for minimal filename length, accept as command argument
+ *
  */
 
 #include <stdio.h>
@@ -15,13 +15,12 @@
 #include <stdlib.h>
 
 #define MIN_LEN 20
-#define LAST_CHARS 13 // '_' + tomestamp + '.txt'
+#define LAST_CHARS 13 // '_' + timestamp + '.txt'
 
-void display_reduced(char *, size_t, char *);
+void display_reduced(char *original, size_t maxlen, char *sep_char);
 
 int main(int argc, char **argv) {
 
-	int rdc_len;
 	/* array with test filenames */
 	char fnames[][125] = {"tst_just_a_long_testfilename_with_timestamp_20240806.txt",
 		                 "second-fname-with-really-long-long-long-long-long-long-long-long-long-long-fname_20240102.txt",
@@ -36,6 +35,7 @@ int main(int argc, char **argv) {
 
 	/* v5 */
 	/* v3: run new function on multiple filenames */
+	int rdc_len;
 	if (argc == 2) {
 		rdc_len = atoi(argv[1]);
 	} else {
@@ -68,10 +68,11 @@ void display_reduced(char *original, size_t maxlen, char *sep_char) {
 
 	/*
 	 * v5
-	 * max chars to be displayed  + sepc_len + 1x '\0'
+	 * max chars to be displayed  + 1x '\0'
 	 */
 	size_t sepc_len = strlen(sep_char);
-	size_t buff_size = maxlen + sepc_len + 1;
+	// size_t buff_size = maxlen + sepc_len + 1;
+	size_t buff_size = maxlen + 1;
 	char buffer[buff_size];
 
 	if (strlen(fname) <= maxlen) {
@@ -83,7 +84,6 @@ void display_reduced(char *original, size_t maxlen, char *sep_char) {
 
 
 	/* v5 */
-	// rdc_fname = calloc((maxlen + sepc_len + 1), sizeof(char));
 	rdc_fname = buffer;
 
 	int pos = 0;

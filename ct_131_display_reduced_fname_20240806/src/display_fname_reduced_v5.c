@@ -51,10 +51,11 @@ void display_reduced(char *original, size_t maxlen, char *sep_char) {
 
 	/*
 	 * v5
-	 * max chars to be displayed  + mid_len + 1x '\0'
+	 * max chars to be displayed  + 1x '\0'
 	 */
 	size_t mid_len = strlen(sep_char);
-	size_t buff_size = maxlen + mid_len + 1;
+	// size_t buff_size = maxlen + mid_len + 1;
+	size_t buff_size = maxlen + 1;
 	char buffer[buff_size];
 
 	if (strlen(fname) <= maxlen) {
