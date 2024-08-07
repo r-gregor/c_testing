@@ -41,9 +41,11 @@ int main(void) {
 
 
 void display_reduced(char *original, size_t maxlen) {
+	/* NOT NEEDED !!
 	if (maxlen <= LAST_CHARS) {
 		maxlen = LAST_CHARS + 2;
 	}
+	*/
 
 	char *fname = original;
 	char *rdc_fname = NULL;
