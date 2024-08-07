@@ -27,7 +27,10 @@ int main(void) {
 	};
 
 	size_t fnames_num = sizeof(fnames)/sizeof(fnames[0]);
+
 	/* v3: run new function on multiple filenames */
+	size_t rdc_len = 25;
+	printf("Reducing file names to length of %ld characters:\n\n", rdc_len);
 	for (int i = 0; i < fnames_num; i++) {
 		display_reduced(fnames[i], 25);
 		printf("---\n");
@@ -45,6 +48,13 @@ void display_reduced(char *original, size_t maxlen) {
 	char *fname = original;
 	char *rdc_fname = NULL;
 
+	/*
+	 * max chars to be displayed  + mid_len + 1x '\0'
+	 */
+	char *middle = "[@]";
+	size_t mid_len = strlen(middle);
+	size_t rdc_size = maxlen + mid_len + 1;
+
 	if (strlen(fname) <= maxlen) {
 		rdc_fname = fname;
 		printf("Original: '%s', length: %ld chars\n", fname, strlen(fname));
@@ -52,12 +62,7 @@ void display_reduced(char *original, size_t maxlen) {
 		return;
 	}
 
-	/*
-	 * max chars to be displayed  + mid_len + 1x '\0'
-	 */
-	char *middle = "[@]";
-	size_t mid_len = strlen(middle);
-	rdc_fname = calloc((maxlen + mid_len + 1), sizeof(char));
+	rdc_fname = calloc((rdc_size), sizeof(char));
 	int pos = 0;
 	int first_part = maxlen - LAST_CHARS - mid_len;
 	while (pos < first_part) {

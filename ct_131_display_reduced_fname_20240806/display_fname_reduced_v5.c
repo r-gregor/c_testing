@@ -29,9 +29,12 @@ int main(void) {
 
 	size_t fnames_num = sizeof(fnames)/sizeof(fnames[0]);
 
+	/* v5 */
 	/* v3: run new function on multiple filenames */
+	size_t rdc_len = 25;
+	printf("Reducing file names to length of %ld characters:\n\n", rdc_len);
 	for (int i = 0; i < fnames_num; i++) {
-		display_reduced(fnames[i], 25);
+		display_reduced(fnames[i], rdc_len);
 		printf("---\n");
 	}
 
