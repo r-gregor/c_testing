@@ -17,11 +17,11 @@
 #define MIN_LEN 20
 #define LAST_CHARS 13 // '_' + tomestamp + '.txt'
 
-void display_reduced(char *, size_t, char *);
+void display_reduced(char *original, size_t maxlen, char *sep_char);
 
 int main(int argc, char **argv) {
 
-	int rdc_len;
+	size_t rdc_fname_len;
 	/* array with test filenames */
 	char fnames[][125] = {"tst_just_a_long_testfilename_with_timestamp_20240806.txt",
 		                 "second-fname-with-really-long-long-long-long-long-long-long-long-long-long-fname_20240102.txt",
@@ -37,23 +37,23 @@ int main(int argc, char **argv) {
 	/* v5 */
 	/* v3: run new function on multiple filenames */
 	if (argc == 2) {
-		rdc_len = atoi(argv[1]);
+		rdc_fname_len = atoi(argv[1]);
 	} else {
-		rdc_len = 25;
+		rdc_fname_len = 25;
 	}
 	
 	// char *sep_char = "(#)";
 	char *sep_char = "~";
 
-	if (rdc_len < MIN_LEN) {
+	if (rdc_fname_len < MIN_LEN) {
 		printf("Minimal filename length: 20 characters. Correcting ...\n");
-		rdc_len = MIN_LEN;
+		rdc_fname_len = MIN_LEN;
 	}
 
 	printf("Separation character: '%s'\n", sep_char);
-	printf("Reducing file names to length of maximum of %d characters:\n\n", rdc_len);
+	printf("Reducing file names to maximum length of %ld characters:\n\n", rdc_fname_len);
 	for (int i = 0; i < fnames_num; i++) {
-		display_reduced(fnames[i], rdc_len, sep_char);
+		display_reduced(fnames[i], rdc_fname_len, sep_char);
 		printf("---\n");
 	}
 
