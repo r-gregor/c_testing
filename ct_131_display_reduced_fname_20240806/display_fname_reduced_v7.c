@@ -97,16 +97,16 @@ char *get_reduced_filename(char *original, size_t maxlen, char *sep_char) {
 	char *fname = original;
 	char *rdc_fname = NULL;
 
-	size_t sepc_len = strlen(sep_char);
-	size_t buff_size = maxlen + sepc_len + 1;
-	char buffer[buff_size];
-
 	if (strlen(fname) <= maxlen) {
 		rdc_fname = fname;
 		return rdc_fname;
 	}
 
 	/* else ... */
+	size_t sepc_len = strlen(sep_char);
+	size_t buff_size = maxlen + sepc_len + 1;
+	char buffer[buff_size];
+
 	rdc_fname = buffer;
 
 	int pos = 0;

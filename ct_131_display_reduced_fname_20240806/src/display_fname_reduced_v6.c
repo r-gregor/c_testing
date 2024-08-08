@@ -66,14 +66,6 @@ void display_reduced(char *original, size_t maxlen, char *sep_char) {
 	char *fname = original;
 	char *rdc_fname = NULL;
 
-	/*
-	 * v5
-	 * max chars to be displayed  + sepc_len + 1x '\0'
-	 */
-	size_t sepc_len = strlen(sep_char);
-	size_t buff_size = maxlen + sepc_len + 1;
-	char buffer[buff_size];
-
 	if (strlen(fname) <= maxlen) {
 		rdc_fname = fname;
 		printf("Original: '%s', length: %ld chars\n", fname, strlen(fname));
@@ -81,6 +73,13 @@ void display_reduced(char *original, size_t maxlen, char *sep_char) {
 		return;
 	}
 
+	/*
+	 * v5
+	 * max chars to be displayed  + sepc_len + 1x '\0'
+	 */
+	size_t sepc_len = strlen(sep_char);
+	size_t buff_size = maxlen + sepc_len + 1;
+	char buffer[buff_size];
 
 	/* v5 */
 	// rdc_fname = calloc((maxlen + sepc_len + 1), sizeof(char));
