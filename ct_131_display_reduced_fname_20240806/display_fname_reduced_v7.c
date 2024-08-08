@@ -70,7 +70,7 @@ void display_reduced(char *original, size_t maxlen, char *sep_char) {
 size_t get_rdc_fname_length(int argc, char **argv) {
 
 #define MIN_LEN 20
-size_t result = 0;
+	size_t result = 0;
 
 	if (argc == 2) {
 		result = atoi(argv[1]);
