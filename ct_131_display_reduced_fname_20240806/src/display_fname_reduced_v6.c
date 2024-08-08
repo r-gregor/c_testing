@@ -15,7 +15,7 @@
 #include <stdlib.h>
 
 #define MIN_LEN 20
-#define LAST_CHARS 13 // '_' + tomestamp + '.txt'
+#define LAST_CHARS 13 // '_' + timestamp + '.txt'
 
 void display_reduced(char *original, size_t maxlen, char *sep_char);
 

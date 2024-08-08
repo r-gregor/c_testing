@@ -14,12 +14,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define LAST_CHARS 13 // '_' + tomestamp + '.txt'
+#define LAST_CHARS 13 // '_' + timestamp + '.txt'
 
 void display_reduced(char *original, size_t maxlen, char *sep_char);
 size_t get_rdc_fname_length(int argc, char **argv);
 char *get_reduced_filename(char *original, size_t maxlen, char *sep_char);
-void printout(char *original, char *reduced);
 
 /* MAIN */
 int main(int argc, char **argv) {
