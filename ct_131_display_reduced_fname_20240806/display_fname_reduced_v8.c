@@ -1,5 +1,5 @@
 /*
- * display_fname_reduced_v7.c
+ * display_fname_reduced_v8.c
  * 20240806_01_en -- v1
  * 20240806_02_en -- v2: put base logic into function display_fname_reduced()
  * 20240806_03_en -- v3: multiple filenames
@@ -66,8 +66,8 @@ void display_reduced(char *original, size_t maxlen, char *sep_char) {
 
 /*
  * v7
- * Get desired reduced fname length as command parameter. If not given
- * set the value to 25. Return reduced fname length.
+ * get desired reduced fname length as command parameter if not given
+ * set the value to 25 and return reduced fname length.
  * lowest size limited by MIN_LEN
  */
 size_t get_rdc_fname_length(int argc, char **argv) {
@@ -77,7 +77,7 @@ size_t get_rdc_fname_length(int argc, char **argv) {
 
 	if (argc == 2) {
 		result = atoi(argv[1]);
-		printf("Setting filename length to %ld characters ...\n", result);
+		printf("Setting filename length to %ld characters ..\n", result);
 	} else {
 		printf("No desired filename length given. Setting to 25 characters ...\n");
 		result = 25;
