@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <limits.h>
+#include <errno.h>
 
 char curr_path[4096];
 void printAccesDate(char *path);
@@ -64,7 +65,8 @@ void printAccesDate(char *path) {
 
 	struct stat finfo;
 	if (stat(rpath, &finfo) == -1) {
-		perror("==>\tstat error");
+		// perror("==>\tstat error");
+		printf("%s ==>\tstat error: %s\n", path, strerror(errno));
 		exit(2);
 	}
 
@@ -85,7 +87,8 @@ void printAccesDateAbs(char *path) {
 
 	struct stat finfo;
 	if (stat(rpath, &finfo) == -1) {
-		perror("==>\tstat error");
+		// perror("==>\tstat error");
+		printf("%s ==>\tstat error: %s\n", path, strerror(errno));
 		exit(2);
 	}
 

@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 	int mnt = gmtime(&finfo.st_ctime)->tm_mon;
 	int dy = gmtime(&finfo.st_ctime)->tm_mday;
 	sprintf(tmstmp, "%d-%.02d-%.02d", yr, mnt, dy);
-	// printf("%s %s\n", tmstmp, file_name);
+	printf("%s %s\n", tmstmp, file_name);
 
 	return 0;
 }

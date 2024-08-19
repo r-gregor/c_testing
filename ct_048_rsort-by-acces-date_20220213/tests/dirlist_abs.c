@@ -3,6 +3,7 @@
 #include <string.h> 
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #define DEFAULT_LOCATION "."
 #define FCOUNT_STEP 25

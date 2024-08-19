@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#include <errno.h>
 
 #define DEFAULT_LOCATION "."
 #define FCOUNT_STEP 200
@@ -16,6 +17,10 @@
 /*
  * update 20220912:
  * gmtime() --> month +1 (range from 0 to 11!)
+ * ---
+ * update 20240819:
+ * perror --> strerror
+ * ---
  */
 
 typedef struct filename {
@@ -80,7 +85,8 @@ int main(int argc, char ** argv) {
 void make_long_date(char *file_name, char *tmstmp) {
 	struct stat finfo;
 	if (stat(file_name, &finfo) == -1) {
-		perror("==>\tstat error");
+		// perror("==>\tstat error");
+		printf("%s ==>\tstat error: %s\n", file_name, strerror(errno));
 		exit(2);
 	}
 
