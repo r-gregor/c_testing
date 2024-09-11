@@ -1,5 +1,5 @@
 /*
- * check_for_hex_digits_v2.c
+ * check_for_hex_digits_v3.c
  * 20240911 v3: changed return value of wrong_color_num_len() to 'bool'
  */
 
