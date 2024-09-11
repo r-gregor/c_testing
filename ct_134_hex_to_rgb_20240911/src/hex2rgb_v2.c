@@ -1,5 +1,5 @@
 /*
- * hex_to_rgb.c
+ * hex2rgb_v2.c
  * 20240909 v2
  */
 
