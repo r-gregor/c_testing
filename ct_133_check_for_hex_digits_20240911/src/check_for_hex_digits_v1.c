@@ -1,7 +1,13 @@
+/*
+ * check_for_hex_digits_v1.c
+ * 20240911 v1
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #define COLOR_HEX_NUM_LEN 6
 
