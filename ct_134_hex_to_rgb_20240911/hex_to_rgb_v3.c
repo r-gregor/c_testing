@@ -1,6 +1,7 @@
 /*
  * hex_to_rgb.c
  * 20240909 v3
+ * 20240911 v3
  */
 
 #include <stdio.h>
@@ -20,8 +21,8 @@ int main(int argc, char **argv) {
 
 	int r, g, b;
 	for (size_t i =0; i < strlen(argv[1]); i++) {
-		if (!isxdigit(argv[1][i])) {
-			printf("[ERROR] supplied number is NOT a valid hex number\n");
+		if (!isxdigit((int)argv[1][i])) {
+			printf("[ERROR] '%s' is NOT a valid hex number\n", argv[1]);
 			return EXIT_FAILURE;
 		}
 	}
