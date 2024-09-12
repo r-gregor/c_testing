@@ -11,18 +11,18 @@
 
 #define COLOR_HEX_NUM_LEN 6
 
-bool wrong_color_num_len(char *num);
-int chk_hex_isxdigit(char *);
-int chk_hex_strspn(char *num, char *hexdigits);
+bool wrong_color_num_len(const char *num);
+int chk_hex_isxdigit(const char *);
+int chk_hex_strspn(const char *num, const char *hexdigits);
 
 /* main */
 int main(void) {
 
-	char color1[] = "AAb7C2";   // ok
-	char color2[] = "a9BbCC6f"; // to many digits
-	char color3[] = "A0BBxC";   // digit outside hex range
+	const char color1[] = "AAb7C2";   // ok
+	const char color2[] = "a9BbCC6f"; // to many digits
+	const char color3[] = "A0BBxC";   // digit outside hex range
 
-	char hex_digits[] = "0123456789abcdefABCDEF";
+	const char hex_digits[] = "0123456789abcdefABCDEF";
 
 	printf("Checking if color hex code (6 digits) is valid hex nubmber.\n");
 	printf("Test numbers:\n");
@@ -52,8 +52,8 @@ int main(void) {
 /* =============== functions definitions ============= */
 
 /* check for color num length */
-bool wrong_color_num_len(char *num) {
-	size_t num_len = strlen(num);
+bool wrong_color_num_len(const char *num) {
+	const size_t num_len = strlen(num);
 	if(num_len != COLOR_HEX_NUM_LEN) {
 		printf("[ERR] %-10s is NOT of required %d digits length\n", num, COLOR_HEX_NUM_LEN);
 		return true;
@@ -62,7 +62,7 @@ bool wrong_color_num_len(char *num) {
 }
 
 /* check if hex number using isxdigit() */
-int chk_hex_isxdigit(char *num) {
+int chk_hex_isxdigit(const char *num) {
 	if(wrong_color_num_len(num)) return EXIT_FAILURE;
 
 	for (size_t i =0; i < strlen(num); i++) {
@@ -77,7 +77,7 @@ int chk_hex_isxdigit(char *num) {
 }
 
 /* check if hex number using strspn() */
-int chk_hex_strspn(char *num, char *hexdigits) {
+int chk_hex_strspn(const char *num, const char *hexdigits) {
 	if(wrong_color_num_len(num)) return EXIT_FAILURE;
 
 	if(strspn(num, hexdigits) != strlen(num)) {
