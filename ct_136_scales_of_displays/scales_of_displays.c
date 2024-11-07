@@ -1,6 +1,10 @@
+/*
+ * scales_of_displays.c
+ * 20241107_01 -- en
+ */
+
 #include <stdio.h>
 #include <string.h>
-
 
 char *get_name(float V);
 
