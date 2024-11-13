@@ -38,6 +38,10 @@ char *get_name(float V) {
 			return"FHD";
 			break;
 
+		case 1440:
+			return"QHD";
+			break;
+
 		case 2160:
 			return "UHD/4K";
 			break;
