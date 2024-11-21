@@ -10,7 +10,7 @@ char *get_name(float V);
 
 int main(void) {
 
-	printf("\nFactor  Horisontal  Vertical    Name\n");
+	printf("\nFactor  Horizontal  Vertical    Name\n");
 	printf(  "------------------------------------\n");
 
 	const float N1[] = {1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0};
