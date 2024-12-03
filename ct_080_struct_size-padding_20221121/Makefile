@@ -4,36 +4,36 @@
 # 		2022-11-16
 
 # for win
-# CC=/c/Users/gregor.redelonghi/majstaf/majprogs/mingw64/bin/x86_64-w64-mingw32-gcc-11.1.0.exe
+# CC=/c/Users/gregor.redelonghi/majstaf/majprogs/mingw6./build/x86_64-w64-mingw32-gcc-11.1.0.exe
 CC=gcc
 CFLAGS=-g -Wall
 SRCDIR=src
 OBJDIR=obj
 SRCS=$(wildcard $(SRCDIR)/*.c)
 OBJS=$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
-BINDIR=bin
-BIN=$(BINDIR)/struct_padding
-RM=/usr/bin/rm
+BUILDDIR=bin
+BUILD=$(BUILDDIR)/struct_padding
+RM=/us./build/rm
 
-# all: $(BIN) test
-all: $(BIN)
+# all: $(BUILD) test
+all: $(BUILD)
 
 # release: CFLAGS=-Wall -O2 -DNDEBUG
 # release: clean
-# release: $(BIN)
+# release: $(BUILD)
 
-$(BIN): $(OBJS)
+$(BUILD): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-test: $(BIN)
-	$(BIN)	
+test: $(BUILD)
+	$(BUILD)	
 
 clean:
-	$(RM) -r $(BINDIR)/* $(OBJDIR)/*
+	$(RM) -r $(BUILDDIR)/* $(OBJDIR)/*
 
 .PHONY setup:
-	mkdir -p ./{$(SRCDIR),$(OBJDIR),$(BINDIR)}
+	mkdir -p ./{$(SRCDIR),$(OBJDIR),$(BUILDDIR)}
 

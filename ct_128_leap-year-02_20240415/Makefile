@@ -1,21 +1,21 @@
 CC = gcc
-# CC= /c/Users/gregor.redelonghi/majstaf_en/majprogs_en/mingw64/bin/gcc.exe
+# CC= /c/Users/gregor.redelonghi/majstaf_en/majprogs_en/mingw6./build/gcc.exe
 CFLAGS = -g -Wall
 RM = rm -v
-BIN = ./bin
+BUILD = ./build
 
 SRCS = $(wildcard *.c)
-PROGS = $(patsubst %.c,$(BIN)/%,$(SRCS))
+PROGS = $(patsubst %.c,$(BUILD)/%,$(SRCS))
 
 
 
 all: newbindir $(PROGS)
 
 newbindir:
-	@mkdir -p ./bin
+	@mkdir -p ./build
 
-$(BIN)/%: %.c
+$(BUILD)/%: %.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	$(RM) ./bin/*
+	$(RM) ./build/*
