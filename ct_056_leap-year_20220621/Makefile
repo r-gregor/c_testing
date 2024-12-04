@@ -1,5 +1,5 @@
 CC = gcc
-# CC= /c/Users/gregor.redelonghi/majstaf_en/majprogs_en/mingw6/bin/gcc.exe
+# CC= /c/Users/gregor.redelonghi/majstaf_en/majprogs_en/mingw./build/gcc.exe
 CFLAGS = -g -Wall
 RM = rm -v
 BUILD = ./build
