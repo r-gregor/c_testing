@@ -1,16 +1,17 @@
 /* string_to_hex.c
  * v1: 20241202 en
  * v2: 20241202 en: move conversion logic into function
- * v3: 20241202 en: function returns boolean
+ * v3: 20241202 en: function returns exit status
  */
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
+// #include <stdbool.h>
+#include <stdlib.h>
 
 #define MAX_STR_LEN 64
 #define MAX_XSTR_LEN 256
 
-bool get_hex_from_string(char *str, char *hex_str);
+int get_hex_from_string(char *str, char *hex_str);
 
 /* main */
 int main(int argc, char **argv) {
@@ -26,22 +27,22 @@ int main(int argc, char **argv) {
 	}
 
 	if (!get_hex_from_string(name, hexstr)) {
-		return -1;
+		return EXIT_FAILURE;
 	}
 
 	printf("'%s' in hex: 0x%s\n", name, hexstr);
 
-	return 0;
+	return EXIT_SUCCESS;
 } /* end main */
 
 
 /* function definitions */
-bool get_hex_from_string(char *str, char *hex_str) {
+int get_hex_from_string(char *str, char *hex_str) {
 	size_t str_len = strlen(str);
 
 	if (str_len >= MAX_STR_LEN) {
 		fprintf(stderr, "[ERROR] String to long\n");
-		return false;
+		return 0; // failure
 	}
 
 	char singlech[3] = {0};
@@ -50,6 +51,6 @@ bool get_hex_from_string(char *str, char *hex_str) {
 		strcat(hex_str, singlech);
 	}
 
-	return true;
+	return 1; // succcess
 }
 
