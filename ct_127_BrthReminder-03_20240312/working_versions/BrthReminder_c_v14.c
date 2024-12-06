@@ -7,13 +7,12 @@
 #include <unistd.h>
 
 /**
- * v12
+ * v14
  *
  */
 
 /*
  * TODO:
- * - store persons in an aray of struct pointers
  * - sort persons by day_diff
  * - function to display top-n (day_diff <= 28 days)
  */
@@ -29,7 +28,7 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	char *name;
@@ -40,14 +39,16 @@ typedef struct Person {
 
 const char *fname = "ROJSTNIDNEVI.txt";
 Date *g_curr_date;
-int g_nLines;
-Person **persons_list;
+int g_nLines = 0;
+Person **persons;
+int np = 0;
 
 
 /* ================== FUNCTION DECLARATIONS ============== */
 int getPositionOfDelim(char, char *);
-void displayPersonInfo(char *);
-void makePerson(char *, Person *);
+void displayPersons(Person **);
+void displayPersons2(Person **);
+Person *makePersonFromLine(char *);
 void printPerson(Person *);
 void freePerson(Person *);
 void release_ptr(void *);
@@ -59,9 +60,10 @@ int getNumOfLinesFromFile(const char *filename);
 /** main */
 int main(int argc, char **argv) {
 
+	g_nLines = getNumOfLinesFromFile(fname);
+	persons = malloc(sizeof(Person *) * g_nLines);
 	today = time(NULL);
 	today_ptr = localtime(&today);
-	g_nLines = getNumOfLinesFromFile(fname);
 	g_curr_date = malloc(sizeof(Date));
 	g_curr_date->y = today_ptr->tm_year + 1900;
 	g_curr_date->m = today_ptr->tm_mon + 1;
@@ -80,8 +82,12 @@ int main(int argc, char **argv) {
 
 	while ((line_len = getline(&line, &n, fp)) != -1) {
 		line[strcspn(line, "\n")] = 0; // Remove '\n' from the line
-		displayPersonInfo(line);
+		persons[np] = makePersonFromLine(line);
+		np++;
 	}
+
+	printf("Display persons:\n");
+	displayPersons2(persons);
 
 	release_ptr(line); // because of getline()!!
 	release_ptr(g_curr_date);
@@ -116,14 +122,24 @@ int getPositionOfDelim(char delim, char *line) {
 /**
  * Displays info [name, BDate, day_diff] for a line from file:
  * stores data from line into temporary struct person with
- * function makePerson() and prints it with
+ * function makePersonFromLine() and prints it with
  * function printPerson().
  */
-void displayPersonInfo(char *line) {
-	Person *person = malloc(sizeof(Person));
-	makePerson(line, person);
-	printPerson(person);
-	freePerson(person);
+void displayPersons(Person **persons) {
+	for (int i=0; i<g_nLines; i++) {
+		printf("ID: %d\n", i + 1);
+		printPerson(persons[i]);
+	}
+}
+
+
+void displayPersons2(Person **persons) {
+	for (int i=0; i<g_nLines; i++) {
+		printf("%-30s", persons[i]->name);
+		printf(" %02d.%02d.%d ", persons[i]->bd_date.d, persons[i]->bd_date.m, persons[i]->bd_date.y);
+		printf("%-2d", persons[i]->age);
+		printf("%d\n", persons[i]->day_diff);
+	}
 }
 
 /**
@@ -131,9 +147,10 @@ void displayPersonInfo(char *line) {
  * with values in line. Frees malloc-ed Date after
  * updating person's field bd_date.
  */
-void makePerson(char *line, Person *person) {
+Person *makePersonFromLine(char *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
+	Person *person = malloc(sizeof(Person));
 	person->name = malloc(sizeof(char) * (pos + 1));
 
 	strcpy(person->name, strtok(line, ","));
@@ -147,7 +164,9 @@ void makePerson(char *line, Person *person) {
 		this_year.y +=1;
 	}
 	person->day_diff = getDifference(g_curr_date, &this_year);
-	line = NULL;
+	// line = NULL;
+
+	return person;
 }
 
 /**

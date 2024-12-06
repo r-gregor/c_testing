@@ -1,12 +1,3 @@
-/*
- * BrthReminder_v22.c
- * v22: remove function wcstok() for tokenizing, because mingW could not compile
- *      into win native executable. Running in cmd still not showing "čšž" properly
- *      Go version works well (go for win)
- *      wcstok() function replaced by char by char copy, and swprintf() function to
- *      conwert wchar_t chars into integers
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,17 +6,12 @@
 #include <unistd.h>
 #include <wchar.h>
 #include <locale.h>
-#include <wctype.h>
-#include <limits.h>
 
-#define _XOPEN_SOURCE 500
 
-// v21: COLORS!!
-
-#define COLOR_BG_BLUE "\e[1;48;5;27m"
-#define COLOR_BG_GREEN "\e[1;48;5;29m"
-#define COLOR_BG_RED "\e[1;48;5;88m"
-#define COLOR_RESET "\e[0m"
+/**
+ * v17
+ *
+ */
 
 /* ================== GLOBALS ============================= */
 time_t today;
@@ -37,7 +23,7 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	wchar_t *name;
@@ -45,9 +31,6 @@ typedef struct Person {
 	int age;
 	int day_diff;
 } Person;
-
-
-
 
 const char *fname = "ROJSTNIDNEVI.txt";
 Date *g_curr_date;
@@ -67,7 +50,7 @@ int get_daydiff(Date *, Date *);
 int getNumOfLinesFromFile(const char *);
 int cmpfunc(const void *, const void *);
 void crtc(int n);
-char *abspath(char *argv0);
+
 
 /* =================== MAIN ============================== */
 /** main */
@@ -75,15 +58,8 @@ int main(int argc, char **argv) {
 	
 	setlocale(LC_ALL, "sl_SI.utf-8");
 
-	char path1[256];
-	wchar_t path2[256];
-	strcpy(path1, abspath(argv[0]));
-	strcat(path1, "/");
-	strcat(path1, fname);
-	mbstowcs(path2, path1, 256);
-	// wprintf(L"%ls\n", path2);
 
-	g_nLines = getNumOfLinesFromFile(path1);
+	g_nLines = getNumOfLinesFromFile(fname);
 	persons = malloc(sizeof(Person *) * g_nLines);
 	today = time(NULL);
 	today_ptr = localtime(&today);
@@ -107,33 +83,24 @@ int main(int argc, char **argv) {
 		np++;
 	}
 
+
 	/* qsort ... */
 	qsort(persons, g_nLines, sizeof(Person *), cmpfunc);
-	
-	// v19
-	if (argc == 2 && strlen(argv[1]) < 4) {
-		wchar_t wans[4];
-		// size_t numwchars;
-		mbstowcs(wans, argv[1], 4);
-		if (wcscmp(wans, L"ALL") == 0) {
-			displayPersonsAll(persons);
-		} else {
-			displayPersonsDiff100(persons);
-		}
-	} else {
-		displayPersonsDiff100(persons);
-	}
+
+	displayPersonsDiff100(persons);
 
 	release_ptr(line);
 	release_ptr(g_curr_date);
 	fclose(fp);
+
+	// test
+	// wprintf(L"number of lines: %ld\n", g_nLines);
 
 	return 0;
 } /* end main */
 
 
 /* =========================  FUNCTION DEFINITIONS ================================== */
-
 
 /**
  * Returns the position of the delimiter in a string
@@ -152,7 +119,6 @@ int getPositionOfDelim(wchar_t delim, wchar_t *line) {
 	return pos;
 }
 
-
 /**
  * Mallocs the new 'Person' struct and populates it
  * with values in line. Frees malloc-ed Date after
@@ -162,32 +128,14 @@ Person *makePersonFromLine(wchar_t *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
 	Person *person = malloc(sizeof(Person));
-	// person->name = calloc((pos + 10), sizeof(wchar_t));
-	person->name = malloc((pos + 10) * sizeof(wchar_t));
+	person->name = malloc(sizeof(wchar_t) * (pos + 1));
 
-	for (wchar_t j=0; j < pos; ++j) {
-		person->name[j] = line[j];
-	}
-	person->name[pos] = L'\0';
-	// test
-	// wprintf(L"person name: %ls\n", person->name);
-	
+	wchar_t* ptr;
 	wchar_t * pEnd;
-	wchar_t day_s[10] = {0};
-	wchar_t mon_s[10] = {0};
-	wchar_t yr_s[10] = {0};
-
-	swprintf(day_s, 3, L"%ls", line + pos + 1);
-	swprintf(mon_s, 3, L"%ls", line + pos + 1 + 3);
-	swprintf(yr_s, 5, L"%ls", line + pos + 1 + 3 + 3);
-
-	// test
-	// wprintf(L"%ls.%ls.%ls\n", day_s, mon_s, yr_s);
-	
-	person->bd_date.d = wcstol(day_s, &pEnd, 10);
-	person->bd_date.m = wcstol(mon_s, &pEnd, 10);
-	person->bd_date.y = wcstol(yr_s, &pEnd, 10);
-
+	wcscpy(person->name, wcstok(line, L",", &ptr));
+	person->bd_date.d = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	person->bd_date.m = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	person->bd_date.y = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
 	person->age = curryear - person->bd_date.y;
 
 	Date this_year = {person->bd_date.d, person->bd_date.m, g_curr_date->y};
@@ -204,21 +152,25 @@ Person *makePersonFromLine(wchar_t *line) {
 /**
  * Prints formated contents of updated person.
  */
+
 void printPerson(Person *person) {
-	if (person->day_diff < 3) wprintf(L"%s", COLOR_BG_RED);
-	if (person->day_diff >= 3 && person->day_diff <= 8) wprintf(L"%s", COLOR_BG_BLUE);
-	if (person->day_diff >= 8 && person->day_diff <= 21) wprintf(L"%s", COLOR_BG_GREEN);
 	wprintf(L"%-30ls", person->name);
 	wprintf(L"%02ld.%02ld.%ld     ", person->bd_date.d, person->bd_date.m, person->bd_date.y);
 	wprintf(L"%-5ld", person->age);
-	wprintf(L"%10ld", person->day_diff);
-	wprintf(L"%s\n", COLOR_RESET);
+
+	wchar_t asap[6] =                                                 L"     ";
+	if (person->day_diff < 3)                            wcscpy(asap, L"  ***");
+	if (person->day_diff >= 3 && person->day_diff <= 8)  wcscpy(asap, L"   **");
+	if (person->day_diff >= 8 && person->day_diff <= 21) wcscpy(asap, L"    *");
+	
+	wprintf(L"%ls%5ld\n", asap, person->day_diff);
 }
 
-
 /**
- * Display ALL persons sorted by days till BD
- * lowest to heighest
+ * Displays info [name, BDate, day_diff] for a line from file:
+ * stores data from line into temporary struct person with
+ * function makePersonFromLine() and prints it with
+ * function printPerson().
  */
 
 void displayPersonsAll(Person **persons) {
@@ -232,14 +184,9 @@ void displayPersonsAll(Person **persons) {
 	for (int i=0; i<g_nLines; i++) {
 		printPerson(persons[i]);
 	}
-	crtc(cols);
-	wprintf(L"Displaying ALL persons sorted by days till BD\n");
 }
 
 
-/**
- * display persons with less than 100 days till BD
- */
 void displayPersonsDiff100(Person **persons) {
 	int cols = 30 + 15 + 5 + 10;
 	crtc(cols);
@@ -255,10 +202,6 @@ void displayPersonsDiff100(Person **persons) {
 	wprintf(L"Displaying persons with less than 100 days till BD\n");
 }
 
-
-/**
- * dro a lin of n "-"s
- */
 void crtc(int n) {
 	for (int i=0; i<n; i++) {
 		wprintf(L"-");
@@ -287,11 +230,6 @@ void release_ptr(void *ptr) {
 	ptr = NULL;
 }
 
-
-/**
- * store number of lines from file
- * into global variable
- */
 int getNumOfLinesFromFile(const char *filename){
 	FILE* fp = fopen(filename, "r");
 
@@ -314,10 +252,6 @@ int getNumOfLinesFromFile(const char *filename){
 	return number_of_lines;
 }
 
-
-/**
- * coparison function fro qsort
- */
 int cmpfunc(const void *a, const void *b) {
 
     Person *pA = *(Person **)a;
@@ -325,27 +259,5 @@ int cmpfunc(const void *a, const void *b) {
 
 	// smallest to biggest
     return (pA->day_diff - pB->day_diff);
-}
-
-// ##############################################################################################
-
-
-char *abspath(char *argv0) {
-	char path_save[PATH_MAX];
-	char abs_exe_path[PATH_MAX];
-	char *p;
-	char *abspth;
-
-	if(!(p = strrchr(argv0, '/'))) {
-		getcwd(abs_exe_path, sizeof(abs_exe_path));
-	} else {
-		*p = '\0';
-		getcwd(path_save, sizeof(path_save));
-		chdir(argv0);
-		getcwd(abs_exe_path, sizeof(abs_exe_path));
-	}
-
-	abspth = abs_exe_path;
-	return abspth;
 }
 

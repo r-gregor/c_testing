@@ -17,6 +17,7 @@
 #include <locale.h>
 #include <wctype.h>
 #include <limits.h>
+#include "daysdiff.h"
 
 #define _XOPEN_SOURCE 500
 
@@ -28,16 +29,6 @@
 #define COLOR_RESET "\e[0m"
 
 /* ================== GLOBALS ============================= */
-time_t today;
-struct tm *today_ptr;
-
-typedef struct Date {
-	int d;
-	int m;
-	int y;
-} Date;
-
-#include "daysdiff.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	wchar_t *name;

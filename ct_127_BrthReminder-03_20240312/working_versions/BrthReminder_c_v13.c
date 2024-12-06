@@ -7,8 +7,7 @@
 #include <unistd.h>
 
 /**
- * v11
- * struct Newdate --> Date {int d, int m, int y} becomes a field in Person struct
+ * v13
  *
  */
 
@@ -30,39 +29,40 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	char *name;
-	Date *bd_date;
-	int *age;
-	int *day_diff;
+	Date bd_date;
+	int age;
+	int day_diff;
 } Person;
 
 const char *fname = "ROJSTNIDNEVI.txt";
 Date *g_curr_date;
 int g_nLines;
-Person **persons_list;
+Person **persons;
 
 
 /* ================== FUNCTION DECLARATIONS ============== */
 int getPositionOfDelim(char, char *);
 void displayPersonInfo(char *);
-void makePerson(char *, Person *);
+Person *makePersonFromLine(char *);
 void printPerson(Person *);
 void freePerson(Person *);
 void release_ptr(void *);
-int get_daydiff(Date *d1, Date *d2);       //v11
-int getNumOfLinesFromFile(const char *filename); //v11
+int get_daydiff(Date *d1, Date *d2);
+int getNumOfLinesFromFile(const char *filename);
 
 
 /* =================== MAIN ============================== */
 /** main */
 int main(int argc, char **argv) {
 
+	g_nLines = getNumOfLinesFromFile(fname);
+	persons = malloc(sizeof(Person *) * g_nLines);
 	today = time(NULL);
 	today_ptr = localtime(&today);
-	g_nLines = getNumOfLinesFromFile(fname);
 	g_curr_date = malloc(sizeof(Date));
 	g_curr_date->y = today_ptr->tm_year + 1900;
 	g_curr_date->m = today_ptr->tm_mon + 1;
@@ -117,14 +117,14 @@ int getPositionOfDelim(char delim, char *line) {
 /**
  * Displays info [name, BDate, day_diff] for a line from file:
  * stores data from line into temporary struct person with
- * function makePerson() and prints it with
+ * function makePersonFromLine() and prints it with
  * function printPerson().
  */
 void displayPersonInfo(char *line) {
-	Person *person = malloc(sizeof(Person));
-	makePerson(line, person);
-	printPerson(person);
-	freePerson(person);
+	Person *p = NULL;
+   	p = makePersonFromLine(line);
+	printPerson(p);
+	freePerson(p);
 }
 
 /**
@@ -132,26 +132,26 @@ void displayPersonInfo(char *line) {
  * with values in line. Frees malloc-ed Date after
  * updating person's field bd_date.
  */
-void makePerson(char *line, Person *person) {
+Person *makePersonFromLine(char *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
+	Person *person = malloc(sizeof(Person));
 	person->name = malloc(sizeof(char) * (pos + 1));
-	person->bd_date = malloc(sizeof(Date));                           // v11
-	person->age = malloc(sizeof(int *));                              // v11
-	person->day_diff = malloc(sizeof(int));                           // v11
 
 	strcpy(person->name, strtok(line, ","));
-	person->bd_date->d = atoi(strtok(NULL, "."));                     // v11
-	person->bd_date->m = atoi(strtok(NULL, "."));                     // v11
-	person->bd_date->y = atoi(strtok(NULL, "."));                     // v11
-	*(person->age) = curryear - (person->bd_date->y);                 // v11
-	Date this_year = {person->bd_date->d, person->bd_date->m, g_curr_date->y};
+	person->bd_date.d = atoi(strtok(NULL, "."));
+	person->bd_date.m = atoi(strtok(NULL, "."));
+	person->bd_date.y = atoi(strtok(NULL, "."));
+	person->age = curryear - person->bd_date.y;
+	Date this_year = {person->bd_date.d, person->bd_date.m, g_curr_date->y};
 
 	if (getDifference(g_curr_date, &this_year) < 0) {
 		this_year.y +=1;
 	}
-	*(person->day_diff) = getDifference(g_curr_date, &this_year);      // v11
+	person->day_diff = getDifference(g_curr_date, &this_year);
 	line = NULL;
+
+	return person;
 }
 
 /**
@@ -159,9 +159,9 @@ void makePerson(char *line, Person *person) {
  */
 void printPerson(Person *person) {
 	printf("Name: %s\n", person->name);
-	printf("Birthday: %02d/%02d/%d\n", person->bd_date->d, person->bd_date->m, person->bd_date->y);
-	printf("Age: %d\n", *(person->age));
-	printf("Days diff: %d\n---\n", *(person->day_diff));
+	printf("Birthday: %02d/%02d/%d\n", person->bd_date.d, person->bd_date.m, person->bd_date.y);
+	printf("Age: %d\n", person->age);
+	printf("Days diff: %d\n---\n", person->day_diff);
 }
 
 /**
@@ -169,11 +169,7 @@ void printPerson(Person *person) {
  */
 void freePerson(Person *person) {
 	release_ptr(person->name);
-	release_ptr(person->bd_date);
-	release_ptr(person->age);
-	release_ptr(person->day_diff);
 	release_ptr(person);
-
 }
 
 /**

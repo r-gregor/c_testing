@@ -1,19 +1,25 @@
-#define _POSIX_C_SOURCE 200809L // getline() !!
+#ifdef __STDC_ALLOC_LIB__
+#define __STDC_WANT_LIB_EXT2__ 1
+#else
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <wchar.h>
+#include <locale.h>
+
 
 /**
- * v13
+ * v16
  *
  */
 
 /*
  * TODO:
- * - store persons in an aray of struct pointers
  * - sort persons by day_diff
  * - function to display top-n (day_diff <= 28 days)
  */
@@ -29,10 +35,10 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
-	char *name;
+	wchar_t *name;
 	Date bd_date;
 	int age;
 	int day_diff;
@@ -40,14 +46,14 @@ typedef struct Person {
 
 const char *fname = "ROJSTNIDNEVI.txt";
 Date *g_curr_date;
-int g_nLines;
+int g_nLines = 0;
 Person **persons;
-
+int np = 0;
 
 /* ================== FUNCTION DECLARATIONS ============== */
-int getPositionOfDelim(char, char *);
-void displayPersonInfo(char *);
-Person *makePersonFromLine(char *);
+int getPositionOfDelim(wchar_t, wchar_t *);
+void displayPersons(Person **);
+Person *makePersonFromLine(wchar_t *);
 void printPerson(Person *);
 void freePerson(Person *);
 void release_ptr(void *);
@@ -58,6 +64,9 @@ int getNumOfLinesFromFile(const char *filename);
 /* =================== MAIN ============================== */
 /** main */
 int main(int argc, char **argv) {
+	
+	setlocale(LC_ALL, "sl_SI.utf-8");
+
 
 	g_nLines = getNumOfLinesFromFile(fname);
 	persons = malloc(sizeof(Person *) * g_nLines);
@@ -67,7 +76,7 @@ int main(int argc, char **argv) {
 	g_curr_date->y = today_ptr->tm_year + 1900;
 	g_curr_date->m = today_ptr->tm_mon + 1;
 	g_curr_date->d = today_ptr->tm_mday;
-	printf("Today: %d-%02d-%02d\n", g_curr_date->y, g_curr_date->m, g_curr_date->d);
+	wprintf(L"Today: %ld-%02ld-%02ld\n", g_curr_date->y, g_curr_date->m, g_curr_date->d);
 
 	FILE *fp = fopen(fname, "r");
 	if(!fp) {
@@ -75,21 +84,23 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	char *line = NULL;
-	size_t n = 0;
-	ssize_t line_len = 0; // it can be -1 !
+	wchar_t *line = malloc(sizeof(wchar_t) * 100);
 
-	while ((line_len = getline(&line, &n, fp)) != -1) {
-		line[strcspn(line, "\n")] = 0; // Remove '\n' from the line
-		displayPersonInfo(line);
+	while (fgetws(line, 100, fp) != NULL) {
+		line[wcscspn(line, L"\n")] = 0; // Remove '\n' from the line
+		persons[np] = makePersonFromLine(line);
+		np++;
 	}
 
-	release_ptr(line); // because of getline()!!
+	wprintf(L"Display persons:\n");
+	displayPersons(persons);
+
+	release_ptr(line);
 	release_ptr(g_curr_date);
 	fclose(fp);
 
 	// test
-	printf("number of lines in %s: %d\n", fname, g_nLines);
+	wprintf(L"number of lines: %ld\n", g_nLines);
 
 	return 0;
 } /* end main */
@@ -100,7 +111,7 @@ int main(int argc, char **argv) {
 /**
  * Returns the position of the delimiter in a string
  */
-int getPositionOfDelim(char delim, char *line) {
+int getPositionOfDelim(wchar_t delim, wchar_t *line) {
 	int pos = 0;
 	int j = 0;
 	while (line[j] != '\0') {
@@ -113,43 +124,32 @@ int getPositionOfDelim(char delim, char *line) {
 	}
 	return pos;
 }
-
-/**
- * Displays info [name, BDate, day_diff] for a line from file:
- * stores data from line into temporary struct person with
- * function makePersonFromLine() and prints it with
- * function printPerson().
- */
-void displayPersonInfo(char *line) {
-	Person *p = NULL;
-   	p = makePersonFromLine(line);
-	printPerson(p);
-	freePerson(p);
-}
-
 /**
  * Mallocs the new 'Person' struct and populates it
  * with values in line. Frees malloc-ed Date after
  * updating person's field bd_date.
  */
-Person *makePersonFromLine(char *line) {
+Person *makePersonFromLine(wchar_t *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
 	Person *person = malloc(sizeof(Person));
-	person->name = malloc(sizeof(char) * (pos + 1));
+	person->name = malloc(sizeof(wchar_t) * (pos + 1));
 
-	strcpy(person->name, strtok(line, ","));
-	person->bd_date.d = atoi(strtok(NULL, "."));
-	person->bd_date.m = atoi(strtok(NULL, "."));
-	person->bd_date.y = atoi(strtok(NULL, "."));
+	wchar_t* ptr;
+	wchar_t * pEnd;
+	wcscpy(person->name, wcstok(line, L",", &ptr));
+	person->bd_date.d = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	person->bd_date.m = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	person->bd_date.y = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
 	person->age = curryear - person->bd_date.y;
+
 	Date this_year = {person->bd_date.d, person->bd_date.m, g_curr_date->y};
 
 	if (getDifference(g_curr_date, &this_year) < 0) {
 		this_year.y +=1;
 	}
 	person->day_diff = getDifference(g_curr_date, &this_year);
-	line = NULL;
+	// line = NULL;
 
 	return person;
 }
@@ -157,12 +157,40 @@ Person *makePersonFromLine(char *line) {
 /**
  * Prints formated contents of updated person.
  */
+
 void printPerson(Person *person) {
-	printf("Name: %s\n", person->name);
-	printf("Birthday: %02d/%02d/%d\n", person->bd_date.d, person->bd_date.m, person->bd_date.y);
-	printf("Age: %d\n", person->age);
-	printf("Days diff: %d\n---\n", person->day_diff);
+	wprintf(L"%-30ls", person->name);
+	wprintf(L"%02ld.%02ld.%ld     ", person->bd_date.d, person->bd_date.m, person->bd_date.y);
+	wprintf(L"%-5ld", person->age);
+
+	wchar_t asap[6] =                                                 L"     ";
+	if (person->day_diff < 3)                            wcscpy(asap, L"  ***");
+	if (person->day_diff >= 3 && person->day_diff <= 8)  wcscpy(asap, L"   **");
+	if (person->day_diff >= 8 && person->day_diff <= 21) wcscpy(asap, L"    *");
+	
+	wprintf(L"%ls%5ld\n", asap, person->day_diff);
 }
+
+/**
+ * Displays info [name, BDate, day_diff] for a line from file:
+ * stores data from line into temporary struct person with
+ * function makePersonFromLine() and prints it with
+ * function printPerson().
+ */
+
+void displayPersons(Person **persons) {
+	int cols = 30 + 15 + 5 + 10;
+	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
+	for (int i=0; i<cols; i++) {
+		wprintf(L"-");
+	}
+	wprintf(L"\n");
+
+	for (int i=0; i<g_nLines; i++) {
+		printPerson(persons[i]);
+	}
+}
+
 
 /**
  * Frees malloc-ed contents of 'person' struct.
@@ -177,7 +205,7 @@ void freePerson(Person *person) {
  */
 void release_ptr(void *ptr) {
 	if (ptr == NULL) {
-		printf("Already free!");
+		wprintf(L"Already free!");
 		exit(EXIT_SUCCESS);
 	}
 
