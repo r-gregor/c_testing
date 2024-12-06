@@ -2,6 +2,7 @@
  * v1: 20241202 en
  * v2: 20241202 en: move conversion logic into function
  * v3: 20241202 en: function returns exit status
+ * v4: 20241206 en: return codes for function
  */
 #include <stdio.h>
 #include <string.h>
@@ -10,6 +11,9 @@
 
 #define MAX_STR_LEN 64
 #define MAX_XSTR_LEN 256
+
+#define FUNC_SUCCESS 1
+#define FUNC_ERROR   0
 
 int get_hex_from_string(char *str, char *hex_str);
 
@@ -23,7 +27,7 @@ int main(int argc, char **argv) {
 		strcpy(name, argv[1]);
 	} else {
 		printf("Usage: \n\t%s \"<string>\"\n\n", argv[0]);
-		strcpy(name, "rgregor");
+		return EXIT_FAILURE;
 	}
 
 	if (!get_hex_from_string(name, hexstr)) {
@@ -42,7 +46,7 @@ int get_hex_from_string(char *str, char *hex_str) {
 
 	if (str_len >= MAX_STR_LEN) {
 		fprintf(stderr, "[ERROR] String to long\n");
-		return 0; // failure
+		return FUNC_ERROR;
 	}
 
 	char singlech[3] = {0};
@@ -51,6 +55,6 @@ int get_hex_from_string(char *str, char *hex_str) {
 		strcat(hex_str, singlech);
 	}
 
-	return 1; // succcess
+	return FUNC_SUCCESS;
 }
 
