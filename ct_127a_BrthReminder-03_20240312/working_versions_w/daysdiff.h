@@ -2,19 +2,9 @@
 #define _DAYSDIFF_H
 /*
  * from: https://www.geeksforgeeks.org/find-number-of-days-between-two-given-dates/
- * v2 20241206 en
  */
 #include <stdio.h>
 #include <string.h>
-
-time_t today;
-struct tm *today_ptr;
-
-typedef struct Date {
-	int d;
-	int m;
-	int y;
-} Date;
 
 // To store number of days in 
 // all months from January to Dec.

@@ -1,0 +1,4 @@
+mv -v BrthReminder_{colors_c,c_colors}_v22.c
+mv -v BrthReminder_{colors_c,c_colors}_v23.c
+mv -v BrthReminder_{colors_c,c_colors}_v25.c
+

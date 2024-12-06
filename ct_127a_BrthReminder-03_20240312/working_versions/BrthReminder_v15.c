@@ -1,3 +1,8 @@
+#ifdef __STDC_ALLOC_LIB__
+#define __STDC_WANT_LIB_EXT2__ 1
+#else
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,12 +11,19 @@
 #include <unistd.h>
 #include <wchar.h>
 #include <locale.h>
-#include <wctype.h>
-#include <limits.h>
 
-#define _XOPEN_SOURCE 500
 
-// v20
+/**
+ * v15
+ *
+ */
+
+/*
+ * TODO:
+ * - sort persons by day_diff
+ * - function to display top-n (day_diff <= 28 days)
+ */
+
 
 /* ================== GLOBALS ============================= */
 time_t today;
@@ -23,7 +35,7 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	wchar_t *name;
@@ -40,17 +52,14 @@ int np = 0;
 
 /* ================== FUNCTION DECLARATIONS ============== */
 int getPositionOfDelim(wchar_t, wchar_t *);
-void displayPersonsAll(Person **);
-void displayPersonsDiff100(Person **persons);
+void displayPersons(Person **);
 Person *makePersonFromLine(wchar_t *);
 void printPerson(Person *);
 void freePerson(Person *);
 void release_ptr(void *);
-int get_daydiff(Date *, Date *);
-int getNumOfLinesFromFile(const char *);
-int cmpfunc(const void *, const void *);
-void crtc(int n);
-char *abspath(char *argv0);
+int get_daydiff(Date *d1, Date *d2);
+int getNumOfLinesFromFile(const char *filename);
+
 
 /* =================== MAIN ============================== */
 /** main */
@@ -58,15 +67,8 @@ int main(int argc, char **argv) {
 	
 	setlocale(LC_ALL, "sl_SI.utf-8");
 
-	char path1[256];
-	// wchar_t path2[256];
-	strcpy(path1, abspath(argv[0]));
-	strcat(path1, "/");
-	strcat(path1, fname);
-	// mbstowcs(path2, path1, 256);
-	// wprintf(L"%ls\n", path2);
 
-	g_nLines = getNumOfLinesFromFile(path1);
+	g_nLines = getNumOfLinesFromFile(fname);
 	persons = malloc(sizeof(Person *) * g_nLines);
 	today = time(NULL);
 	today_ptr = localtime(&today);
@@ -90,33 +92,21 @@ int main(int argc, char **argv) {
 		np++;
 	}
 
-	/* qsort ... */
-	qsort(persons, g_nLines, sizeof(Person *), cmpfunc);
-	
-	// v19
-	if (argc == 2 && strlen(argv[1]) < 4) {
-		wchar_t wans[4];
-		// size_t numwchars;
-		mbstowcs(wans, argv[1], 4);
-		if (wcscmp(wans, L"ALL") == 0) {
-			displayPersonsAll(persons);
-		} else {
-			displayPersonsDiff100(persons);
-		}
-	} else {
-		displayPersonsDiff100(persons);
-	}
+	wprintf(L"Display persons:\n");
+	displayPersons(persons);
 
 	release_ptr(line);
 	release_ptr(g_curr_date);
 	fclose(fp);
+
+	// test
+	wprintf(L"number of lines: %ld\n", g_nLines);
 
 	return 0;
 } /* end main */
 
 
 /* =========================  FUNCTION DEFINITIONS ================================== */
-
 
 /**
  * Returns the position of the delimiter in a string
@@ -134,8 +124,6 @@ int getPositionOfDelim(wchar_t delim, wchar_t *line) {
 	}
 	return pos;
 }
-
-
 /**
  * Mallocs the new 'Person' struct and populates it
  * with values in line. Frees malloc-ed Date after
@@ -169,26 +157,22 @@ Person *makePersonFromLine(wchar_t *line) {
 /**
  * Prints formated contents of updated person.
  */
+
 void printPerson(Person *person) {
 	wprintf(L"%-30ls", person->name);
 	wprintf(L"%02ld.%02ld.%ld     ", person->bd_date.d, person->bd_date.m, person->bd_date.y);
 	wprintf(L"%-5ld", person->age);
-
-	wchar_t asap[6] =                                                 L"     ";
-	if (person->day_diff < 3)                            wcscpy(asap, L"  ***");
-	if (person->day_diff >= 3 && person->day_diff <= 8)  wcscpy(asap, L"   **");
-	if (person->day_diff >= 8 && person->day_diff <= 21) wcscpy(asap, L"    *");
-	
-	wprintf(L"%ls%5ld\n", asap, person->day_diff);
+	wprintf(L"%10ld\n", person->day_diff);
 }
 
-
 /**
- * Display ALL persons sorted by days till BD
- * lowest to heighest
+ * Displays info [name, BDate, day_diff] for a line from file:
+ * stores data from line into temporary struct person with
+ * function makePersonFromLine() and prints it with
+ * function printPerson().
  */
 
-void displayPersonsAll(Person **persons) {
+void displayPersons(Person **persons) {
 	int cols = 30 + 15 + 5 + 10;
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
 	for (int i=0; i<cols; i++) {
@@ -199,39 +183,8 @@ void displayPersonsAll(Person **persons) {
 	for (int i=0; i<g_nLines; i++) {
 		printPerson(persons[i]);
 	}
-	crtc(cols);
-	wprintf(L"Displaying ALL persons sorted by days till BD\n");
 }
 
-
-/**
- * display persons with less than 100 days till BD
- */
-void displayPersonsDiff100(Person **persons) {
-	int cols = 30 + 15 + 5 + 10;
-	crtc(cols);
-	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
-	crtc(cols);
-
-	for (int i=0; i<g_nLines; i++) {
-		if (persons[i]->day_diff <= 100) {
-			printPerson(persons[i]);
-		}
-	}
-	crtc(cols);
-	wprintf(L"Displaying persons with less than 100 days till BD\n");
-}
-
-
-/**
- * dro a lin of n "-"s
- */
-void crtc(int n) {
-	for (int i=0; i<n; i++) {
-		wprintf(L"-");
-	}
-	wprintf(L"\n");
-}
 
 /**
  * Frees malloc-ed contents of 'person' struct.
@@ -254,11 +207,6 @@ void release_ptr(void *ptr) {
 	ptr = NULL;
 }
 
-
-/**
- * store number of lines from file
- * into global variable
- */
 int getNumOfLinesFromFile(const char *filename){
 	FILE* fp = fopen(filename, "r");
 
@@ -281,38 +229,4 @@ int getNumOfLinesFromFile(const char *filename){
 	return number_of_lines;
 }
 
-
-/**
- * coparison function fro qsort
- */
-int cmpfunc(const void *a, const void *b) {
-
-    Person *pA = *(Person **)a;
-    Person *pB = *(Person **)b;
-
-	// smallest to biggest
-    return (pA->day_diff - pB->day_diff);
-}
-
-// ##############################################################################################
-
-
-char *abspath(char *argv0) {
-	char path_save[PATH_MAX];
-	char abs_exe_path[PATH_MAX];
-	char *p;
-	char *abspth;
-
-	if(!(p = strrchr(argv0, '/'))) {
-		getcwd(abs_exe_path, sizeof(abs_exe_path));
-	} else {
-		*p = '\0';
-		getcwd(path_save, sizeof(path_save));
-		chdir(argv0);
-		getcwd(abs_exe_path, sizeof(abs_exe_path));
-	}
-
-	abspth = abs_exe_path;
-	return abspth;
-}
 

@@ -1,3 +1,17 @@
+/*
+ * BrthReminder_c.c
+ * v22: remove function wcstok() for tokenizing, because mingW could not compile
+ *      into win native executable. Running in cmd still not showing "čšž" properly
+ *      Go version works well (go for win)
+ *      wcstok() function replaced by char by char copy, and swprintf() function to
+ *      conwert wchar_t chars into integers
+ *
+ * v23: wcscasecmp instead of wcssmp in main() for case insensitive comparisson
+ * v24: check for part of the name (case insesitive)
+ * v25: 20241121: get realpath to set absolute path to ROJSTNIDNEVI.txt file
+ *                so no probems with softlinking
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +37,7 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	wchar_t *name;
@@ -42,6 +56,8 @@ int np = 0;
 int getPositionOfDelim(wchar_t, wchar_t *);
 void displayPersonsAll(Person **);
 void displayPersonsDiff100(Person **persons);
+void displayPersonsIfFound(Person **persons, wchar_t *searchp); // v24
+void wcs_to_lower(wchar_t *source, wchar_t *dest);              // v24
 Person *makePersonFromLine(wchar_t *);
 void printPerson(Person *);
 void freePerson(Person *);
@@ -58,9 +74,11 @@ int main(int argc, char **argv) {
 	
 	setlocale(LC_ALL, "sl_SI.utf-8");
 
+	char path0[256];                           // v25
 	char path1[256];
 	// wchar_t path2[256];
-	strcpy(path1, abspath(argv[0]));
+	realpath(argv[0], path0);                  // v25
+	strcpy(path1, abspath(path0));             // v25 - just path without filename
 	strcat(path1, "/");
 	strcat(path1, fname);
 	// mbstowcs(path2, path1, 256);
@@ -93,15 +111,30 @@ int main(int argc, char **argv) {
 	/* qsort ... */
 	qsort(persons, g_nLines, sizeof(Person *), cmpfunc);
 	
+	/*
 	// v19
 	if (argc == 2 && strlen(argv[1]) < 4) {
 		wchar_t wans[4];
 		// size_t numwchars;
 		mbstowcs(wans, argv[1], 4);
-		if (wcscmp(wans, L"ALL") == 0) {
+		// if (wcscmp(wans, L"ALL") == 0) {
+		if (wcscasecmp(wans, L"ALL") == 0) { // v23
 			displayPersonsAll(persons);
 		} else {
 			displayPersonsDiff100(persons);
+		}
+	} else {
+		displayPersonsDiff100(persons);
+	}
+	*/
+
+	if (argc == 2) {
+		wchar_t wans[256] = {L'0'};
+		mbstowcs(wans, argv[1], 256);
+		if (wcscasecmp(wans, L"ALL") == 0) { // v23
+			displayPersonsAll(persons);
+		} else {
+			displayPersonsIfFound(persons, wans);
 		}
 	} else {
 		displayPersonsDiff100(persons);
@@ -222,6 +255,30 @@ void displayPersonsDiff100(Person **persons) {
 	wprintf(L"Displaying persons with less than 100 days till BD\n");
 }
 
+/**
+ * display persons whose name contains search pattern
+ */
+void displayPersonsIfFound(Person **persons, wchar_t *searchp) {
+	int cols = 30 + 15 + 5 + 10;
+	crtc(cols);
+	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
+	crtc(cols);
+	wchar_t searchp_lc[256] = {L'\0'};
+	wcs_to_lower(searchp, searchp_lc);
+
+	for (int i=0; i<g_nLines; i++) {
+		wchar_t name_lc[256] = {L'\0'};
+		wcs_to_lower(persons[i]->name, name_lc);
+
+		if (wcsstr(name_lc, searchp_lc) != NULL) {
+		// if (wcsstr(wsrc, wdest) != NULL) {
+			printPerson(persons[i]);
+		}
+	}
+	crtc(cols);
+	wprintf(L"Displaying persons with '%ls' pattern in name\n", searchp);
+
+}
 
 /**
  * dro a lin of n "-"s
@@ -316,3 +373,12 @@ char *abspath(char *argv0) {
 	return abspth;
 }
 
+/*
+ * need to initialize the dest string as:
+ *     wchar_t *dest[SIZE] = {L'\0'};
+ */
+void wcs_to_lower(wchar_t *source, wchar_t *dest) {
+	for (int i = 0; i < wcslen(source); i++) {
+		dest[i] = towlower(source[i]);
+	}
+}

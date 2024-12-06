@@ -23,7 +23,7 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	wchar_t *name;

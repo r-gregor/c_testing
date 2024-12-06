@@ -2,7 +2,6 @@
 #define _DAYSDIFF_H
 /*
  * from: https://www.geeksforgeeks.org/find-number-of-days-between-two-given-dates/
- * v2 20241206 en
  */
 #include <stdio.h>
 #include <string.h>

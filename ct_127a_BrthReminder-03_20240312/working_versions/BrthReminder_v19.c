@@ -11,7 +11,7 @@
 
 #define _XOPEN_SOURCE 500
 
-// v20
+// v19
 
 /* ================== GLOBALS ============================= */
 time_t today;
@@ -23,7 +23,7 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	wchar_t *name;
@@ -50,7 +50,7 @@ int get_daydiff(Date *, Date *);
 int getNumOfLinesFromFile(const char *);
 int cmpfunc(const void *, const void *);
 void crtc(int n);
-char *abspath(char *argv0);
+char *app_path(char *path, const char * argv0);
 
 /* =================== MAIN ============================== */
 /** main */
@@ -59,12 +59,10 @@ int main(int argc, char **argv) {
 	setlocale(LC_ALL, "sl_SI.utf-8");
 
 	char path1[256];
-	// wchar_t path2[256];
-	strcpy(path1, abspath(argv[0]));
-	strcat(path1, "/");
-	strcat(path1, fname);
-	// mbstowcs(path2, path1, 256);
-	// wprintf(L"%ls\n", path2);
+	wchar_t path2[256];
+	app_path(path1, argv[0]);
+	mbstowcs(path2, path1, 256);
+	wprintf(L"%ls\n", path2);
 
 	g_nLines = getNumOfLinesFromFile(path1);
 	persons = malloc(sizeof(Person *) * g_nLines);
@@ -294,25 +292,28 @@ int cmpfunc(const void *a, const void *b) {
     return (pA->day_diff - pB->day_diff);
 }
 
-// ##############################################################################################
-
-
-char *abspath(char *argv0) {
-	char path_save[PATH_MAX];
-	char abs_exe_path[PATH_MAX];
-	char *p;
-	char *abspth;
-
-	if(!(p = strrchr(argv0, '/'))) {
-		getcwd(abs_exe_path, sizeof(abs_exe_path));
-	} else {
-		*p = '\0';
-		getcwd(path_save, sizeof(path_save));
-		chdir(argv0);
-		getcwd(abs_exe_path, sizeof(abs_exe_path));
-	}
-
-	abspth = abs_exe_path;
-	return abspth;
+/** app_path
+ * get application path, it need argv[0], and store the result to path.
+ */
+char *app_path(char *path, const char *argv0) {
+    char buf[PATH_MAX];
+    // char * pos;
+    if (argv0[0] == '/') {    // run with absolute path
+        strcpy(buf, argv0);
+    } else {    // run with relative path
+        if(getcwd(buf, PATH_MAX) == NULL) {
+            perror("getcwd error");
+            return NULL;
+        }
+        // char *myfile = "ROJSTNIDNEVI.txt";
+        strcat(buf, "/");
+        // strcat(buf, argv0);
+        strcat(buf, fname);
+    }
+    if (realpath(buf, path) == NULL) {
+        perror("realpath error");
+        return NULL;
+    }
+    return path;
 }
 

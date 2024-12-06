@@ -1,34 +1,28 @@
-#ifndef _DAYSDIFF_H
-#define _DAYSDIFF_H
 /*
  * from: https://www.geeksforgeeks.org/find-number-of-days-between-two-given-dates/
- * v2 20241206 en
  */
 #include <stdio.h>
 #include <string.h>
 
-time_t today;
-struct tm *today_ptr;
-
+// A date has day 'd', month 'm' and year 'y'
 typedef struct Date {
-	int d;
-	int m;
-	int y;
+	int d, m, y;
 } Date;
 
 // To store number of days in 
 // all months from January to Dec.
-const int monthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+const int monthDays[12]
+	= { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 // This function counts number of 
 // leap years before the given date
-int countLeapYears(Date *d) {
-	int years = d->y;
+int countLeapYears(Date d) {
+	int years = d.y;
 
 	// Check if the current year needs to be
 	//  considered for the count of leap years
 	// or not
-	if (d->m <= 2)
+	if (d.m <= 2)
 		years--;
 
 	// An year is a leap year if it 
@@ -40,15 +34,15 @@ int countLeapYears(Date *d) {
 
 // This function returns number of 
 // days between two given dates
-int getDifference(Date *dt1, Date *dt2) {
+int getDifference(Date dt1, Date dt2) {
 	// COUNT TOTAL NUMBER OF DAYS
 	// BEFORE FIRST DATE 'dt1'
 
 	// initialize count using years and day
-	long int n1 = dt1->y * 365 + dt1->d;
+	long int n1 = dt1.y * 365 + dt1.d;
 
 	// Add days for months in given date
-	for (int i = 0; i < dt1->m - 1; i++)
+	for (int i = 0; i < dt1.m - 1; i++)
 		n1 += monthDays[i];
 
 	// Since every leap year is of 366 days,
@@ -58,8 +52,8 @@ int getDifference(Date *dt1, Date *dt2) {
 	// SIMILARLY, COUNT TOTAL NUMBER OF
 	// DAYS BEFORE 'dt2'
 
-	long int n2 = dt2->y * 365 + dt2->d;
-	for (int i = 0; i < dt2->m - 1; i++)
+	long int n2 = dt2.y * 365 + dt2.d;
+	for (int i = 0; i < dt2.m - 1; i++)
 		n2 += monthDays[i];
 	n2 += countLeapYears(dt2);
 
@@ -67,4 +61,14 @@ int getDifference(Date *dt1, Date *dt2) {
 	return (n2 - n1);
 }
 
-#endif
+// Driver code
+int main() {
+	Date dt1 = { 1, 2, 2000 };
+	Date dt2 = { 1, 2, 2004 };
+
+	// Function call
+	printf("Difference between two dates is %d\n", getDifference(dt1, dt2));
+
+	return 0;
+}
+

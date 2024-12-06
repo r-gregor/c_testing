@@ -1,3 +1,12 @@
+/*
+ * BrthReminder_v22.c
+ * v22: remove function wcstok() for tokenizing, because mingW could not compile
+ *      into win native executable. Running in cmd still not showing "čšž" properly
+ *      Go version works well (go for win)
+ *      wcstok() function replaced by char by char copy, and swprintf() function to
+ *      conwert wchar_t chars into integers
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,7 +20,12 @@
 
 #define _XOPEN_SOURCE 500
 
-// v20
+// v21: COLORS!!
+
+#define COLOR_BG_BLUE "\e[1;48;5;27m"
+#define COLOR_BG_GREEN "\e[1;48;5;29m"
+#define COLOR_BG_RED "\e[1;48;5;88m"
+#define COLOR_RESET "\e[0m"
 
 /* ================== GLOBALS ============================= */
 time_t today;
@@ -23,7 +37,7 @@ typedef struct Date {
 	int y;
 } Date;
 
-#include "daysdiff_v1.h" // must be after struct Date declaration because it uses it!
+#include "daysdiff.h" // must be after struct Date declaration because it uses it!
 
 typedef struct Person {
 	wchar_t *name;
@@ -32,7 +46,10 @@ typedef struct Person {
 	int day_diff;
 } Person;
 
-const char *fname = "ROJSTNIDNEVI.txt";
+
+
+
+const char *fname = "ROJSTNIDNEVI_W.txt";
 Date *g_curr_date;
 int g_nLines = 0;
 Person **persons;
@@ -42,6 +59,8 @@ int np = 0;
 int getPositionOfDelim(wchar_t, wchar_t *);
 void displayPersonsAll(Person **);
 void displayPersonsDiff100(Person **persons);
+void displayPersonsIfFound(Person **persons, wchar_t *searchp); // v24
+void wcs_to_lower(wchar_t *source, wchar_t *dest);              // v24
 Person *makePersonFromLine(wchar_t *);
 void printPerson(Person *);
 void freePerson(Person *);
@@ -59,11 +78,11 @@ int main(int argc, char **argv) {
 	setlocale(LC_ALL, "sl_SI.utf-8");
 
 	char path1[256];
-	// wchar_t path2[256];
+	wchar_t path2[256];
 	strcpy(path1, abspath(argv[0]));
 	strcat(path1, "/");
 	strcat(path1, fname);
-	// mbstowcs(path2, path1, 256);
+	mbstowcs(path2, path1, 256);
 	// wprintf(L"%ls\n", path2);
 
 	g_nLines = getNumOfLinesFromFile(path1);
@@ -93,6 +112,7 @@ int main(int argc, char **argv) {
 	/* qsort ... */
 	qsort(persons, g_nLines, sizeof(Person *), cmpfunc);
 	
+	/*
 	// v19
 	if (argc == 2 && strlen(argv[1]) < 4) {
 		wchar_t wans[4];
@@ -106,6 +126,23 @@ int main(int argc, char **argv) {
 	} else {
 		displayPersonsDiff100(persons);
 	}
+	*/
+
+
+	if (argc == 2) {
+		wchar_t wans[256] = {L'\0'};
+		wchar_t wans_cl[256] = {L'\0'};
+		mbstowcs(wans, argv[1], 256);
+		wcs_to_lower(wans, wans_cl);
+		if (wcscmp(wans_cl, L"all") == 0) { // v23
+			displayPersonsAll(persons);
+		} else {
+			displayPersonsIfFound(persons, wans);
+		}
+	} else {
+		displayPersonsDiff100(persons);
+	}
+
 
 	release_ptr(line);
 	release_ptr(g_curr_date);
@@ -145,14 +182,32 @@ Person *makePersonFromLine(wchar_t *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
 	Person *person = malloc(sizeof(Person));
-	person->name = malloc(sizeof(wchar_t) * (pos + 1));
+	// person->name = calloc((pos + 10), sizeof(wchar_t));
+	person->name = malloc((pos + 10) * sizeof(wchar_t));
 
-	wchar_t* ptr;
+	for (wchar_t j=0; j < pos; ++j) {
+		person->name[j] = line[j];
+	}
+	person->name[pos] = L'\0';
+	// test
+	// wprintf(L"person name: %ls\n", person->name);
+	
 	wchar_t * pEnd;
-	wcscpy(person->name, wcstok(line, L",", &ptr));
-	person->bd_date.d = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->bd_date.m = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->bd_date.y = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	wchar_t day_s[10] = {0};
+	wchar_t mon_s[10] = {0};
+	wchar_t yr_s[10] = {0};
+
+	swprintf(day_s, 3, L"%ls", line + pos + 1);
+	swprintf(mon_s, 3, L"%ls", line + pos + 1 + 3);
+	swprintf(yr_s, 5, L"%ls", line + pos + 1 + 3 + 3);
+
+	// test
+	// wprintf(L"%ls.%ls.%ls\n", day_s, mon_s, yr_s);
+	
+	person->bd_date.d = wcstol(day_s, &pEnd, 10);
+	person->bd_date.m = wcstol(mon_s, &pEnd, 10);
+	person->bd_date.y = wcstol(yr_s, &pEnd, 10);
+
 	person->age = curryear - person->bd_date.y;
 
 	Date this_year = {person->bd_date.d, person->bd_date.m, g_curr_date->y};
@@ -170,16 +225,14 @@ Person *makePersonFromLine(wchar_t *line) {
  * Prints formated contents of updated person.
  */
 void printPerson(Person *person) {
+	if (person->day_diff < 3) wprintf(L"%s", COLOR_BG_RED);
+	if (person->day_diff >= 3 && person->day_diff <= 8) wprintf(L"%s", COLOR_BG_BLUE);
+	if (person->day_diff >= 8 && person->day_diff <= 21) wprintf(L"%s", COLOR_BG_GREEN);
 	wprintf(L"%-30ls", person->name);
 	wprintf(L"%02ld.%02ld.%ld     ", person->bd_date.d, person->bd_date.m, person->bd_date.y);
 	wprintf(L"%-5ld", person->age);
-
-	wchar_t asap[6] =                                                 L"     ";
-	if (person->day_diff < 3)                            wcscpy(asap, L"  ***");
-	if (person->day_diff >= 3 && person->day_diff <= 8)  wcscpy(asap, L"   **");
-	if (person->day_diff >= 8 && person->day_diff <= 21) wcscpy(asap, L"    *");
-	
-	wprintf(L"%ls%5ld\n", asap, person->day_diff);
+	wprintf(L"%10ld", person->day_diff);
+	wprintf(L"%s\n", COLOR_RESET);
 }
 
 
@@ -222,6 +275,29 @@ void displayPersonsDiff100(Person **persons) {
 	wprintf(L"Displaying persons with less than 100 days till BD\n");
 }
 
+/**
+ * display persons whose name contains search pattern
+ */
+void displayPersonsIfFound(Person **persons, wchar_t *searchp) {
+	int cols = 30 + 15 + 5 + 10;
+	crtc(cols);
+	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
+	crtc(cols);
+	wchar_t searchp_lc[256] = {L'\0'};
+	wcs_to_lower(searchp, searchp_lc);
+
+	for (int i=0; i<g_nLines; i++) {
+		wchar_t name_lc[256] = {L'\0'};
+		wcs_to_lower(persons[i]->name, name_lc);
+
+		if (wcsstr(name_lc, searchp_lc) != NULL) {
+		// if (wcsstr(wsrc, wdest) != NULL) {
+			printPerson(persons[i]);
+		}
+	}
+	crtc(cols);
+	wprintf(L"Displaying persons with '%ls' pattern in name\n", searchp);
+}
 
 /**
  * dro a lin of n "-"s
@@ -314,5 +390,15 @@ char *abspath(char *argv0) {
 
 	abspth = abs_exe_path;
 	return abspth;
+}
+
+/*
+ * need to initialize the dest string as:
+ *     wchar_t *dest[SIZE] = {L'\0'};
+ */
+void wcs_to_lower(wchar_t *source, wchar_t *dest) {
+	for (int i = 0; i < wcslen(source); i++) {
+		dest[i] = towlower(source[i]);
+	}
 }
 
