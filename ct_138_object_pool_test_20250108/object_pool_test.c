@@ -17,7 +17,7 @@ typedef struct Vector3 {
 	int x, y, z;
 } Vector3;
 
-/* declare may object pool */
+/* declare object pool */
 /* to keep track of awailable objects */
 typedef struct PoolObject {
 	bool allocated;
@@ -47,14 +47,14 @@ void ReturnVector3(Vector3 *v) {
 			return;
 		}
 	}
-	assert(false); // if reched to here, it is a bug: look into it!
+	assert(false); // if reached to here, it is a bug: look into it!
 }
 */
 
 
 // v2: faster!
 void ReturnVector3(Vector3 *v) {
-	/* get index number from position */
+	/* get index number from pointer position */
 	unsigned int i = ((uintptr_t)v - (uintptr_t)object_pool) / sizeof(PoolObject);
 
 	assert(&(object_pool[i].obj) == v);
@@ -67,32 +67,33 @@ void ReturnVector3(Vector3 *v) {
 /* MAIN */
 int main(void) {
 
-#if 0
-/* test1: malloc */
-for (int i=0; i < 15; i++) {
-	Vector3 *v = malloc(sizeof(Vector3));
-	printf("got vector @ addres %p\n", v);
-	free(v);
-}
-#endif
-
-#if 0
-/* test2: BorrowVector3 */
-for (int i=0; i < 15; i++) {
-	Vector3 *v = BorrowVector3();
-	printf("got vector %2d @ address %p\n", i, v);
-	ReturnVector3(v);
-}
-#endif
-
-/* test3: multiple BorrowVector3 */
-for (int i=0; i < 15; i++) {
-	Vector3 *v1 = BorrowVector3();
-	Vector3 *v2 = BorrowVector3();
-	printf("got vectors %2d @ addresses %p and %p\n", i, v1, v2);
-	ReturnVector3(v1);
-	ReturnVector3(v2);
-}
-
+	#if 0
+	/* test1: malloc */
+	for (int i=0; i < 15; i++) {
+		Vector3 *v = malloc(sizeof(Vector3));
+		printf("got vector @ addres %p\n", v);
+		free(v);
+	}
+	#endif
+	
+	#if 0
+	/* test2: BorrowVector3 */
+	for (int i=0; i < 15; i++) {
+		Vector3 *v = BorrowVector3();
+		printf("got vector %2d @ address %p\n", i, v);
+		ReturnVector3(v);
+	}
+	#endif
+	
+	/* test3: multiple BorrowVector3 */
+	for (int i=0; i < 15; i++) {
+		Vector3 *v1 = BorrowVector3();
+		Vector3 *v2 = BorrowVector3();
+		printf("got vectors %2d @ addresses %p and %p\n", i, v1, v2);
+		ReturnVector3(v1);
+		ReturnVector3(v2);
+	}
+	
 	return 0;
 } /* end main */
+
