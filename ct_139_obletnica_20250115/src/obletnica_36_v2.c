@@ -24,6 +24,7 @@ int main(int argc, char **argv) {
 	today_ptr = localtime(&today);
 	int curry = today_ptr->tm_year + 1900;
 
+	const int starty = 1989;
 	int endy;
 	long int years = 0;
 	long int leaps = 0;
@@ -38,7 +39,12 @@ int main(int argc, char **argv) {
 		endy = curry;
 	}
 
-	for (int y = 1989; y < endy; y++) {
+	if (endy <= starty) {
+		printf("Years difference to small. Chose another year\n");
+		return -1;
+	}
+
+	for (int y = starty; y < endy; y++) {
 		years++;
 	
 		if (is_leap_year(y))  {
