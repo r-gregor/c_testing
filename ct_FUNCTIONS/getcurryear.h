@@ -1,17 +1,17 @@
 #ifndef _GETCURRYEAR_H
 #define _GETCURRYEAR_H
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include <time.h>
 
 time_t today;
 struct tm *today_ptr;
 
+/* declarations */
 int get_curr_yr(void);
 
+
+/* implementation */
+/* returns current year as int */
 int get_curr_yr(void) {
 
 	today = time(NULL);
