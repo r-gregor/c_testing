@@ -4,7 +4,7 @@ CC=gcc
 CFLAGS=-g -Wall
 OBJS=main.o matrix.o ui.o
 # LDFLAGS="-I C:\Users\gregor.redelonghi\majstaf\majprogs\cygwin64\usr\include -L C:\Users\gregor.redelonghi\majstaf\majprogs\cygwin64\lib -lncurses"
-LDFLAGS="-nlcurses"
+LDFLAGS=-lncurses
 
 
 all: main
