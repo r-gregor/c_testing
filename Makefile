@@ -18,5 +18,8 @@ newbindir:
 $(BUILD)/%: %.c *.h
 	$(CC) $(CFLAGS) -o $@ $<
 
+$(BUILD)/%: %.c
+	$(CC) $(CFLAGS) -o $@ $<
+
 clean:
 	$(RM) $(BUILD)/*
