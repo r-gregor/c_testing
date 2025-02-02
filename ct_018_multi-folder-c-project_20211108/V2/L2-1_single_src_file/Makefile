@@ -9,14 +9,14 @@ endef
 CC=gcc
 CFLAGS= -g -Wall
 APP=main
-BUILD=bin
+BIN=bin
 OBJ=obj
 SRC=src
 
 all: dirs main
 
 dirs:
-	@$(call makedir,$(BUILD))
+	@$(call makedir,$(BIN))
 	@$(call makedir,$(OBJ))
 	@$(call makedir,$(SRC))
 
@@ -42,11 +42,11 @@ clean:
 	@$(call tms)
 	@echo "Removing executables and objects..."
 	@$(call tms)
-	rm -r ./$(BUILD) ./$(OBJ)
+	rm -r ./$(BIN) ./$(OBJ)
 
 
 run:
 	@$(cal tms)
 	@echo "Runing $(APP)..."
-	@./build/$(APP)
+	@./bin/$(APP)
 

@@ -11,7 +11,7 @@ TARGET = main
 
 SRCDIR = src
 INCDIR = include
-BUILDDIR = bin
+BINDIR = bin
 OBJDIR = obj
 
 SOURCE = $(wildcard $(SRCDIR)/*.c)
@@ -22,12 +22,12 @@ CC = gcc
 CFLAGS = -g -Wall 
 RM = rm -v
 
-all: dirs info $(BUILDDIR)/$(TARGET)
+all: dirs info $(BINDIR)/$(TARGET)
 
 dirs:
 	@$(call tms)
 	@echo "Making missing directories..."
-	@$(call makedir,$(BUILDDIR))
+	@$(call makedir,$(BINDIR))
 	@$(call makedir,$(OBJDIR))
 	@$(call tms)
 	@echo "--- Done ---"
@@ -37,7 +37,7 @@ info:
 	@echo "Compiling objects..."
 
 
-$(BUILDDIR)/$(TARGET): $(OBJECTS)
+$(BINDIR)/$(TARGET): $(OBJECTS)
 	@$(call tms)
 	@echo "Building final target..."
 	@$(call tms)
@@ -51,15 +51,15 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c
 
 .PHONY: help run clean
 
-run: $(BUILDDIR)/$(TARGET)
-	@$(BUILDDIR)/$(TARGET)
+run: $(BINDIR)/$(TARGET)
+	@$(BINDIR)/$(TARGET)
 
 clean:
 	$(RM) ./$(OBJDIR)/*.o
-	$(RM) ./$(BUILDDIR)/*
+	$(RM) ./$(BINDIR)/*
 
 rmdirs:
-	$(RM) -r ./obj ./build
+	$(RM) -r ./obj ./bin
 
 # test printout before all:
 OBJECT = $(notdir $(OBJECTS))

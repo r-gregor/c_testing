@@ -2,7 +2,7 @@ TARGET = main
 
 SRCDIR = src
 INCDIR = inc
-BUILDDIR = bin
+BINDIR = bin
 OBJDIR = obj
 
 SOURCE = $(wildcard $(SRCDIR)/*.c)
@@ -13,9 +13,9 @@ CC = gcc
 CFLAGS = -g -Wall 
 RM = rm -v
 
-all: $(BUILDDIR)/$(TARGET)
+all: $(BINDIR)/$(TARGET)
 
-$(BUILDDIR)/$(TARGET): $(OBJECTS)
+$(BINDIR)/$(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^ -I$(INCDIR)
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
@@ -23,12 +23,12 @@ $(OBJDIR)/%.o : $(SRCDIR)/%.c
 
 .PHONY: help run clean
 
-run: $(BUILDDIR)/$(TARGET)
-	@$(BUILDDIR)/$(TARGET)
+run: $(BINDIR)/$(TARGET)
+	@$(BINDIR)/$(TARGET)
 
 clean:
 	$(RM) ./$(OBJDIR)/*.o
-	$(RM) ./$(BUILDDIR)/*
+	$(RM) ./$(BINDIR)/*
 
 
 # test printout before all:

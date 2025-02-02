@@ -1,9 +1,9 @@
 CC=gcc
 CFLAGS=-Wall -g
 LIB=libhashtable
-BUILDS=$(LIB).so $(LIB).a test
+BINS=$(LIB).so $(LIB).a test
 
-all: $(BUILDS)
+all: $(BINS)
 
 %: %.c $(LIB).a
 	$(CC) $(CFLAGS) $< -o $@ $(LIB).a
@@ -18,5 +18,5 @@ lib%.so: %.c
 	$(CC) $(CFLAGS) -shared -fPIC $< -o $@
 
 clean:
-	rm -rf *.so *.a *.o $(BUILDS)
+	rm -rf *.so *.a *.o $(BINS)
 

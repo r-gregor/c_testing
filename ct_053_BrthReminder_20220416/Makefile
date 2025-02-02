@@ -1,24 +1,24 @@
 CC = gcc
 CFLAGS = -g -Wall
 RM = rm -v
-BUILD = ./build
+BIN = ./bin
 
 SRCS = $(wildcard *.c)
-PROGS = $(patsubst %.c,$(BUILD)/%,$(SRCS))
+PROGS = $(patsubst %.c,$(BIN)/%,$(SRCS))
 
 
 
 all: newbindir $(PROGS)
 
 newbindir:
-	@mkdir -p ./build
+	@mkdir -p ./bin
 
-$(BUILD)/%: %.c
+$(BIN)/%: %.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	$(RM) $(BUILD)/*
+	$(RM) $(BIN)/*
 
 test:
-	/us./build/valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s $(PROGS)
+	/us./bin/valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s $(PROGS)
 
