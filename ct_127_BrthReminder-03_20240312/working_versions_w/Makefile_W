@@ -4,22 +4,22 @@ CC=/c/Users/gregor.redelonghi/majstaf_en/majprogs_en/mingw64/bin/x86_64-w64-ming
 
 CFLAGS = -g -Wall
 RM = rm -v
-BUILD = ./build
+BIN = ./bin
 
 SRCS = $(wildcard *.c)
-PROGS = $(patsubst %.c,$(BUILD)/%,$(SRCS))
+PROGS = $(patsubst %.c,$(BIN)/%,$(SRCS))
 
 
 
 all: newbindir $(PROGS)
 
 newbindir:
-	@mkdir -p ./build
-	@cp -vn ROJSTNIDNEVI_W.txt ./build/
+	@mkdir -p ./bin
+	@cp -vn ROJSTNIDNEVI_W.txt ./bin/
 
-$(BUILD)/%: %.c *.h
-	@cp -vn ROJSTNIDNEVI_W.txt ./build/
+$(BIN)/%: %.c *.h
+	@cp -vn ROJSTNIDNEVI_W.txt ./bin/
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	$(RM) $(BUILD)/*
+	$(RM) $(BIN)/*
