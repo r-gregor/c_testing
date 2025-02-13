@@ -10,7 +10,12 @@ void generate_fib(void *arg);
 void fibswap(int *a, int *b);
 
 int main(int argc, char **argv) {
-	long int arg; // because 'char *' is 64bits long (8 bytes) and 'int' is 32bits long (4 bytes)
+
+	/* because 'char *' is 64bits long (8 bytes) and 'int' is 32bits long (4 bytes)
+	 * and we cannot cast longer intinto smaller one!
+	 * Or we could use 'long' type for all integers
+	 */
+	long int arg;
 
 	if (2 == argc) {
 		arg = atoi(argv[1]);
