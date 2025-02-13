@@ -12,10 +12,10 @@ void fibswap(int *a, int *b);
 int main(int argc, char **argv) {
 
 	/* because 'char *' is 64bits long (8 bytes) and 'int' is 32bits long (4 bytes)
-	 * and we cannot cast longer intinto smaller one!
+	 * and we cannot cast longer int into smaller one!
 	 * Or we could use 'long' type for all integers
 	 */
-	long int arg;
+	long arg;
 
 	if (2 == argc) {
 		arg = atoi(argv[1]);
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 }
 
 void generate_fib(void *arg) {
-	int MAX = (long int)arg;
+	int MAX = (long)arg;
 	int a = 0;
 	int b = 1;
 
