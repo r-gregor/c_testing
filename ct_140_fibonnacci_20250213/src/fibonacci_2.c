@@ -50,9 +50,9 @@ void generate_fib(void *arg) {
 	printf("%d\n", a);
 }
 
-/* make a nd be take values of next pair in a sequence:
- * new b becomes old a + old b
- * new a becomes old b
+/* make 'a' and 'b' take values of next pair in a sequence:
+ * new 'b' becomes old 'a' + old 'b'
+ * new 'a' becomes old 'b'
  */
 void fibswap(int *a, int *b) {
 	int c = *a + *b;
