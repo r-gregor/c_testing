@@ -7,9 +7,10 @@
 #include <stdlib.h>
 
 void generate_fib(void *arg);
+void fibswap(int *a, int *b);
 
 int main(int argc, char **argv) {
-	int arg;
+	long int arg; // because 'char *' is 64bits long (8 bytes) and 'int' is 32bits long (4 bytes)
 
 	if (2 == argc) {
 		arg = atoi(argv[1]);
@@ -18,34 +19,39 @@ int main(int argc, char **argv) {
 		arg = 300;
 	}
 
-	printf("Displaying fibonacci numbers up to %d:\n", arg);
+	printf("Displaying fibonacci numbers up to %ld:\n", arg);
 	generate_fib((void *)arg);
 
 	return 0;
 }
 
 void generate_fib(void *arg) {
-	int MAX = (int)arg;
+	int MAX = (long int)arg;
 	int a = 0;
 	int b = 1;
 
 	while (a < MAX) {
 		if (MAX < a + b) {
 			printf("%d, ", a);
-			int c = a + b;
-			a = b;
-			b = c;
+			fibswap(&a, &b);
 			break;
 		}
 		else {
 			printf("%d, ", a);
-			int c = a + b;
-			a = b;
-			b = c;
+			fibswap(&a, &b);
 		}
 
 	}
 	printf("%d\n", a);
-	// printf("%d\n", a);
+}
+
+/* make a nd be take values of next pair in a sequence:
+ * new b becomes old a + old b
+ * new a becomes old b
+ */
+void fibswap(int *a, int *b) {
+	int c = *a + *b;
+	*a = *b;
+	*b = c;
 }
 
