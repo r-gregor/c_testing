@@ -5,12 +5,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdbool.h>
+#include <limits.h>
 
 void generate_fib(void *arg);
 void fibswap(int *a, int *b);
 
 int main(int argc, char **argv) {
+	printf("LONG_MAX: %ld\n", LONG_MAX);
 
 	/* because 'char *' is 64bits long (8 bytes) and 'int' is 32bits long (4 bytes)
 	 * and we cannot cast longer int into smaller one!
@@ -20,7 +21,7 @@ int main(int argc, char **argv) {
 
 	if (2 == argc) {
 		arg = atoi(argv[1]);
-		if ((unsigned long)arg >= 2147483647 - 1) {
+		if ((unsigned long)arg >= LONG_MAX - 1) {
 			fprintf(stderr, "Number TO big!\n");
 			return -1;
 		}
