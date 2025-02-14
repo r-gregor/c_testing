@@ -7,8 +7,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define ULONG_MAX_INT 4294967295
+
 void generate_fib(void *arg);
-void fibswap(int *a, int *b);
+void fibswap(unsigned long *a, unsigned long *b);
 
 int main(int argc, char **argv) {
 
@@ -16,11 +18,11 @@ int main(int argc, char **argv) {
 	 * and we cannot cast longer int into smaller one!
 	 * Or we could use 'long' type for all integers
 	 */
-	long arg;
+	unsigned long arg;
 
 	if (2 == argc) {
 		arg = atoi(argv[1]);
-		if ((unsigned long)arg >= 2147483647 - 1) {
+		if (arg >= ULONG_MAX_INT) {
 			fprintf(stderr, "Number TO big!\n");
 			return -1;
 		}
@@ -36,31 +38,31 @@ int main(int argc, char **argv) {
 }
 
 void generate_fib(void *arg) {
-	int MAX = (long)arg;
-	int a = 0;
-	int b = 1;
+	unsigned long MAX = (unsigned long)arg;
+	unsigned long a = 0;
+	unsigned long b = 1;
 
 	while (a < MAX) {
 		if (MAX < a + b) {
-			printf("%d, ", a);
+			printf("%ld, ", a);
 			fibswap(&a, &b);
 			break;
 		}
 		else {
-			printf("%d, ", a);
+			printf("%ld, ", a);
 			fibswap(&a, &b);
 		}
 
 	}
-	printf("%d\n", a);
+	printf("%ld\n", a);
 }
 
 /* make 'a' and 'b' take values of next pair in a sequence:
  * new 'b' becomes old 'a' + old 'b'
  * new 'a' becomes old 'b'
  */
-void fibswap(int *a, int *b) {
-	int c = *a + *b;
+void fibswap(unsigned long *a, unsigned long *b) {
+	unsigned long c = *a + *b;
 	*a = *b;
 	*b = c;
 }
