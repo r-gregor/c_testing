@@ -7,13 +7,17 @@ void *my_memcpy(void *dest, void *src, size_t n);
 
 void *my_memcpy(void *dest, void *src, size_t n) {
 	char *d = dest;
-	char *s = src;
+	const char *s = src;
 
-	for (size_t i = 0; i < n; ++i) {
-		d[i] = s[i];
-	}
+	/*
+	 * for (size_t i = 0; i < n; ++i) {
+	 * 	d[i] = s[i];
+	 * }
+	*/
+
+	/* same ... */
+	for (; n; n--) *d++ = *s++;
+
 	return dest;
 }
-
-
 
