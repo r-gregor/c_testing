@@ -1,5 +1,5 @@
 /*
- * friom: Coding in C as My Mouse Dies ...
+ * from: Coding in C as My Mouse Dies ...
  *        https://www.youtube.com/watch?v=UhJC0wsxc_I&t=4s
  *        at: 01:50:57/02:59:22
  */
