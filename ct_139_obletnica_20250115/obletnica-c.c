@@ -1,5 +1,5 @@
 /*
- * obletnica_36_v2.c
+ * obletnica-c.c
  * v1: 20250115 d
  * v2: 20250115 en
  * v3: 20250325 en
