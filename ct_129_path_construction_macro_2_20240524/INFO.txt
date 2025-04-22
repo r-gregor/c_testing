@@ -3,7 +3,7 @@ source: New Build System in C — Part 1 (Tsoding Daily)
 
 ---
 20240524:
-	join all inetrfaces into single heade: ubuild.h
+	join all inetrfaces into single header: ubuild.h
 	update *.c and Makefile acordingly
 
 ---
