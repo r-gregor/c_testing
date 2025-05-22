@@ -1,4 +1,4 @@
-/* 
+/*
  * filename: timediff-v3.c
  * 20250522 v1 en
  * 20250522 v2 en: move all time string and number parts into single struct
@@ -27,13 +27,13 @@ int sid = 24*60*60;  /* seconds in day */
 
 int main(int argc, char **argv) {
 
-	char *T1 = "06000";
+	char *T1 = "061545";
 	if (is_not_number(T1)) {
 		printf("[ERROR] Argument must be a number in format HHMMSS (example: 120533)\n");
 		return -1;
 	}
 
-	char *T2 = "153333";
+	char *T2 = "153013";
 	if (is_not_number(T2)) {
 		printf("[ERROR] Argument must be a number in format HHMMSS (example: 120533)\n");
 		return -1;
