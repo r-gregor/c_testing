@@ -1,7 +1,7 @@
 /* 
  * filename: timediff-v2.c
  * 20250522 v1 en
- * 20250522 v2 en
+ * 20250522 v2 en: move all time string and number parts into single struct
  */
 #include <stdio.h>
 #include <string.h>
