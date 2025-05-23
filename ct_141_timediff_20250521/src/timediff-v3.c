@@ -10,16 +10,16 @@
 #include <stdbool.h>
 #include <ctype.h>
 
-typedef struct Time_str {
+typedef struct Time_String {
 	int H;
 	int M;
 	int S;
 	char time[9];
 	int total_s;
-} Time_str;
+} Time_String;
 
 bool is_not_number(char *T);
-void make_time(Time_str *tmi, char *T);
+void make_time(Time_String *tmi, char *T);
 
 int sih = 60 * 60;   /* seconds in hour */
 int sim = 60;        /* seconds in minute */
@@ -39,8 +39,8 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	Time_str start = {0};
-	Time_str end = {0};
+	Time_String start = {0};
+	Time_String end = {0};
 
 	make_time(&start, T1);
 	make_time(&end, T2);
@@ -81,7 +81,7 @@ bool is_not_number(char *T) {
 	return false;
 }
 
-void make_time(Time_str *tm, char *T) {
+void make_time(Time_String *tm, char *T) {
 	char Ths[3] = {0};
 	char Tms[3] = {0};
 	char Tss[3] = {0};
