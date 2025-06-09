@@ -11,6 +11,13 @@ int main() {
 			STD = "C17";
 			break;
 
+		case 202311L:
+			STD = "C23 (-std=c2x)";
+			break;
+
+		case 202000:
+			STD = "C23 (-std=c2x)";
+			break;
 		case 199901L:
 			STD = "C99";
 			break;
@@ -20,6 +27,7 @@ int main() {
 			break;
 
 		default:
+			printf("__STDC_VERSION__: %ld\n", __STDC_VERSION__);
 			printf("[ERROR] Unknown std\n");
 			return -1;
 	}
