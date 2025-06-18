@@ -1,6 +1,7 @@
 /*
  * filename: lookup-table-test.c
  * 20250618 v1 en
+ * 20250618 v2 d
  */
 
 #include <stdio.h>
@@ -36,7 +37,7 @@ int main(int argc, char **argv) {
 }
 
 void print_weekday(int num) {
-	if (num < 0) {
+	if (num <= 0) { // v2
 		// printf("Day of the week at number %5d: ", num);
 		// printf("-- must be 0 or greater\n");
 		return;
