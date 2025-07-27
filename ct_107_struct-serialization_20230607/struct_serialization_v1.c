@@ -12,7 +12,7 @@
 // as tuple:
 const char* PERSON_FORMAT_OUT = "(%s, %d, %c)\n";
 const char* PERSON_FORMAT_IN = "(%[^,], %d, %c)\n";  // NOT %s - it reades till the space!
-													 // [^,]   - it reads everithing up to the comma
+                                                     // [^,]   - it reads everithing up to the comma
 char *fname = "people.dat";
 bool is_jason = false;
 #else
