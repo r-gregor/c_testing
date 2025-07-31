@@ -103,7 +103,7 @@ int main(void) {
 	// print_tree(stdout, root, 0);
 	save_node_poll_to_file(&global_node_pool, FRUITS_BIN_PATH);
 
-#if 0
+#if 1
 	/* my addition */
 	char *fname = "OUTPUT.txt";
 	printf("---\nPrinting tree to file '%s' ... ", fname);
