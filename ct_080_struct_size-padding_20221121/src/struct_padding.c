@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 
 	// ep2
 	Foo *foo = (Foo *) heap;
-	for (size_t	i=0; i < sizeof(foo->xs); ++i) {
+	for (size_t i=0; i < sizeof(foo->xs); ++i) {
 		foo->xs[i] = i + 1;
 	}
 	foo->ptr = foo;
