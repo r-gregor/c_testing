@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
 	fseek(file, 0, SEEK_SET);
 
 	// fscanf_s(file, PERSON_FORMAT_IN, p2.name, 20, &p2.age, &p2.gender); // fscanf_s expects addresses and buffer length!
-	fscanf(file, PERSON_FORMAT_IN, p2.name, &p2.age, &p2.gender);        // fscanf expects addresses!
+	fscanf(file, PERSON_FORMAT_IN, p2.name, &p2.age, &p2.gender);          // fscanf expects addresses!
 	fclose(file);
 
 	if(!is_jason) {
