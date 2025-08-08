@@ -1,0 +1,56 @@
+from: An Introduction to Arenas in C (https://www.youtube.com/watch?v=5uuTS1xN0X0)
+      (ytb-channel: https://www.youtube.com/@aliawan6245)
+
+How to align arena pointer to alignment size
+============================================
+
+	typedef struct Arena {
+		char *buffer;
+		uint64_t current_offset;
+		uint64_t buffer_size;
+	} Arena;
+
+	void *arena_init(Arena * arena, uint64_t buffer_size) {
+		.buffer         = malloc(buffer_size);
+		.current_offset = buffer_size;
+		.current_offset = 0;
+	}
+
+	/* When allocating an arena add an 'align_size' parameter: */
+	void *arena_alloc(Arena *arena, uint64_t num_of_elements, uint64_t elem_size, uint64_t align_size) {
+	
+	/* The idea is to use bit manipulation based on the observation that if n is a power of 2, then its binary
+	 * representation has exactly one bit set to 1, and n-1 will have all bits to the right of that bit set to 1.
+	 * Therefore, n & (n-1) will always be 0 for powers of 2
+	 */
+	/*  1 - check if align_size 'is not' 0 and 'is' the power of 2: */
+		if(align_size == 0 || (align_size & (align_size - 1)) == 1) {  /* using bit shifting and AND-ing -- much more efficient */
+			return NULL;
+		}
+	
+	/*  2 - check for possible buffer owerflow: */
+		uintptr_t allocation_size = num_of_elements * elem_size;
+		if (allocation_size < elem_size) {
+			return NULL;
+		}
+	
+	/*  3 - calculate required padding so that pointer is aligned: */
+		uintptr_t total_offset = (uintptr_t)arena->buffer + (uintptr_t)arena->current_offset;
+		// uintptr_t padding = total_offset % align_size;              /* using modulo */
+		uintptr_t padding = (~total_offset + 1) &  (align_size - 1);   /* using bit shifting and AND-ing -- much more efficient */
+		total_offset += padding;
+	
+	/*  4 - check if there is enouhg space left for new allocation: */
+		if (total_offset + allocation_size > (uintptr_t)arena->buffer_size + (uintptr_t)arena->buffer) {
+			return NULL;
+		}
+	
+	/*  If all is OK: */
+		arena->current_offset += (allocation_size + padding);
+		memset((void *)total_offset, 0, allocation_size);
+		return (void *)total_offset;
+	
+	}
+
+...
+
