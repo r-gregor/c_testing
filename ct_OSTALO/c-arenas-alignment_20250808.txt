@@ -52,5 +52,37 @@ How to align arena pointer to alignment size
 	
 	}
 
+	/* reset arena */
+	void arena_reset_pointer(Arena *arena) {
+		arena->current_offset = 0;
+		memset(arena->buffer, 0, arena->buffer_size);
+	}
+
+	/* just for test of printing the contents after freeing the buffer
+	 * it displays some garbage data, so have to use 'arena_reset_pointer()'
+	 * function
+	 */
+	void arena_free(Arena *arena) {
+		arena->current_offset = 0;
+		free(arena->buffer);
+	}
+
 ...
+
+/* TEST */
+int main(void) {
+	Arena arena = {};
+	arena_init(&arena, 10 * 1024);
+	int *a = arena_alloc(&arena, 1, sizeof(int), _Alignof(int));
+	*a = 50;
+	printf("%d\n", *a);
+
+	arena_reset_pointer(&arena);
+
+	char *b = arena_alloc(&arena, 100, sizeof(char), _Alignof(char));
+	strcpy(b, "A string.");
+	printf("'%d'\n", b);
+
+	return 0;
+}
 
