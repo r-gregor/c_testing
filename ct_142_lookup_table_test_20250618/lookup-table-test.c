@@ -14,7 +14,7 @@ const char *week_days[] = {
 	"Wednesday",
 	"Thursday",
 	"Friday",
-	"Sunday"
+	"Saturday"
 };
 
 void print_weekday(int num);
@@ -27,8 +27,10 @@ int main(int argc, char **argv) {
 	print_weekday(0);
 	print_weekday(-1);
 	print_weekday(24);
+	print_weekday(13);
 	print_weekday(7);
 	print_weekday(9);
+	print_weekday(27);
 	print_weekday(4);
 	print_weekday(3);
 	print_weekday(2);
