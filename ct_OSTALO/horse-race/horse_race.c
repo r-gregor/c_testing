@@ -14,19 +14,18 @@
 // If on a Windows system we can count on _WIN32 defined, otherwise we assume
 // we are on a POSIX system (Unix-like systems like MacOS, Linux)
 //
-#ifdef _WIN32 
+#ifdef _WIN32
 	#include <windows.h>
 #else
 	#include <unistd.h>
 #endif
-  
+
 // Defines the number of horses and length of the track
 #define NUM_HORSES 8
 #define TRACK_LENGTH 100
 
 // Custom sleeop function which calls the right sleep function for the platform
-void sleep_ms(int milliseconds)
-{
+void sleep_ms(int milliseconds) {
 #ifdef _WIN32
 	Sleep(milliseconds);
 #else
@@ -35,16 +34,13 @@ void sleep_ms(int milliseconds)
 }
 
 // Prints the state of the race to the terminal given the horse positions
-void print_race(int positions[])
-{
+void print_race(int positions[]) {
 	// For each horse we print a track
-	for (int i = 0; i < NUM_HORSES; i++)
-	{
+	for (int i = 0; i < NUM_HORSES; i++) {
 		// Print the track for this horse, outputting the horse where they are
 		// currently positioned on the track
 		printf("|");
-		for (int j = 0; j < TRACK_LENGTH; j++)
-		{
+		for (int j = 0; j < TRACK_LENGTH; j++) {
 			if (j == positions[i]) printf("🐎");
 			else printf("-");
 		}
@@ -53,11 +49,10 @@ void print_race(int positions[])
 
 	// Ensures that all the text above is output to the terminal and not 
 	// buffered in stdout
-	fflush(stdout); 
+	fflush(stdout);
 }
 
-int main(void)
-{
+int main(void) {
 	// Keeps track of the position of the horses
 	int positions[NUM_HORSES];
 
@@ -73,8 +68,7 @@ int main(void)
 	srand( (unsigned int) time(NULL) );
 
 	// Initially all horses begin on the far right of the track
-	for (int i = 0; i < NUM_HORSES; i++)
-	{
+	for (int i = 0; i < NUM_HORSES; i++) {
 		positions[i] = TRACK_LENGTH - 1;
 	}
 
@@ -83,19 +77,16 @@ int main(void)
 	
 	// A crude 'game loop' that updates the game state and then outputs the next
 	// 'frame of animation', the loop continues so long as no horse has won
-	while (total_winners == 0)
-	{
+	while (total_winners == 0) {
 		// Update each horses position
-		for (int i = 0; i < NUM_HORSES; i++)
-		{
+		for (int i = 0; i < NUM_HORSES; i++) {
 			// Move each horse towards the finish between 0-2 positions with
 			// each frame of animation, determined randomly
 			positions[i] -= rand() % 3; 
 
 			// If a horse 'crosses the finish line' then add them to the 
 			// winners array
-			if (positions[i] <= 0)
-			{
+			if (positions[i] <= 0) {
 				// Set the horse's position to 0 so they are drawn at the end
 				// of the track
 				positions[i] = 0;
@@ -125,7 +116,7 @@ int main(void)
 
 		// Output the state of the game to the terminal and overwrite the 
 		// existing output in the process
-		print_race(positions);	  
+		print_race(positions);
 	}
 
 	// Randomly select the ultimate winner horse from any horse that crossed 
