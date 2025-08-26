@@ -19,19 +19,19 @@ typedef struct Vector3 {
 
 /* declare object pool */
 /* to keep track of awailable objects */
-typedef struct PoolObject {
+typedef struct Object_t {
 	bool allocated;
 	Vector3 obj;
-} PoolObject;
+} Object_t;
 
 #define NUM_OBJCTS 10
-PoolObject object_pool[NUM_OBJCTS] = {0};
+Object_t objects_pool[NUM_OBJCTS] = {0};
 
 Vector3 *BorrowVector3(void) {
 	for (int i=0; i < NUM_OBJCTS; i++) {
-		if (object_pool[i].allocated == false) {
-			object_pool[i].allocated = true;
-			return &(object_pool[i].obj);
+		if (objects_pool[i].allocated == false) {
+			objects_pool[i].allocated = true;
+			return &(objects_pool[i].obj);
 		}
 	}
 	return NULL; /* if all the object are borrowed */
@@ -41,9 +41,9 @@ Vector3 *BorrowVector3(void) {
 // v1: not fast due to for-looping over all objects
 void ReturnVector3(Vector3 *v) {
 	for (int i=0; i <  NUM_OBJCTS; i++) {
-		if (&(object_pool[i].obj) == v) {
-			assert(object_pool[i].allocated);
-			object_pool[i].allocated = false;
+		if (&(objects_pool[i].obj) == v) {
+			assert(objects_pool[i].allocated);
+			objects_pool[i].allocated = false;
 			return;
 		}
 	}
@@ -55,11 +55,11 @@ void ReturnVector3(Vector3 *v) {
 // v2: faster!
 void ReturnVector3(Vector3 *v) {
 	/* get index number from pointer position */
-	unsigned int i = ((uintptr_t)v - (uintptr_t)object_pool) / sizeof(PoolObject);
+	unsigned int i = ((uintptr_t)v - (uintptr_t)objects_pool) / sizeof(Object_t);
 
-	assert(&(object_pool[i].obj) == v);
-	assert(object_pool[i].allocated);
-	object_pool[i].allocated = false;
+	assert(&(objects_pool[i].obj) == v);
+	assert(objects_pool[i].allocated);
+	objects_pool[i].allocated = false;
 	return;
 }
 
