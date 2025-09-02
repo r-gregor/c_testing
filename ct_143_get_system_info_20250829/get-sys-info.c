@@ -1,6 +1,6 @@
 /*
  * filename: get-sys-info.c
- * last change 20250829
+ * last change: 20250902 (d)
  */
 
 #include <stdio.h>
@@ -10,6 +10,8 @@
 #include <stdlib.h>
 
 #define MAX_CHARS 256
+
+char * cuserid(char *);
 
 struct sysinfo sys_info;
 typedef struct sysinfo * SINFO_ptr ;
@@ -22,10 +24,12 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	char *user_name = getlogin();
+	// char *user_name = getlogin(); // works on CYGWIN
+	char user_name[256];
+    cuserid(user_name);
 	if (user_name == NULL) {
 		printf("[ERROR] could not get username\n");
-		return -1;
+		// return -1;
 	}
 
 
