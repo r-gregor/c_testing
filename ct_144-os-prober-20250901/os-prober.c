@@ -29,6 +29,6 @@ int main(int argc, char *argv[]) {
 		printf("[ERROR] could note get sysinfo\n");
 	}
 	printf("[INFO] %-*s %-*s %s\n", plcs, "sysname:", plcs +10, sysinfo.sysname, "(utsname/sysname)");
-    
+
 	return 0;
 }
