@@ -1,0 +1,14 @@
+On Cygwin (Win):
+1 - start a process (notepad++ for example)
+2 - get the win PID: ps -W | grep notepad --> 13144
+3 - run: bin/process-injection-exmpl-v1 13144
+
+OUTPUT:
+$> bin/process-injection-exmpl-v1 13144
+[+] trying to open a handle to process (13144)
+[+] got a handle to the process!
+\---0x0x150
+[+] allocated 10-bytes with PAGE_EXECUTE_READWRITE permissions
+
+---
+
