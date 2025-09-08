@@ -8,6 +8,9 @@
 
 int main(int argc, char **argv) {
 
+	STARTUPINFOW si = {0};
+	PROCESS_INFORMATION pi = {0};
+
 	/* original from:
 	 * https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw
 	BOOL CreateProcessW(
@@ -22,11 +25,7 @@ int main(int argc, char **argv) {
 		[in]                LPSTARTUPINFOW        lpStartupInfo,
 		[out]               LPPROCESS_INFORMATION lpProcessInformation
 	);
-	*/ 
-
-	STARTUPINFOW si = {0};
-	PROCESS_INFORMATION pi = {0};
-
+	*/
 	if(!CreateProcessW(
 		L"c:\\Windows\\System32\\notepad.exe",
 		NULL,

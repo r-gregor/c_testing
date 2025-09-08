@@ -31,13 +31,13 @@ int main(int argc, char **argv) {
 	printf("%s trying to open a handle to process (%ld)\n", i, (unsigned long)PID);
 
 	/* open handle to the process */
-	/* from https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess 
+	/* from https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess
     HANDLE OpenProcess(
         [in] DWORD dwDesiredAccess,
         [in] BOOL  bInheritHandle,
         [in] DWORD dwProcessId
     );
-	 */
+	*/
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, PID);
 	printf("%s got a handle to the process!\n\\---0x%p\n", k, hProcess);
 
@@ -46,7 +46,8 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	/* allocate bytes to process memory
+	/* allocate bytes to process memory */
+	/*
     LPVOID VirtualAllocEx(
         [in]           HANDLE hProcess,
         [in, optional] LPVOID lpAddress,
@@ -60,3 +61,4 @@ int main(int argc, char **argv) {
 
 	return EXIT_SUCCESS;
 }
+
