@@ -3,7 +3,7 @@
 CC=gcc
 CFLAGS=-g -Wall
 OBJS=main.o matrix.o ui.o
-# LDFLAGS="-I C:\Users\gregor.redelonghi\majstaf\majprogs\cygwin64\usr\include -L C:\Users\gregor.redelonghi\majstaf\majprogs\cygwin64\lib -lncurses"
+# LDFLAGS="-I C:\Users\gregor.redelonghi\majstaf_en\majprogs_en\cygwin64\usr\include -L C:\Users\gregor.redelonghi\majstaf\majprogs\cygwin64\lib -lncurses"
 LDFLAGS=-lncurses
 
 
