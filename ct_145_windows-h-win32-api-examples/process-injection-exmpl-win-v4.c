@@ -20,7 +20,7 @@
 int get_process_id_by_name(const char *procname);
 
 const char *k = "[+]";
-const char *i = "[+]";
+const char *i = "[*]";
 const char *e = "[-]";
 
 DWORD PID = 0;                    /* for OpenProcess() function */
