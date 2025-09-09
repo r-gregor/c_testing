@@ -6,7 +6,7 @@
  * v3: add get_process_id_by_name() function
  *     get PID from get_process_id_by_name() function
  * v4: WaitForSingleObject() function
- * last: 20250908 (en)
+ * last: 20250909 (en)
  */
 #include <stdio.h>
 #include <windows.h>
