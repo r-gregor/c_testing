@@ -1,10 +1,11 @@
 /*
  * filename: create-process-exmpl.c
- * last: 20250908
+ * last: 20250909 (v2)
  */
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
+#include <wchar.h> /* v2 */
 
 int main(int argc, char **argv) {
 
@@ -27,8 +28,10 @@ int main(int argc, char **argv) {
 		[out]               LPPROCESS_INFORMATION lpProcessInformation
 	);
 	*/
+	wchar_t path[] = L"c:\\Windows\\System32\\notepad.exe"; /* v2 */
 	if(!CreateProcessW(
-		L"c:\\Windows\\System32\\notepad.exe",
+		/* L"c:\\Windows\\System32\\notepad.exe", */
+		path,                                               /* v2 */
 		NULL,
 		NULL,
 		NULL,
@@ -47,7 +50,8 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	printf("(+) process started! pid: %ul\n", pi.dwProcessId);
+	/* printf("(+) process started! pid: %ul\n", pi.dwProcessId); */
+	printf("(+) staring process: \"%ls\" with pid: %ul\n", path, pi.dwProcessId); /* v2 */
 
 
 	return EXIT_SUCCESS;
