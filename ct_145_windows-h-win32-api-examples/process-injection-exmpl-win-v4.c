@@ -5,6 +5,7 @@
  * v2: writing to virtual memory
  * v3: add get_process_id_by_name() function
  *     get PID from get_process_id_by_name() function
+ * v4: WaitForSingleObject() function
  * last: 20250908 (en)
  */
 #include <stdio.h>
@@ -117,15 +118,27 @@ int main(int argc, char **argv) {
 
 	printf("%s got a handle to the thread (%ld)!\n\\---0x%p\n", k, (unsigned long)TID, hThread);
 
-	printf("Cleaning up ...\n");
+	/* v4 */
+	/* from: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+
+       DWORD WaitForSingleObject(
+           [in] HANDLE hHandle,
+           [in] DWORD  dwMilliseconds
+       );
+	 */
+	printf("%s waiting for thread to finish ...\n", i);
+	WaitForSingleObject(hThread, INFINITE);
+	printf("%s thread finished executing\n", k);
+
+	printf("%s cleaning up ...\n", i);
 	CloseHandle(hThread);
 	CloseHandle(hProcess);
-	printf("done!\n");
+	printf("%s done!\n", i);
 
 	return EXIT_SUCCESS;
 }
 
-
+/* MINE !! */
 int get_process_id_by_name(const char *procname) {
 
 	HANDLE hSnapshot;

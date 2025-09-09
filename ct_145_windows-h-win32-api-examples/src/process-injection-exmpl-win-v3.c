@@ -4,7 +4,7 @@
  *       https://www.youtube.com/watch?v=A6EKDAKBXPs
  * v2: writing to virtual memory
  * v3: add get_process_id_by_name() function
- *     get PID from  get_process_id_by_name() function
+ *     get PID from get_process_id_by_name() function
  * last: 20250908 (en)
  */
 #include <stdio.h>
@@ -15,8 +15,8 @@
 #include <string.h>
 #include <tlhelp32.h>
 
-int get_process_id_by_name(const char *procname);
 /* v3 */
+int get_process_id_by_name(const char *procname);
 
 const char *k = "[+]";
 const char *i = "[+]";
@@ -117,15 +117,15 @@ int main(int argc, char **argv) {
 
 	printf("%s got a handle to the thread (%ld)!\n\\---0x%p\n", k, (unsigned long)TID, hThread);
 
-	printf("Cleaning up ...\n");
+	printf("%s cleaning up ...\n", i);
 	CloseHandle(hThread);
 	CloseHandle(hProcess);
-	printf("done!\n");
+	printf("%s done!\n", i);
 
 	return EXIT_SUCCESS;
 }
 
-
+/* MINE !! */
 int get_process_id_by_name(const char *procname) {
 
 	HANDLE hSnapshot;
@@ -159,3 +159,4 @@ int get_process_id_by_name(const char *procname) {
 	CloseHandle(hSnapshot);
 	return pid;
 }
+
