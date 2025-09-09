@@ -4,7 +4,7 @@
  *       https://www.youtube.com/watch?v=A6EKDAKBXPs
  * v2: writing to virtual memory
  * v3: add get_process_id_by_name() function
- *     get PID from  get_process_id_by_name() function
+ *     get PID from get_process_id_by_name() function
  * last: 20250908 (en)
  */
 #include <stdio.h>
@@ -15,8 +15,8 @@
 #include <string.h>
 #include <tlhelp32.h>
 
-int get_process_id_by_name(const char *procname);
 /* v3 */
+int get_process_id_by_name(const char *procname);
 
 const char *k = "[+]";
 const char *i = "[+]";
@@ -86,6 +86,8 @@ int main(int argc, char **argv) {
 
 	/* create thread to run our payload */
 	/*
+	 * Creates a thread that runs in the virtual address space of another process
+	 *
     HANDLE CreateRemoteThreadEx(
         [in]            HANDLE                       hProcess,
         [in, optional]  LPSECURITY_ATTRIBUTES        lpThreadAttributes,
@@ -157,3 +159,4 @@ int get_process_id_by_name(const char *procname) {
 	CloseHandle(hSnapshot);
 	return pid;
 }
+

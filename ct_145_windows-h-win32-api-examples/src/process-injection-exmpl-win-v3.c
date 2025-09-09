@@ -86,6 +86,8 @@ int main(int argc, char **argv) {
 
 	/* create thread to run our payload */
 	/*
+	 * Creates a thread that runs in the virtual address space of another process
+	 *
     HANDLE CreateRemoteThreadEx(
         [in]            HANDLE                       hProcess,
         [in, optional]  LPSECURITY_ATTRIBUTES        lpThreadAttributes,
