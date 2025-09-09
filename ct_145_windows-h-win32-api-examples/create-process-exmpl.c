@@ -8,6 +8,7 @@
 
 int main(int argc, char **argv) {
 
+	/* [**1] */
 	STARTUPINFOW si = {0};
 	PROCESS_INFORMATION pi = {0};
 
@@ -35,7 +36,8 @@ int main(int argc, char **argv) {
 		BELOW_NORMAL_PRIORITY_CLASS,
 		NULL,
 		NULL,
-		/* from: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessasuserw
+		/* [**1]
+		 * from: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessasuserw
 		 * [in] lpStartupInfo: A pointer to a STARTUPINFO or STARTUPINFOEX structure ...
 		 * [out] lpProcessInformation: A pointer to a PROCESS_INFORMATION structure ...
 		 */

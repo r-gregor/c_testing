@@ -9,7 +9,14 @@
 
 int main(int argc, char **argv) {
 
-
+	/* from: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-messageboxa
+     int MessageBoxA(
+         [in, optional] HWND   hWnd,
+         [in, optional] LPCSTR lpText,
+         [in, optional] LPCSTR lpCaption,
+         [in]           UINT   uType
+     );
+	 */
 	MessageBoxW(
 		NULL,
 		L"MY FIRST MESSAGEBOX!",
@@ -19,3 +26,4 @@ int main(int argc, char **argv) {
 
 	return EXIT_SUCCESS;
 }
+
