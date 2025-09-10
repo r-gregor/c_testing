@@ -28,7 +28,7 @@ DWORD TID = 0;                    /* for WriteProcessMemory() function */
 HANDLE hProcess, hThread = NULL;  /* for OpenProcess() function */
 LPVOID rBuffer = NULL;            /* for VirtualAllocEx() function */
 
-unsigned char injected[] = "\x41\x41\x41\x41\x41\x41\x41\x4\x41"; /* unsigned char *crowPuke[] = ... */
+unsigned char injected[] = "\x41\x41\x41\x41\x41\x41\x41\x4\x41"; /* dummy payload (shellcode) */
 
 
 /* main */
