@@ -1,0 +1,3 @@
+echo "Command12"
+echo "Command23"
+echo "I am at $PWD"
