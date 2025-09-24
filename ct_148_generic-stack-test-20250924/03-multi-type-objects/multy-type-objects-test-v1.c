@@ -6,6 +6,7 @@
  * ---
  * 20250924 v1 en
  * last: 20250924
+ * STOPED on 20250924 at 03:35:30
  */
 #include <stdio.h>
 #include <string.h>
