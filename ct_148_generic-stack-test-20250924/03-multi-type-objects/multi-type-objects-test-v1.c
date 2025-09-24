@@ -1,39 +1,40 @@
 /*
  * filename: multy-type-objects-test-v1.c
- * from: C Programming and Memory Management - Full Course
+ * from: C Programming and Memory Management - Full Course --> Objects
  *       https://www.youtube.com/watch?v=rJrd2QMVbGM
  * at:   03:11:00 / 04:43:47
  * ---
  * 20250924 v1 en
  * last: 20250924
+ * STOPED on 20250924 at 03:35:30
  */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
+/* structures */
+
 /* forward declared struct
  * it will be used in circular dependency between:
  * object_t -> object_data_t -> vector_t
  */
-typedef struct Object object_t;
-
-/* structures */
 
 /* must be declared before object_data_t union whwere it is used -- size must be known! */
+typedef struct object object_t;
+
 typedef struct Vector {
 	object_t *x;
 	object_t *y;
 	object_t *z;
 } vector_t;
 
-
 typedef struct Array {
 	size_t size;
 	object_t **elements;
 } array_t;
 
-typedef enum ObjectKind {
+typedef enum object_kind {
 	INTEGER,
 	FLOAT,
 	STRING,
@@ -41,7 +42,7 @@ typedef enum ObjectKind {
 	ARRAY
 } object_kind_t;
 
-typedef union ObjectData {
+typedef union object_data {
 	int          v_int;
 	float      v_float;
 	char     *v_string;
@@ -49,7 +50,7 @@ typedef union ObjectData {
 	array_t    v_array;
 } object_data_t;
 
-typedef struct Object {
+typedef struct object {
 	object_kind_t kind;
 	object_data_t data;
 } object_t;
@@ -68,7 +69,7 @@ int obj_length(object_t *obj);
 /* ======================================================================== */
 /* main */
 int main(int argc, char **argv) {
-	printf("\n\t*** [INFO] everything seems to be OK ***\n");
+	printf("\n\t*** [INFO] everything seems to be OK ***\n\n");
 
 	return 0;
 } /* END main */
@@ -178,3 +179,4 @@ int obj_length(object_t *obj) {
 	}
 
 }
+
