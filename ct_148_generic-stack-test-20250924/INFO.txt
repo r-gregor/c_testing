@@ -1,0 +1,21 @@
+from: C Programming and Memory Management - Full Course
+      https://www.youtube.com/watch?v=rJrd2QMVbGM
+---
+196,044 views  Feb 4, 2025
+Learning how to manually manage memory in the C programming language.
+
+Timestamps:
+00:00:00 - Intro
+00:03:22 - Chapter 1: C Basics
+00:55:49 - Chapter 2: Structs
+01:08:58 - Chapter 3: Pointers
+01:50:42 - Chapter 4: Enums
+01:59:28 - Chapter 5: Unions
+02:11:25 - Chapter 6: Stack and Heap
+02:32:10 - Chapter 7: Advanced Pointers
+02:52:56 - Chapter 8: Stack Data Structure
+03:09:28 - Chapter 9: Objects
+03:48:37 - Chapter 10: Refcounting GC
+04:07:41 - Chapter 11: Mark and Sweep GC
+---
+
