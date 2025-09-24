@@ -1,5 +1,6 @@
 /*
  * filename: c-compound-literals-test.c
+ * 20250923 v1 en
  * 20250923 v2 d
  * last: 20250923
  */
@@ -19,21 +20,11 @@ void print_point(point_t);
 
 int main(int argc, char **argv) {
 
-	/* compound literal test 1:
-	for (int i = START; i < END; ++i) {
-		printf("char at %3d:            %c\n", i, i);
-		printf("char at %3d as string: \"%s\"\n", i, (char[]) {i, '\0'});
-		//                                                   +________________+
-		//                                                    compound literal
-	}
-	*/
-
-	/* v2 */
 	/* compound literal test 1: */
 	for (int i = START; i < END; ++i) {
 		printf("char at %3d: %c (\"%s\", as str)\n", i, i, (char[]) {i, '\0'});
-		//                                                      +________________+
-		//                                                        compound literal
+		//                                                  +________________+
+		//                                                    compound literal
 	}
 
 	/* compound literal test 2: */
