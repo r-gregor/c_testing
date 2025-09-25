@@ -104,8 +104,8 @@ void stack_push(stack_t *stack, void *obj) {
 void stack_free(stack_t *stack) {
 	if (stack == NULL) { return; }
 	if (stack->data != NULL ) { /* or 'if (stack->data) {' ... */
-		for (int i = 0; i < s->count; i++) {
-			free(s-data[i]);
+		for (int i = 0; i < stack->count; i++) {
+			free(stack->data[i]);
 		}
 		free(stack->data);
 		// stack->data = NULL;
@@ -113,6 +113,7 @@ void stack_free(stack_t *stack) {
 	free(stack);
 	// stack = NULL;
 }
+
 void stack_push_multiple_types(stack_t *s) {
 	/* float */
 	float *fptr = malloc(sizeof(float));
