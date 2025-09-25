@@ -5,6 +5,7 @@
  * at:   03:11:00 / 04:43:47
  * ---
  * 20250924 v1 en
+ * 20250924 v2 d
  * last: 20250924
  * STOPED on 20250924 at 03:35:30
  */
@@ -63,13 +64,13 @@ object_t *new_vector3(object_t *x, object_t *y, object_t *z);
 object_t *new_array(size_t size);
 bool array_set(object_t *obj, size_t index, object_t *value);
 object_t *array_get(object_t *obj, size_t index);
-int obj_length(object_t *obj);
+int obj_len(object_t *obj);
 /* TODO: up to here could go into objects.h */
 
 /* ======================================================================== */
 /* main */
 int main(int argc, char **argv) {
-	printf("\n\t*** [INFO] everything seems to be OK ***\n");
+	printf("\n\t*** [INFO] everything seems to be OK ***\n\n");
 
 	return 0;
 } /* END main */
@@ -166,7 +167,8 @@ object_t *array_get(object_t *obj, size_t index) {
 	return obj->data.v_array.elements[index];
 }
 
-int obj_length(object_t *obj) {
+/* function obj_len */
+int obj_len(object_t *obj) {
 	if (obj == NULL) { return -1; }
 
 	switch (obj->kind) {
@@ -177,6 +179,5 @@ int obj_length(object_t *obj) {
 		case ARRAY: return obj->data.v_array.size;
 		default: return -1;
 	}
-
 }
 
