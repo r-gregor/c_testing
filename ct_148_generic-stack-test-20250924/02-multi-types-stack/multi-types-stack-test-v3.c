@@ -51,7 +51,8 @@ int main(int argc, char **argv) {
 	printf("[INFO] test 3: freeing stack test\n");
 	stack_free(s);
 
-	if (s != NULL) { printf("  stack free-ed but NOT NULL-ed\n"); }
+	if (s != NULL) { printf("stack free-ed but nor NULL-ed\n"); }
+
 	printf("[INFO] test 3: OK\n\n");
 
 	return 0;
@@ -106,12 +107,13 @@ void stack_free(stack_t *stack) {
 	if (stack->data != NULL ) { /* or 'if (stack->data) {' ... */
 		for (int i = 0; i < stack->count; i++) {
 			free(stack->data[i]);
+			stack->data[i] = NULL;
 		}
 		free(stack->data);
-		// stack->data = NULL;
+		stack->data = NULL;
 	}
 	free(stack);
-	// stack = NULL;
+	stack = NULL;
 }
 
 void stack_push_multiple_types(stack_t *s) {
