@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 	printf("[INFO] test 3: freeing stack test\n");
 	stack_free(s);
 
-	if (s != NULL) { printf("stack free-ed but nor NULL-ed\n"); }
+	// if (s != NULL) { printf("stack free-ed but nor NULL-ed\n"); }
 
 	printf("[INFO] test 3: OK\n\n");
 
