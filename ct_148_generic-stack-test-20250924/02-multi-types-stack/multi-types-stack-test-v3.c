@@ -5,7 +5,8 @@
  *   at: 03:06:33 / 04:43:47
  * ---
  * 20250924 v3 en
- * last: 20250924
+ * 20250925 v4 en: udated stack_free function
+ * last: 20250925
  */
 #include <stdio.h>
 #include <string.h>
@@ -85,17 +86,33 @@ void stack_push(stack_t *stack, void *obj) {
 	return;
 }
 
+// /* function stack_free */
+// void stack_free(stack_t *stack) {
+// 	if (stack == NULL) { return; }
+// 	if (stack->data != NULL ) { /* or 'if (stack->data) {' ... */
+// 		free(stack->data);
+// 		// stack->data = NULL;
+// 	}
+// 	free(stack);
+// 	// stack = NULL;
+// }
+
+/* v4
+ * try 'doma' with valgrind
+ */
 /* function stack_free */
 void stack_free(stack_t *stack) {
 	if (stack == NULL) { return; }
 	if (stack->data != NULL ) { /* or 'if (stack->data) {' ... */
+		for (int i = 0; i < s->count; i++) {
+			free(s-data[i]);
+		}
 		free(stack->data);
 		// stack->data = NULL;
 	}
 	free(stack);
 	// stack = NULL;
 }
-
 void stack_push_multiple_types(stack_t *s) {
 	/* float */
 	float *fptr = malloc(sizeof(float));
