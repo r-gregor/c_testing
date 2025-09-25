@@ -64,7 +64,7 @@ object_t *new_vector3(object_t *x, object_t *y, object_t *z);
 object_t *new_array(size_t size);
 bool array_set(object_t *obj, size_t index, object_t *value);
 object_t *array_get(object_t *obj, size_t index);
-int obj_len(object_t *obj);
+int obj_get_len(object_t *obj);
 /* TODO: up to here could go into objects.h */
 
 /* ======================================================================== */
@@ -168,7 +168,7 @@ object_t *array_get(object_t *obj, size_t index) {
 }
 
 /* function obj_len */
-int obj_len(object_t *obj) {
+int obj_get_len(object_t *obj) {
 	if (obj == NULL) { return -1; }
 
 	switch (obj->kind) {
