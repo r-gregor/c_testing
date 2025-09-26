@@ -14,7 +14,7 @@
  */
 
 /* must be declared before object_data_t union whwere it is used -- size must be known! */
-typedef struct object object_t;
+typedef struct Object object_t;
 
 typedef struct Vector {
 	object_t *x;
@@ -27,7 +27,7 @@ typedef struct Array {
 	object_t **elements;
 } array_t;
 
-typedef enum object_kind {
+typedef enum Object_kind {
 	INTEGER,
 	FLOAT,
 	STRING,
@@ -35,7 +35,7 @@ typedef enum object_kind {
 	ARRAY
 } object_kind_t;
 
-typedef union object_data {
+typedef union Object_data {
 	int          v_int;
 	float      v_float;
 	char     *v_string;
@@ -43,7 +43,7 @@ typedef union object_data {
 	array_t    v_array;
 } object_data_t;
 
-typedef struct object {
+typedef struct Object {
 	object_kind_t kind;
 	object_data_t data;
 } object_t;
