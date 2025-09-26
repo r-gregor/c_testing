@@ -6,10 +6,10 @@ if [ ! -d ./bin ]; then
 	mkdir -v ./bin
 fi
 
-fname="multy-type-objects-modules-testi"
+fname="multi-type-objects-test"
 
 echo -n "[INFO] compiling ..."
-gcc -o ./bin/${fname} *.c *.h -lm && \
+gcc -o ./bin/${fname} *.c && \
 echo " done."
 echo "[INFO] running ..."
 	./bin/${fname}

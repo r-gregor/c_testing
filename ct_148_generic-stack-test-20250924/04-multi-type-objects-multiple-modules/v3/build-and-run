@@ -8,7 +8,9 @@ fi
 
 fname="multy-type-objects-modules-testi"
 
-echo "[INFO] compiling ..."
+echo -n "[INFO] compiling ..."
+gcc -o ./bin/${fname} *.c *.h -lm && \
+echo " done."
 echo "[INFO] running ..."
-gcc -o ./bin/${fname} *.c *.h && ./bin/${fname}
+	./bin/${fname}
 
