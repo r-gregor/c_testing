@@ -18,4 +18,14 @@ Timestamps:
 03:48:37 - Chapter 10: Refcounting GC
 04:07:41 - Chapter 11: Mark and Sweep GC
 ---
+keywords:
+switch statement
+object creation manipulation
+advanced free function
+3d vector distance function
+objects stack example
+advanced memory management
+build build-and-run shell scripts
+clear-bin shell script
+---
 
