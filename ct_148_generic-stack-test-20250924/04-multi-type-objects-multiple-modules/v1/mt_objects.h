@@ -1,5 +1,7 @@
 /*
+ * filename: mt_objects.h
  * 20250925 v2 d
+ * last: 20250925
  */
 
 #ifndef _MT_OBJECTS_H
@@ -63,3 +65,4 @@ object_t *array_get(object_t *obj, size_t index);
 int obj_get_len(object_t *obj);
 
 #endif
+

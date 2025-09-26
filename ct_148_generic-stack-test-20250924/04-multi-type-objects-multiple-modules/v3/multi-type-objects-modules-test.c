@@ -1,11 +1,12 @@
 /*
- * filename: multi-type-objects-modules-test-v1.c
+ * filename: multi-type-objects-modules-test.c
  * from: C Programming and Memory Management - Full Course --> Objects
  *       https://www.youtube.com/watch?v=rJrd2QMVbGM
  * at:   03:11:00 / 04:43:47
  * ---
  * 20250925 v1 d
  * 20250926 v2 en
+ * 20250926 v3 en
  * last: 20250926
  * STOPED on 20250924 at 03:35:30
  */
@@ -23,10 +24,8 @@ int main(int argc, char **argv) {
 	printf("---\n");
 	object_t *str1 = new_string("Gregor Redelonghi");
 	printf("string object value:   %s\n", str1->data.v_string);
-	/* v2
-	free(str1->data.v_string);
-	free(str1);
-	*/
+
+	/* v3 */
 	obj_free_string(str1);
 
 	object_t *fn1 = new_float(134);
@@ -48,12 +47,7 @@ int main(int argc, char **argv) {
 			coord.y->data.v_int,
 			coord.z->data.v_int);
 
-	/* v2
-	free(coord.x);
-	free(coord.y);
-	free(coord.z);
-	free(vec31);
-	*/
+	/* v3 */
 	obj_free_vesctor3(vec31);
 
 	printf("---\n");
@@ -70,14 +64,7 @@ int main(int argc, char **argv) {
 		printf("Family member %d: %s\n", i + 1, family1->data.v_array.elements[i]->data.v_string);
 	}
 
-	/* v2
-	for (int i = 0; i < fmem_num; i++) {
-		free(family1->data.v_array.elements[i]->data.v_string);
-		free(family1->data.v_array.elements[i]);
-	}
-	free(family1->data.v_array.elements);
-	free(family1);
-	*/
+	/* v3 */
 	obj_free_array(family1);
 
 	printf("\n");

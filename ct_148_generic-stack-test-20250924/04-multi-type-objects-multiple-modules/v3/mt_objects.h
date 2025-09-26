@@ -1,6 +1,8 @@
 /*
+ * filename: mt_objects.h
  * 20250926 v2 en
- * 20250926 v3 en
+ * 20250926 v3 en (single stb-style header)
+ * last: 20250926
  */
 
 #ifndef _MT_OBJECTS_H
