@@ -1,0 +1,2 @@
+v1:
+	* moved all free() statements into functions for all compound types

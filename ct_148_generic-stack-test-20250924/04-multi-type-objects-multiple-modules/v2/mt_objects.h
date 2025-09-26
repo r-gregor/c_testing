@@ -1,3 +1,7 @@
+/*
+ * 20250926 v2 en
+ */
+
 #ifndef _MT_OBJECTS_H
 #define _MT_OBJECTS_H
 
@@ -57,5 +61,10 @@ object_t *new_array(size_t size);
 bool array_set(object_t *obj, size_t index, object_t *value);
 object_t *array_get(object_t *obj, size_t index);
 int obj_get_len(object_t *obj);
+
+/* v2 */
+void obj_free_string(object_t *string);
+void obj_free_vesctor3(object_t *vector3);
+void obj_free_array(object_t *array);
 
 #endif

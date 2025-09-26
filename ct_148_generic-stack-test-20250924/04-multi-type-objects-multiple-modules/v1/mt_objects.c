@@ -1,3 +1,7 @@
+/*
+ * 20250924 v1 d
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
