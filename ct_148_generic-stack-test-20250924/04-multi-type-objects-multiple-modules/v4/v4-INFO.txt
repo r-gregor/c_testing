@@ -1,7 +1,11 @@
 v2:
 * moved all free() statements into functions for all compound types
 ---
-v3
+v3:
 * combined mt_objects.[c,h] into single stb-style header file
+---
+v4:
+* universal obj_free function
+* vec3_dist function -- distance between two vec3 points
 ---
 
