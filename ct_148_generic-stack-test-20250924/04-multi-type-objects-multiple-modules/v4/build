@@ -12,3 +12,4 @@ echo -n "[INFO] compiling ..."
 gcc -o ./bin/${fname} *.c *.h -lm && \
 echo " done."
 
+
