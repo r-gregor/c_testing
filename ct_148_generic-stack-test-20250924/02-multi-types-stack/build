@@ -6,11 +6,9 @@ if [ ! -d ./bin ]; then
 	mkdir -v ./bin
 fi
 
-fname="generic-stack-test"
+fname="multi-types-stack-test"
 
 echo -n "[INFO] compiling ..."
-gcc -o ./bin/${fname} *.c && \
+gcc -o ./bin/${fname} *.c && \;
 echo " done."
-echo "[INFO] running ..."
-	./bin/${fname}
 

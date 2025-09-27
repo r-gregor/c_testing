@@ -11,6 +11,4 @@ fname="generic-stack-test"
 echo -n "[INFO] compiling ..."
 gcc -o ./bin/${fname} *.c && \
 echo " done."
-echo "[INFO] running ..."
-	./bin/${fname}
 
