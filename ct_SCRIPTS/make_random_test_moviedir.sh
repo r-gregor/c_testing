@@ -15,7 +15,7 @@ function mkmvdr() {
 # action !
 mkmvdr
 
-# ↪  for N in $(seq 1 10); do mkmvdr; done
+# $> for N in $(seq 1 10); do mkmvdr; done
 # Movie 30 (2004)
 # Movie 10 (2004)
 # Movie 36 (2017)

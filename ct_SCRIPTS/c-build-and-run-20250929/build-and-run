@@ -1,0 +1,16 @@
+#! /usr/bin/env bash
+
+if [ ! -d ./bin ]; then
+	echo "[INFO] no './bin' directory"
+	echo -n "[INFO] "
+	mkdir -v ./bin
+fi
+
+fname="multy-type-objects-modules-testi"
+
+echo -n "[INFO] compiling ..."
+gcc -o ./bin/${fname} *.c *.h -lm && \
+echo " done."
+echo "[INFO] running ..."
+	./bin/${fname}
+
