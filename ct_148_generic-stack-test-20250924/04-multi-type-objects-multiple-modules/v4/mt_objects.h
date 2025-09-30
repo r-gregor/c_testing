@@ -17,12 +17,8 @@
 
 /* structures */
 
-/* forward declared struct
- * it will be used in circular dependency between:
- * object_t -> object_data_t -> vector_t
- */
-
-/* must be declared before object_data_t union whwere it is used -- size must be known! */
+/* forward declared struct */
+/* object_t must be declared before object_data_t union whwere it is used -- size must be known! */
 typedef struct Object object_t;
 
 typedef struct Vector {
