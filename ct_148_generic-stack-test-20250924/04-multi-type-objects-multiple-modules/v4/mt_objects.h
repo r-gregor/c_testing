@@ -6,8 +6,8 @@
  * last: 20250926
  */
 
-#ifndef _MT_OBJECTS_H
-#define _MT_OBJECTS_H
+#ifndef MT_OBJECTS_H
+#define MT_OBJECTS_H
 
 #include <stdio.h>
 #include <string.h>
