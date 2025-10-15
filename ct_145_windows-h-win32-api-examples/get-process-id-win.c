@@ -47,6 +47,11 @@ int get_process_id_by_name(const char *procname) {
 int main(int argc, char *argv[]) {
 	int pid = 0; // process ID
 
+	if (argc != 2) {
+		printf("[ERROR] no process name suplied\n");
+		return -1;
+	}
+
 	pid = get_process_id_by_name(argv[1]);
 	if (pid) {
 		printf("PID = %d\n", pid);
