@@ -33,23 +33,23 @@ typedef struct Person {
 	Date bd_date;
 	int age;
 	int day_diff;
-} Person;
+} Person_t;
 
 const char *fname = "ROJSTNIDNEVI.txt";
 Date *g_curr_date;
 int g_nLines = 0;
-Person **persons;
+Person_t **persons;
 int np = 0;
 
 /* ================== FUNCTION DECLARATIONS ============== */
 int getPositionOfDelim(wchar_t, wchar_t *);
-void displayPersonsAll(Person **);
-void displayPersonsDiff100(Person **persons);
-void displayPersonsIfFound(Person **persons, wchar_t *searchp); // v24
+void displayPersonsAll(Person_t **);
+void displayPersonsDiff100(Person_t **persons);
+void displayPersonsIfFound(Person_t **persons, wchar_t *searchp); // v24
 void wcs_to_lower(wchar_t *source, wchar_t *dest);              // v24
-Person *makePersonFromLine(wchar_t *);
-void printPerson(Person *);
-void freePerson(Person *);
+Person_t *makePersonFromLine(wchar_t *);
+void printPerson(Person_t *);
+void freePerson(Person_t *);
 void release_ptr(void *);
 int get_daydiff(Date *, Date *);
 int getNumOfLinesFromFile(const char *);
@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
 	// wprintf(L"%ls\n", path2);
 
 	g_nLines = getNumOfLinesFromFile(path1);
-	persons = malloc(sizeof(Person *) * g_nLines);
+	persons = malloc(sizeof(Person_t *) * g_nLines);
 	today = time(NULL);
 	today_ptr = localtime(&today);
 	g_curr_date = malloc(sizeof(Date));
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
 	}
 
 	/* qsort ... */
-	qsort(persons, g_nLines, sizeof(Person *), cmpfunc);
+	qsort(persons, g_nLines, sizeof(Person_t *), cmpfunc);
 	
 	/*
 	// v19
@@ -163,10 +163,10 @@ int getPositionOfDelim(wchar_t delim, wchar_t *line) {
  * with values in line. Frees malloc-ed Date after
  * updating person's field bd_date.
  */
-Person *makePersonFromLine(wchar_t *line) {
+Person_t *makePersonFromLine(wchar_t *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
-	Person *person = malloc(sizeof(Person));
+	Person_t *person = malloc(sizeof(Person_t));
 	person->name = malloc(sizeof(wchar_t) * (pos + 1));
 
 	wchar_t* ptr;
@@ -191,7 +191,7 @@ Person *makePersonFromLine(wchar_t *line) {
 /**
  * Prints formated contents of updated person.
  */
-void printPerson(Person *person) {
+void printPerson(Person_t *person) {
 	wprintf(L"%-30ls", person->name);
 	wprintf(L"%02ld.%02ld.%ld     ", person->bd_date.d, person->bd_date.m, person->bd_date.y);
 	wprintf(L"%-5ld", person->age);
@@ -210,7 +210,7 @@ void printPerson(Person *person) {
  * lowest to heighest
  */
 
-void displayPersonsAll(Person **persons) {
+void displayPersonsAll(Person_t **persons) {
 	int cols = 30 + 15 + 5 + 10;
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
 	for (int i=0; i<cols; i++) {
@@ -229,7 +229,7 @@ void displayPersonsAll(Person **persons) {
 /**
  * display persons with less than 100 days till BD
  */
-void displayPersonsDiff100(Person **persons) {
+void displayPersonsDiff100(Person_t **persons) {
 	int cols = 30 + 15 + 5 + 10;
 	crtc(cols);
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
@@ -247,7 +247,7 @@ void displayPersonsDiff100(Person **persons) {
 /**
  * display persons whose name contains search pattern
  */
-void displayPersonsIfFound(Person **persons, wchar_t *searchp) {
+void displayPersonsIfFound(Person_t **persons, wchar_t *searchp) {
 	int cols = 30 + 15 + 5 + 10;
 	crtc(cols);
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
@@ -282,7 +282,7 @@ void crtc(int n) {
 /**
  * Frees malloc-ed contents of 'person' struct.
  */
-void freePerson(Person *person) {
+void freePerson(Person_t *person) {
 	release_ptr(person->name);
 	release_ptr(person);
 }
@@ -333,8 +333,8 @@ int getNumOfLinesFromFile(const char *filename){
  */
 int cmpfunc(const void *a, const void *b) {
 
-    Person *pA = *(Person **)a;
-    Person *pB = *(Person **)b;
+    Person_t *pA = *(Person_t **)a;
+    Person_t *pB = *(Person_t **)b;
 
 	// smallest to biggest
     return (pA->day_diff - pB->day_diff);
