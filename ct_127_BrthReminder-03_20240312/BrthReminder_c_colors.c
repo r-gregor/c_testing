@@ -229,7 +229,7 @@ void displayPersonsAll(Person_t **persons) {
 		printPerson(persons[i]);
 	}
 	crtc(cols);
-	wprintf(L"Displaying ALL persons sorted by days till BD\n");
+	wprintf(L"Displaying ALL persons sorted by days till BD\n\n");
 }
 
 
@@ -249,7 +249,7 @@ void displayPersonsDiff100(Person_t **persons) {
 		}
 	}
 	crtc(cols);
-	wprintf(L"Displaying persons with less than 100 days till BD\n");
+	wprintf(L"Displaying persons with less than 100 days till BD\n\n");
 }
 
 /**
@@ -273,7 +273,7 @@ void displayPersonsIfFound(Person_t **persons, wchar_t *searchp) {
 		}
 	}
 	crtc(cols);
-	wprintf(L"Displaying persons with '%ls' pattern in name\n", searchp);
+	wprintf(L"Displaying persons with '%ls' pattern in name\n\n", searchp);
 
 }
 
