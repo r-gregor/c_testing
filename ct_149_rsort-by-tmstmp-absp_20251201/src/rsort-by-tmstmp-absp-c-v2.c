@@ -135,10 +135,6 @@ void putFnameIntoArray(DIR *dir) {
 		}
 		closedir(dir);
 	}
-	if ( !(fcount > 0)) {
-		printf("[ERROR] no files with timestamp found\n");
-		return;
-	}
 }
 
 int isNumber(char *s) {

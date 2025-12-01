@@ -1,8 +1,7 @@
 /* filename: rsort-by-tmstmp-absp_c.c
  * v1 20251201 en
- * v2 20251201  d: added abs path to fname to be used with fzf
- *                 correct valgrind test error: abs_path as char *pointer
  * based on:rsort-by-tmstmp_c.c
+ * added abs path to fname to be used with fzf ...
  * last: 20251201
  */
 
@@ -28,7 +27,7 @@ AbsFileName **filenames;
 int fcount;
 int numfr;
 char *newdate;
-char *abs_pathname;
+char abs_pathname[MAX_DIRNAME_LEN];
 
 void make_tmstmp(char *, char *);
 void putFnameIntoArray(DIR *);
@@ -48,19 +47,15 @@ int main(int argc, char ** argv) {
 	fcount = 0;
 	numfr = 1;
 	filenames = malloc((sizeof(AbsFileName *)) * FCOUNT_STEP);
-	abs_pathname = malloc(MAX_DIRNAME_LEN);
-	memset(abs_pathname, 0, MAX_DIRNAME_LEN);
 	DIR *dir;
 
 
 	if (argc == 2) {
 		dir = opendir(argv[1]);
-		memset(abs_pathname,0,MAX_DIRNAME_LEN);
-		strncpy(abs_pathname,argv[1],strlen(argv[1]));
+		strcpy(abs_pathname,argv[1]);
 
 	} else {
 		dir = opendir(DEFAULT_LOCATION);
-		memset(abs_pathname,0,MAX_DIRNAME_LEN);
 		strcpy(abs_pathname,DEFAULT_LOCATION);
 	}
 
@@ -72,18 +67,18 @@ int main(int argc, char ** argv) {
 	for (int i = 0; i < fcount; i++) {
 		fflush(stdout);
 		printf("%4d  ", i + 1);
-		printf("%-11s %s%s\n", filenames[i]->longdate, filenames[i]->abs_path, filenames[i]->fname);
+		printf("%-11s %s/%s\n", filenames[i]->longdate, filenames[i]->abs_path, filenames[i]->fname);
 	}
 
 	for (int i = 0; i < fcount; i++) {
 		release_ptr(filenames[i]->fname);
 		release_ptr(filenames[i]->longdate);
+		release_ptr(filenames[i]->abs_path);
 		release_ptr(filenames[i]);
 	}
 
 	release_ptr(filenames);
 	release_ptr(newdate);
-	release_ptr(abs_pathname);
 
 	return(0);
 } // end Main
@@ -126,18 +121,15 @@ void putFnameIntoArray(DIR *dir) {
 					filenames[fcount]            = fname_allocate(sizeof(AbsFileName));
 					filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
 					filenames[fcount]->longdate  = string_allocate(sizeof(char) * (LONG_DATE + 1));
-					filenames[fcount]->abs_path  = abs_pathname;
+					filenames[fcount]->abs_path  = string_allocate(sizeof(abs_pathname) + 1);
 					strcpy(filenames[fcount]->fname, dirent->d_name);
+					strcpy(filenames[fcount]->abs_path, realpath(abs_pathname, NULL));
 					make_tmstmp(filenames[fcount]->longdate, newdate);
-					fcount++;;
+					fcount++;
 				}
 			}
 		}
 		closedir(dir);
-	}
-	if ( !(fcount > 0)) {
-		printf("[ERROR] no files with timestamp found\n");
-		return;
 	}
 }
 
