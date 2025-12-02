@@ -2,7 +2,7 @@
  * filename: rsort-by-accdate-c.c
  * 20220912 v5 en: -  gmtime() --> month +1 (range from 0 to 11!)
  * 20240819 v5 en: -  perror --> strerror
- * 20251202 v6 en: - add ERROR if no file with timestamp found
+ * 20251202 v6 en: - add ERROR if no directory found
  *                 - move everything in main into main driver function
  */
 
@@ -71,34 +71,37 @@ void make_long_date(char *file_name, char *tmstmp) {
 
 void putFnameIntoArray(DIR *dir) {
 	struct dirent *dirent;
-	if (dir) {
-		while ((dirent = readdir(dir)) != NULL) {
-			if (fcount == (FCOUNT_STEP * numfr)) {
-				numfr += 1;
-				filenames = realloc(filenames, (sizeof(FileName *)) * (FCOUNT_STEP * numfr));
+	if (!dir) {
+		printf( "[ERROR] no such directory\n\n");
+		return;
+	}
+
+	while ((dirent = readdir(dir)) != NULL) {
+		if (fcount == (FCOUNT_STEP * numfr)) {
+			numfr += 1;
+			filenames = realloc(filenames, (sizeof(FileName *)) * (FCOUNT_STEP * numfr));
+		}
+
+		if (strcmp(dirent->d_name, ".") != 0 && strcmp(dirent->d_name, "..") != 0) {
+			filenames[fcount]            = fname_allocate(sizeof(FileName));
+			filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
+			filenames[fcount]->long_date = string_allocate(sizeof(char) * (LONG_DATE + 1));
+			strcpy(filenames[fcount]->fname, dirent->d_name);
+			// test
+			//printf("fname:  %s\n", filenames[fcount]->fname);
+			//printf("d_name: %s\n", dirent->d_name);
+
+			fullpath = realpath(curr_path, NULL);
+			line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 3);
+			sprintf(line, "%s/%s", fullpath, dirent->d_name);
+			release_ptr(fullpath);
+			if ( dirent->d_type == DT_DIR ) {
+				strcat(line, "/");
 			}
 
-			if (strcmp(dirent->d_name, ".") != 0 && strcmp(dirent->d_name, "..") != 0) {
-				filenames[fcount]            = fname_allocate(sizeof(FileName));
-				filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
-				filenames[fcount]->long_date = string_allocate(sizeof(char) * (LONG_DATE + 1));
-				strcpy(filenames[fcount]->fname, dirent->d_name);
-				// test
-				//printf("fname:  %s\n", filenames[fcount]->fname);
-				//printf("d_name: %s\n", dirent->d_name);
-
-				fullpath = realpath(curr_path, NULL);
-				line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 3);
-				sprintf(line, "%s/%s", fullpath, dirent->d_name);
-				release_ptr(fullpath);
-				if ( dirent->d_type == DT_DIR ) {
-					strcat(line, "/");
-				}
-
-				make_long_date(line, filenames[fcount]->long_date);
-				free(line);
-				fcount++;
-			}
+			make_long_date(line, filenames[fcount]->long_date);
+			free(line);
+			fcount++;
 		}
 	}
 	if ( !(fcount > 0)) {
