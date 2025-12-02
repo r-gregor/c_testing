@@ -22,7 +22,6 @@
 #define SHORT_DATE 8
 #define LONG_DATE 10
 
-
 typedef struct filename {
 	char *fname;
 	char *long_date;
@@ -82,27 +81,29 @@ void putFnameIntoArray(DIR *dir) {
 			filenames = realloc(filenames, (sizeof(FileName *)) * (FCOUNT_STEP * numfr));
 		}
 
-		if (strcmp(dirent->d_name, ".") != 0 && strcmp(dirent->d_name, "..") != 0) {
-			filenames[fcount]            = fname_allocate(sizeof(FileName));
-			filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
-			filenames[fcount]->long_date = string_allocate(sizeof(char) * (LONG_DATE + 1));
-			strcpy(filenames[fcount]->fname, dirent->d_name);
-			// test
-			//printf("fname:  %s\n", filenames[fcount]->fname);
-			//printf("d_name: %s\n", dirent->d_name);
-
-			fullpath = realpath(curr_path, NULL);
-			line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 3);
-			sprintf(line, "%s/%s", fullpath, dirent->d_name);
-			release_ptr(fullpath);
-			if ( dirent->d_type == DT_DIR ) {
-				strcat(line, "/");
-			}
-
-			make_long_date(line, filenames[fcount]->long_date);
-			free(line);
-			fcount++;
+		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
+			continue;
 		}
+
+		filenames[fcount]            = fname_allocate(sizeof(FileName));
+		filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
+		filenames[fcount]->long_date = string_allocate(sizeof(char) * (LONG_DATE + 1));
+		strcpy(filenames[fcount]->fname, dirent->d_name);
+		// test
+		//printf("fname:  %s\n", filenames[fcount]->fname);
+		//printf("d_name: %s\n", dirent->d_name);
+
+		fullpath = realpath(curr_path, NULL);
+		line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 3);
+		sprintf(line, "%s/%s", fullpath, dirent->d_name);
+		release_ptr(fullpath);
+		if ( dirent->d_type == DT_DIR ) {
+			strcat(line, "/");
+		}
+
+		make_long_date(line, filenames[fcount]->long_date);
+		free(line);
+		fcount++;
 	}
 	if ( !(fcount > 0)) {
 		printf("[ERROR] no files found\n\n");
