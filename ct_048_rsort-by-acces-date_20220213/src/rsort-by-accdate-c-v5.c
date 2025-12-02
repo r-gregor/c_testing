@@ -1,3 +1,11 @@
+/*
+ * filename: rsort-by-accdate-c.c
+ * 20220912 v5 en: -  gmtime() --> month +1 (range from 0 to 11!)
+ * 20240819 v5 en: -  perror --> strerror
+ * 20251202 v6 en: - add ERROR if no file with timestamp found
+ *                 - move everything in main into main driver function
+ */
+
 #include <dirent.h>  
 #include <stdio.h> 
 #include <string.h> 
@@ -7,16 +15,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#include <errno.h>
 
 #define DEFAULT_LOCATION "."
 #define FCOUNT_STEP 200
 #define SHORT_DATE 8
 #define LONG_DATE 10
 
-/*
- * update 20220912:
- * gmtime() --> month +1 (range from 0 to 11!)
- */
 
 typedef struct filename {
 	char *fname;
@@ -38,7 +43,7 @@ char *string_allocate(size_t);
 void release_ptr(void *);
 void make_long_date(char *file_name, char *tmstmp);
 
-/**
+/*
  * Main
  */
 int main(int argc, char ** argv) {
@@ -80,7 +85,8 @@ int main(int argc, char ** argv) {
 void make_long_date(char *file_name, char *tmstmp) {
 	struct stat finfo;
 	if (stat(file_name, &finfo) == -1) {
-		perror("==>\tstat error");
+		// perror("==>\tstat error");
+		printf("%s ==>\tstat error: %s\n", file_name, strerror(errno));
 		exit(2);
 	}
 
@@ -111,7 +117,7 @@ void putFnameIntoArray(DIR *dir) {
 				//printf("d_name: %s\n", dirent->d_name);
 
 				fullpath = realpath(curr_path, NULL);
-				line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 2);
+				line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 3);
 				sprintf(line, "%s/%s", fullpath, dirent->d_name);
 				release_ptr(fullpath);
 				if ( dirent->d_type == DT_DIR ) {
@@ -123,6 +129,10 @@ void putFnameIntoArray(DIR *dir) {
 				fcount++;
 			}
 		}
+	}
+	if ( !(fcount > 0)) {
+		printf("[ERROR] no files found\n\n");
+		return;
 	}
 }
 

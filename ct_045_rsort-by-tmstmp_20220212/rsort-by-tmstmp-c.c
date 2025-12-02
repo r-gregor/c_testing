@@ -1,8 +1,8 @@
 /*
- * filename: f20_sort-by-tmstmp.c
- * v1 20221202 en f19
- * v2 20251202 en f20: - add ERROR if no file with timestamp found
- *                     - move everything in main into main driver function
+ * filename: rsort-by-tmstmp-c.c
+ * v19 20221202 en
+ * v20 20251202 en: - add ERROR if no file with timestamp found
+ *                  - move everything in main into main driver function
  * last: 20251202
  */
 #include <dirent.h>

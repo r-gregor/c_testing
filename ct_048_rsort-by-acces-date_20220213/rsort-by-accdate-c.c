@@ -1,3 +1,11 @@
+/*
+ * filename: rsort-by-accdate-c.c
+ * 20220912 v5 en: -  gmtime() --> month +1 (range from 0 to 11!)
+ * 20240819 v5 en: -  perror --> strerror
+ * 20251202 v6 en: - add ERROR if no file with timestamp found
+ *                 - move everything in main into main driver function
+ */
+
 #include <dirent.h>  
 #include <stdio.h> 
 #include <string.h> 
@@ -14,14 +22,6 @@
 #define SHORT_DATE 8
 #define LONG_DATE 10
 
-/*
- * update 20220912:
- * gmtime() --> month +1 (range from 0 to 11!)
- * ---
- * update 20240819:
- * perror --> strerror
- * ---
- */
 
 typedef struct filename {
 	char *fname;
@@ -42,44 +42,15 @@ FileName *fname_allocate(size_t);
 char *string_allocate(size_t);
 void release_ptr(void *);
 void make_long_date(char *file_name, char *tmstmp);
+void rsort_by_accdate(int argc, char **argv);
 
-/**
+/*
  * Main
  */
 int main(int argc, char ** argv) {
+	rsort_by_accdate(argc, argv);
 
-	fcount = 0;
-	numfr = 1;
-	filenames = malloc((sizeof(FileName *)) * FCOUNT_STEP);
-	DIR *dir;
-
-	if (argc == 2) {
-		strcpy(curr_path, argv[1]);
-	} else {
-		strcpy(curr_path, DEFAULT_LOCATION);
-	}
-
-	dir = opendir(curr_path);
-	putFnameIntoArray(dir);
-	closedir(dir);
-	
-	/* qsort ... */
-	qsort(filenames, fcount, sizeof(FileName *), sort_date);
-
-	for (int i = 0; i < fcount; i++) {
-		fflush(stdout);
-		printf("%4d  ", i + 1);
-		printf("%-11s %s\n", filenames[i]->long_date, filenames[i]->fname);
-	}
-
-	for (int i = 0; i < fcount; i++) {
-		release_ptr(filenames[i]->fname);
-		release_ptr(filenames[i]->long_date);
-		release_ptr(filenames[i]);
-	}
-	release_ptr(filenames);
-
-	return(0);
+	return 0;
 } // end Main
 
 void make_long_date(char *file_name, char *tmstmp) {
@@ -130,6 +101,10 @@ void putFnameIntoArray(DIR *dir) {
 			}
 		}
 	}
+	if ( !(fcount > 0)) {
+		printf("[ERROR] no files found\n\n");
+		return;
+	}
 }
 
 int sort_date(const void* a, const void *b) {
@@ -170,3 +145,36 @@ void release_ptr(void *ptr) {
 	ptr = NULL;
 }
 
+
+void rsort_by_accdate(int argc, char **argv) {
+	fcount = 0;
+	numfr = 1;
+	filenames = malloc((sizeof(FileName *)) * FCOUNT_STEP);
+	DIR *dir;
+
+	if (argc == 2) {
+		strcpy(curr_path, argv[1]);
+	} else {
+		strcpy(curr_path, DEFAULT_LOCATION);
+	}
+
+	dir = opendir(curr_path);
+	putFnameIntoArray(dir);
+	closedir(dir);
+	
+	/* qsort ... */
+	qsort(filenames, fcount, sizeof(FileName *), sort_date);
+
+	for (int i = 0; i < fcount; i++) {
+		fflush(stdout);
+		printf("%4d  ", i + 1);
+		printf("%-11s %s\n", filenames[i]->long_date, filenames[i]->fname);
+	}
+
+	for (int i = 0; i < fcount; i++) {
+		release_ptr(filenames[i]->fname);
+		release_ptr(filenames[i]->long_date);
+		release_ptr(filenames[i]);
+	}
+	release_ptr(filenames);
+}

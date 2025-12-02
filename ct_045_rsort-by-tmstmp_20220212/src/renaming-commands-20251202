@@ -1,0 +1,7 @@
+for FFF in $(ls -1 *); do NM=${FFF:1:2}; S1="${FFF/f??_/r}"; S2=${S1/.c/-v${NM}.c}; echo "$S1 -> $S2"; done
+for FFF in $(ls -1 *); do NM=${FFF:1:2}; S1="${FFF/f??_/r}"; S2=${S1/.c/-v${NM}.c}; echo "mv -v $FFF $S2"; done
+for FFF in $(ls -1 *); do NM=${FFF:1:2}; S1="${FFF/f??_/r}"; S2=${S1/.c/-v${NM}.c}; mv -v $FFF $S2; done
+# ---
+for FFF in $(ls -1 *); do mv $FFF ${FFF/-v/-c-v}; done
+# ---
+
