@@ -233,6 +233,7 @@ void rsort_by_tmpstmp_abs(int argc, char **argv) {
 	for (int i = 0; i < fcount; i++) {
 		release_ptr(filenames[i]->fname);
 		release_ptr(filenames[i]->longdate);
+		release_ptr(filenames[i]->abs_path);
 		release_ptr(filenames[i]);
 	}
 
