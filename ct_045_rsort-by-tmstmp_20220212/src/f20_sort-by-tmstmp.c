@@ -1,96 +1,53 @@
-/* filename: rsort-by-tmstmp-absp_c.c
- * v1 20251201 en
- * v2 20251201  d: added abs path to fname to be used with fzf
- *                 correct valgrind test error: abs_path as char *pointer
- * based on:rsort-by-tmstmp_c.c
- * last: 20251201
+/*
+ * filename: f20_sort-by-tmstmp.c
+ * v1 20221202 en f19
+ * v2 20251202 en f20: - add ERROR if no file with timestamp found
+ *                     - move everything in main into main driver function
+ * last: 20251202
  */
-
-#include <dirent.h>  
-#include <stdio.h> 
-#include <string.h> 
+#include <dirent.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
 #define DEFAULT_LOCATION "."
-#define FCOUNT_STEP 256
-#define MAX_DIRNAME_LEN 256
+#define FCOUNT_STEP 200
 #define SHORT_DATE 8
 #define LONG_DATE 10
 
-typedef struct abs_filename {
+typedef struct filename {
 	char *fname;
 	char *longdate;
-	char *abs_path;
-} AbsFileName;
+} FileName;
 
-AbsFileName **filenames;
+FileName **filenames;
 int fcount;
 int numfr;
 char *newdate;
-char *abs_pathname;
 
 void make_tmstmp(char *, char *);
 void putFnameIntoArray(DIR *);
 int isNumber(char *);
 int lastEightIsNumber(char *);
-AbsFileName *fname_allocate(size_t);
+FileName *fname_allocate(size_t);
 char *string_allocate(size_t);
 void release_ptr(void *);
 int sort_longdate(const void* , const void *);
+void rsort_by_tmstmp(int argc, char **argv);
 
 /**
  * Main
  */
 int main(int argc, char ** argv) {
+	rsort_by_tmstmp(argc, argv);
 
-	newdate = malloc(sizeof(char) * (SHORT_DATE + 1));
-	fcount = 0;
-	numfr = 1;
-	filenames = malloc((sizeof(AbsFileName *)) * FCOUNT_STEP);
-	abs_pathname = malloc(MAX_DIRNAME_LEN);
-	memset(abs_pathname, 0, MAX_DIRNAME_LEN);
-	DIR *dir;
-
-
-	if (argc == 2) {
-		dir = opendir(argv[1]);
-		memset(abs_pathname,0,MAX_DIRNAME_LEN);
-		strncpy(abs_pathname,argv[1],strlen(argv[1]));
-
-	} else {
-		dir = opendir(DEFAULT_LOCATION);
-		memset(abs_pathname,0,MAX_DIRNAME_LEN);
-		strcpy(abs_pathname,DEFAULT_LOCATION);
-	}
-
-	putFnameIntoArray(dir);
-
-	/* qsort ... */
-	qsort(filenames, fcount, sizeof(AbsFileName *), sort_longdate);
-
-	for (int i = 0; i < fcount; i++) {
-		fflush(stdout);
-		printf("%4d  ", i + 1);
-		printf("%-11s %s/%s\n", filenames[i]->longdate, filenames[i]->abs_path, filenames[i]->fname);
-	}
-
-	for (int i = 0; i < fcount; i++) {
-		release_ptr(filenames[i]->fname);
-		release_ptr(filenames[i]->longdate);
-		release_ptr(filenames[i]);
-	}
-
-	release_ptr(filenames);
-	release_ptr(newdate);
-	release_ptr(abs_pathname);
-
-	return(0);
+	return 0;
 } // end Main
 
 int sort_longdate(const void* a, const void *b) {
-	AbsFileName *f1 = *(AbsFileName **)a;
-	AbsFileName *f2 = *(AbsFileName **)b;
+	FileName *f1 = *(FileName **)a;
+	FileName *f2 = *(FileName **)b;
 	return strcmp(f2->longdate, f1->longdate);
 }
 
@@ -118,25 +75,24 @@ void putFnameIntoArray(DIR *dir) {
 		while ((dirent = readdir(dir)) != NULL) {
 			if (fcount == (FCOUNT_STEP * numfr)) {
 				numfr += 1;
-				filenames = realloc(filenames, (sizeof(AbsFileName *)) * (FCOUNT_STEP * numfr));
+				filenames = realloc(filenames, (sizeof(FileName *)) * (FCOUNT_STEP * numfr));
 			}
 
 			if (strcmp(dirent->d_name, ".") != 0 && strcmp(dirent->d_name, "..") != 0) {
 				if (lastEightIsNumber(dirent->d_name)) {
-					filenames[fcount]            = fname_allocate(sizeof(AbsFileName));
+					filenames[fcount]            = fname_allocate(sizeof(FileName));
 					filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
 					filenames[fcount]->longdate  = string_allocate(sizeof(char) * (LONG_DATE + 1));
-					filenames[fcount]->abs_path  = realpath(abs_pathname, NULL);
 					strcpy(filenames[fcount]->fname, dirent->d_name);
 					make_tmstmp(filenames[fcount]->longdate, newdate);
-					fcount++;;
+					fcount++;
 				}
 			}
 		}
 		closedir(dir);
 	}
 	if ( !(fcount > 0)) {
-		printf("[ERROR] no files with timestamp found\n");
+		printf("[ERROR] no files with timestamp found\n\n");
 		return;
 	}
 }
@@ -169,8 +125,8 @@ int lastEightIsNumber(char *line) {
 	return 0;
 } 
 
-AbsFileName *fname_allocate(size_t size) {
-	AbsFileName *fname_ptr;
+FileName *fname_allocate(size_t size) {
+	FileName *fname_ptr;
 	fname_ptr = malloc(size);
 	if (fname_ptr == NULL) {
 		fprintf(stderr, "Out of memory!");
@@ -199,5 +155,40 @@ void release_ptr(void *ptr) {
 
 	free(ptr);
 	ptr = NULL;
+}
+
+
+void rsort_by_tmstmp(int argc, char **argv) {
+	newdate = malloc(sizeof(char) * (SHORT_DATE + 1));
+	fcount = 0;
+	numfr = 1;
+	filenames = malloc((sizeof(FileName *)) * FCOUNT_STEP);
+	DIR *dir;
+
+	if (argc == 2) {
+		dir = opendir(argv[1]);
+	} else {
+		dir = opendir(DEFAULT_LOCATION);
+	}
+
+	putFnameIntoArray(dir);
+
+	/* qsort ... */
+	qsort(filenames, fcount, sizeof(FileName *), sort_longdate);
+
+	for (int i = 0; i < fcount; i++) {
+		fflush(stdout);
+		printf("%4d  ", i + 1);
+		printf("%-11s %s\n", filenames[i]->longdate, filenames[i]->fname);
+	}
+
+	for (int i = 0; i < fcount; i++) {
+		release_ptr(filenames[i]->fname);
+		release_ptr(filenames[i]->longdate);
+		release_ptr(filenames[i]);
+	}
+
+	release_ptr(filenames);
+	release_ptr(newdate);
 }
 

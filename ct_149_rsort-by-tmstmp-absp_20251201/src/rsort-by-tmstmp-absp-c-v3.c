@@ -2,13 +2,14 @@
  * v1 20251201 en
  * v2 20251201  d: added abs path to fname to be used with fzf
  *                 correct valgrind test error: abs_path as char *pointer
+ * v3 20251202 en: ...
  * based on:rsort-by-tmstmp_c.c
- * last: 20251201
+ * last: 20251202
  */
 
-#include <dirent.h>  
-#include <stdio.h> 
-#include <string.h> 
+#include <dirent.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -38,54 +39,15 @@ AbsFileName *fname_allocate(size_t);
 char *string_allocate(size_t);
 void release_ptr(void *);
 int sort_longdate(const void* , const void *);
+void rsort_by_tmpstmp_abs(int argc, char **argv);
 
 /**
  * Main
  */
-int main(int argc, char ** argv) {
+int main(int argc, char **argv) {
 
-	newdate = malloc(sizeof(char) * (SHORT_DATE + 1));
-	fcount = 0;
-	numfr = 1;
-	filenames = malloc((sizeof(AbsFileName *)) * FCOUNT_STEP);
-	abs_pathname = malloc(MAX_DIRNAME_LEN);
-	memset(abs_pathname, 0, MAX_DIRNAME_LEN);
-	DIR *dir;
-
-
-	if (argc == 2) {
-		dir = opendir(argv[1]);
-		memset(abs_pathname,0,MAX_DIRNAME_LEN);
-		strncpy(abs_pathname,argv[1],strlen(argv[1]));
-
-	} else {
-		dir = opendir(DEFAULT_LOCATION);
-		memset(abs_pathname,0,MAX_DIRNAME_LEN);
-		strcpy(abs_pathname,DEFAULT_LOCATION);
-	}
-
-	putFnameIntoArray(dir);
-
-	/* qsort ... */
-	qsort(filenames, fcount, sizeof(AbsFileName *), sort_longdate);
-
-	for (int i = 0; i < fcount; i++) {
-		fflush(stdout);
-		printf("%4d  ", i + 1);
-		printf("%-11s %s/%s\n", filenames[i]->longdate, filenames[i]->abs_path, filenames[i]->fname);
-	}
-
-	for (int i = 0; i < fcount; i++) {
-		release_ptr(filenames[i]->fname);
-		release_ptr(filenames[i]->longdate);
-		release_ptr(filenames[i]);
-	}
-
-	release_ptr(filenames);
-	release_ptr(newdate);
-	release_ptr(abs_pathname);
-
-	return(0);
+	rsort_by_tmpstmp_abs(argc, argv);
+	return 0;
 } // end Main
 
 int sort_longdate(const void* a, const void *b) {
@@ -201,3 +163,44 @@ void release_ptr(void *ptr) {
 	ptr = NULL;
 }
 
+void rsort_by_tmpstmp_abs(int argc, char **argv) {
+	newdate = malloc(sizeof(char) * (SHORT_DATE + 1));
+	fcount = 0;
+	numfr = 1;
+	filenames = malloc((sizeof(AbsFileName *)) * FCOUNT_STEP);
+	abs_pathname = malloc(MAX_DIRNAME_LEN);
+	memset(abs_pathname, 0, MAX_DIRNAME_LEN);
+	DIR *dir;
+
+	if (argc == 2) {
+		dir = opendir(argv[1]);
+		memset(abs_pathname,0,MAX_DIRNAME_LEN);
+		strncpy(abs_pathname,argv[1],strlen(argv[1]));
+
+	} else {
+		dir = opendir(DEFAULT_LOCATION);
+		memset(abs_pathname,0,MAX_DIRNAME_LEN);
+		strcpy(abs_pathname,DEFAULT_LOCATION);
+	}
+
+	putFnameIntoArray(dir);
+
+	/* qsort ... */
+	qsort(filenames, fcount, sizeof(AbsFileName *), sort_longdate);
+
+	for (int i = 0; i < fcount; i++) {
+		fflush(stdout);
+		printf("%4d  ", i + 1);
+		printf("%-11s %s/%s\n", filenames[i]->longdate, filenames[i]->abs_path, filenames[i]->fname);
+	}
+
+	for (int i = 0; i < fcount; i++) {
+		release_ptr(filenames[i]->fname);
+		release_ptr(filenames[i]->longdate);
+		release_ptr(filenames[i]);
+	}
+
+	release_ptr(filenames);
+	release_ptr(newdate);
+	release_ptr(abs_pathname);
+}

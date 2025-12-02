@@ -1,17 +1,24 @@
-#include <dirent.h>  
-#include <stdio.h> 
-#include <string.h> 
+/*
+ * filename: f20_sort-by-tmstmp.c
+ * v1 20221202 en f19
+ * v2 20251202 en f20: - add ERROR if no file with timestamp found
+ *                     - move everything in main into main driver function
+ * last: 20251202
+ */
+#include <dirent.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
 #define DEFAULT_LOCATION "."
 #define FCOUNT_STEP 200
-#define MAX_LINE_CHARS 256
-#define STR_LEN 8
+#define SHORT_DATE 8
+#define LONG_DATE 10
 
 typedef struct filename {
 	char *fname;
-	char *long_date;
+	char *longdate;
 } FileName;
 
 FileName **filenames;
@@ -26,47 +33,22 @@ int lastEightIsNumber(char *);
 FileName *fname_allocate(size_t);
 char *string_allocate(size_t);
 void release_ptr(void *);
+int sort_longdate(const void* , const void *);
+void rsort_by_tmstmp(int argc, char **argv);
 
-int sort_long_date(const void* a, const void *b) {
+/**
+ * Main
+ */
+int main(int argc, char ** argv) {
+	rsort_by_tmstmp(argc, argv);
+
+	return 0;
+} // end Main
+
+int sort_longdate(const void* a, const void *b) {
 	FileName *f1 = *(FileName **)a;
 	FileName *f2 = *(FileName **)b;
-	return strcmp(f2->long_date, f1->long_date);
-}
-
-int main(int argc, char ** argv) {
-	newdate = malloc(sizeof(char) * 9);
-	fcount = 0;
-	numfr = 1;
-	filenames = malloc((sizeof(FileName *)) * FCOUNT_STEP);
-	DIR *dir;
-
-	if (argc == 2) {
-		dir = opendir(argv[1]);
-	} else {
-		dir = opendir(DEFAULT_LOCATION);
-	}
-
-	putFnameIntoArray(dir);
-
-	/* qsort ... */
-	qsort(filenames, fcount, sizeof(FileName *), sort_long_date);
-
-	for (int i = 0; i < fcount; i++) {
-		fflush(stdout);
-		printf("%4d  ", i + 1);
-		printf("%-11s %s\n", filenames[i]->long_date, filenames[i]->fname);
-	}
-
-	for (int i = 0; i < fcount; i++) {
-		release_ptr(filenames[i]->fname);
-		release_ptr(filenames[i]->long_date);
-		release_ptr(filenames[i]);
-	}
-
-	release_ptr(filenames);
-	release_ptr(newdate);
-
-	return(0);
+	return strcmp(f2->longdate, f1->longdate);
 }
 
 void make_tmstmp(char *tmstmp, char *string) {
@@ -100,14 +82,18 @@ void putFnameIntoArray(DIR *dir) {
 				if (lastEightIsNumber(dirent->d_name)) {
 					filenames[fcount]            = fname_allocate(sizeof(FileName));
 					filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
-					filenames[fcount]->long_date = string_allocate(sizeof(char) * 11);
+					filenames[fcount]->longdate  = string_allocate(sizeof(char) * (LONG_DATE + 1));
 					strcpy(filenames[fcount]->fname, dirent->d_name);
-					make_tmstmp(filenames[fcount]->long_date, newdate);
+					make_tmstmp(filenames[fcount]->longdate, newdate);
 					fcount++;
 				}
 			}
 		}
 		closedir(dir);
+	}
+	if ( !(fcount > 0)) {
+		printf("[ERROR] no files with timestamp found\n\n");
+		return;
 	}
 }
 
@@ -127,9 +113,9 @@ int lastEightIsNumber(char *line) {
 	}
 
 	int last_eight_start = strlen(line) - 12;
-	char last_eight[STR_LEN + 1];
-	strncpy(last_eight, &line[last_eight_start], STR_LEN);
-	last_eight[STR_LEN] = '\0';
+	char last_eight[SHORT_DATE + 1];
+	strncpy(last_eight, &line[last_eight_start], SHORT_DATE);
+	last_eight[SHORT_DATE] = '\0';
 
 	if (isNumber(last_eight)) {
 		strcpy(newdate, last_eight);
@@ -169,5 +155,40 @@ void release_ptr(void *ptr) {
 
 	free(ptr);
 	ptr = NULL;
+}
+
+
+void rsort_by_tmstmp(int argc, char **argv) {
+	newdate = malloc(sizeof(char) * (SHORT_DATE + 1));
+	fcount = 0;
+	numfr = 1;
+	filenames = malloc((sizeof(FileName *)) * FCOUNT_STEP);
+	DIR *dir;
+
+	if (argc == 2) {
+		dir = opendir(argv[1]);
+	} else {
+		dir = opendir(DEFAULT_LOCATION);
+	}
+
+	putFnameIntoArray(dir);
+
+	/* qsort ... */
+	qsort(filenames, fcount, sizeof(FileName *), sort_longdate);
+
+	for (int i = 0; i < fcount; i++) {
+		fflush(stdout);
+		printf("%4d  ", i + 1);
+		printf("%-11s %s\n", filenames[i]->longdate, filenames[i]->fname);
+	}
+
+	for (int i = 0; i < fcount; i++) {
+		release_ptr(filenames[i]->fname);
+		release_ptr(filenames[i]->longdate);
+		release_ptr(filenames[i]);
+	}
+
+	release_ptr(filenames);
+	release_ptr(newdate);
 }
 
