@@ -97,7 +97,7 @@ void putFnameIntoArray(DIR *dir) {
 			filenames = realloc(filenames, (sizeof(AbsFileName *)) * (FCOUNT_STEP * numfr));
 		}
 
-		if (strcmp(dirent->d_name, ".") == 0 && strcmp(dirent->d_name, "..") == 0) {
+		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
 			continue;
 		}
 

@@ -36,7 +36,7 @@ void release_ptr(void *);
 int sort_longdate(const void* , const void *);
 void rsort_by_tmstmp(int argc, char **argv);
 
-/**
+/*
  * Main
  */
 int main(int argc, char ** argv) {
@@ -71,26 +71,30 @@ void make_tmstmp(char *tmstmp, char *string) {
 
 void putFnameIntoArray(DIR *dir) {
 	struct dirent *dirent;
-	if (dir) {
-		while ((dirent = readdir(dir)) != NULL) {
-			if (fcount == (FCOUNT_STEP * numfr)) {
-				numfr += 1;
-				filenames = realloc(filenames, (sizeof(FileName *)) * (FCOUNT_STEP * numfr));
-			}
-
-			if (strcmp(dirent->d_name, ".") != 0 && strcmp(dirent->d_name, "..") != 0) {
-				if (lastEightIsNumber(dirent->d_name)) {
-					filenames[fcount]            = fname_allocate(sizeof(FileName));
-					filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
-					filenames[fcount]->longdate  = string_allocate(sizeof(char) * (LONG_DATE + 1));
-					strcpy(filenames[fcount]->fname, dirent->d_name);
-					make_tmstmp(filenames[fcount]->longdate, newdate);
-					fcount++;
-				}
-			}
-		}
-		closedir(dir);
+	if (!dir) {
+		printf( "[ERROR] no such directory\n\n");
+		return;
 	}
+	while ((dirent = readdir(dir)) != NULL) {
+		if (fcount == (FCOUNT_STEP * numfr)) {
+			numfr += 1;
+			filenames = realloc(filenames, (sizeof(FileName *)) * (FCOUNT_STEP * numfr));
+		}
+
+		if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0) {
+			continue;
+		}
+
+		if (lastEightIsNumber(dirent->d_name)) {
+			filenames[fcount]            = fname_allocate(sizeof(FileName));
+			filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
+			filenames[fcount]->longdate  = string_allocate(sizeof(char) * (LONG_DATE + 1));
+			strcpy(filenames[fcount]->fname, dirent->d_name);
+			make_tmstmp(filenames[fcount]->longdate, newdate);
+			fcount++;
+		}
+	}
+	closedir(dir);
 	if ( !(fcount > 0)) {
 		printf("[ERROR] no files with timestamp found\n\n");
 		return;
