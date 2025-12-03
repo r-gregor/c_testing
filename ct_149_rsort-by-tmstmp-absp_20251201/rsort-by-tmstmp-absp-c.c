@@ -3,7 +3,7 @@
  * v2 20251201  d: added abs path to fname to be used with fzf
  *                 correct valgrind test error: abs_path as char *pointer
  * v3 20251202 en: move everything from main into new function rsort_by_tmpstmp_abs
- * v4 20251202 en: quard clause: remove nested if statements inside putFnameIntoArray() finction
+ * v4 20251202 en: quard clause: remove nested if statements inside putFnameIntoArray() function
 
  * based on:rsort-by-tmstmp-c.c
  * last: 20251202
