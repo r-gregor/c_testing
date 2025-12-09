@@ -1,0 +1,188 @@
+Introduction
+today we're making object pools and memory allocators Faster by using freelist.
+
+Welcome back friends in my last video I talked about object pools which are an alternative to malloc and free
+style memory allocators but as we left things off last time our implementation of object pools was a bit slow
+and so today I thought we would look at how we could actually speed things up a bit the specific technique
+we're going to use to speed things up that is freelist is not specific to object pools it's actually something
+that you're going to see used all over in memory allocation probably the malloc and free implementation
+running on your machine your laptop your desktop whatever you're and on your phone are probably using free
+list right now
+
+we're going to start with essentially the same code that we had in the last video check it out if you missed
+that one the only thing I've changed here there I have moved a few things around one thing is because I want
+to have a slow version and a fast version
+
+I thought it would be easier to basically take my object pool and make it its own module so we've got a header
+file over here. Hopefully this is nothing new if you've been watching the channel you've seen stuff like
+this but we've got a header file that that where we moved the number of of objects definition we removed the
+Vector3 struct from last time over here and we have our two functions our borrow Vector3 function which
+allows the program to check out one of these objects and then our return Vector3 function which allows you to
+return or to free that object when you're done with it. If we were looking at a more conventional allocator
+then this borrow function would be replaced by something like malloc and this would be replaced by something
+like free, so we have the header file if you look in here then this is basically just our code from
+last time we have our implementations we have our pool object which is internally the user never actually
+touches this but this is what we use to manage the allocated state of our object pool so you can think of this
+as our private implementation now I haven't done it yet but I do also want to make some changes this is what
+our main program looked like in the last video basically just going through and grabbing a couple of vectors
+each time I do want to make some changes though because this is only ever going to use the first two objects
+in the object pool and as we discussed in the last video the performance issues are going to get worse as we
+end up using more and more objects at a particular time because we're going to have to work harder to find a
+free object so what I'm going to do up here let's just change this a little bit and first thing I'm going to
+do is Define a number of rounds so we're going to go through and let's let's say we make this 100 doesn't
+really matter I just want to do enough work that we can time things and then what I want to do is rather
+than having this B15 let's come down here and go through the particular number of rounds and then each
+round we're going to pick a certain number of objects we're going to borrow this will vary things up a
+little bit let's let's say we have int num OB short for Num objects and we will use Rand so this is going
+to pick a random number and then we'll mod this by our number of objects so this will pick a random number
+from zero to number of objects minus one and then once we have that let's also make an array of vectors
+cuz we're going to have a a variable number of vectors and then we're going to allocate them and then
+we're going to have to free them and so let's make an array of pointers these are vectors and there are
+going to be numb objects Okay so we've got our array and yes I recognize that using a variable length
+array like this is going to cause a non-deterministic stack size so like on embedded systems which is
+where I may be using an object pool in the future I might not actually want to use one of these in actual
+production code but in testing code it's be fine and that's what we're doing today is we're just trying to
+test these out so then I'm going to come down here and have a for Loop let's use J and we're going to go
+to num OBS so we're going to go through the number of objects and we are going to say vectors J okay so
+the jth vector is going to be equal to we're going to get aign to and we'll call borrow Vector3 that many
+times okay so this is the number of objects that we need from our object pool it's going to vary each time
+each round it's going to vary depending on what this Rand returned at this given time now normally in here
+in the middle well before I get to that like normally after this we would actually do something with these
+objects today we're not going to do that let's just before I forget add in another symmetrical array that
+is going to return our vectors when we're done with them and then here in the middle we're going to this
+is where you would do something with the vectors what we are going to do simply uh for brevity is let's
+just go through and change this up a bit and say Round We we'll print out the round number and then we'll
+say we'll just tell how many vectors we got and this is because I have if I print out too much then it
+becomes really hard to see what's going on so yeah so we'll have I in here and then we'll have num OB
+objects okay okay so this should work for my purposes today now let's just make sure that we're still
+things are in working order yes I'm having some VM issues ignore the warnings the clocks Q detected should
+be fine but if we run it you can see okay so this we by adding a bunch of objects and a bunch of rounds
+now it is a little bit slower this is useful because I want to time this so if I come in here and I say
+okay time this we'll run it and okay so we're looking at something like 3 seconds right and let's just run
+this again really quick to make sure it wasn't a fluke yeah so three and a half seconds yeah so anytime
+you're running something you want to make sure you run it a few times cuz occasionally things can be a
+little bit slower a little bit faster you you're going to get some variability so this is the Baseline
+we're going to use for our freelist example today and at this point you might be thinking you know a few
+seconds that's not too slow I can wait a few seconds but we really are spending a lot of time searching
+through that array looking for a free Vector so if you just as a reminder when we come through here to
+borrow a vector we're basically running through the whole object pool looking for one that is free that's
+a ailable that we can then give back to the user so we're spending a lot of time hunting through there as
+you know the the more vectors so like like if I've got 87,000 vectors that I have to grab then that's
+really going to get it's really going to slow things down and this is where a free list comes in okay now
+the idea of a free list is to Simply Freelist make a list usually a linked list of some sort that contains
+all of the free blocks that are available to be borrowed or allocated so that we don't have to hunt
+through a bunch of allocated objects wasting our time before we find one that we can actually use Okay so
+let's look at how we can use a free list in our current example right here I just have this empty object
+pool with Freel list. C file that I created right here uh that is going to be just like our object pool in
+fact let's just come in here and let's copy this we just going to initially start out exactly the same let
+me go back to my make file and add this so now it's going to compile two different versions of this one
+that's just our base example and ones are example with a free list um the rest of the make files should be
+fine by the way if you haven't seen make files check out my make videos for more information about how
+make works and how you can write your own make files but let's look at how we can make a how we can change
+this up to use a free list now the first thing we're going to do is we need to change our structure a
+little bit so we're not going to be looking at we're not going to be using this Boolean anymore that's
+like are we allocated or not uh once we add a free list we don't need this anymore and that's because
+whether an object if an object is on the free list that means it's not allocated if it's not on the free
+list then it is allocated so we're just going to take this off and I'm going to replace this with a
+pointer to a pool object and we're going to call this next okay and we need to add this otherwise I'm
+going to get compiler errors and at this point hopefully you're saying ooh this looks just like the
+definition of a node in a link list and you're absolutely right because that is what it is also
+interestingly today's example might be a good illustration of how link lists don't necessarily have to go
+along with malloc sometimes students are so used to using link lists in a particular way where you maloc a
+new node and we're not going to do that today so hopefully this gives you some added perspective on link
+list if you're new to that also if you've never seen link list check out my link list video I'll link down
+in the description check that out but so again the idea here is that our objects when they're available
+are all going to be on this link list and that list is where we are going to also return things when we're
+done okay so the list becomes the place you look for free objects okay so let's come down here our our
+object pool is still going to be an array of St statically allocated objects that doesn't need to change I
+am going to change I'm going to add one thing here we're going to add a pointer to an object to a pool
+object and I'm going to call this free list this is going to be the head of our free list so this is going
+to keep track of the beginning of the free list for now I just initialize it to be null we're about to
+change that but that's okay now at this point we are going to need to add an additional function we need
+some code in here to initialize our free list because where before I was able to just likees statically
+initialize everything to zero and that was enough now we actually do need to set up this list so let's
+make a function called initialize pool and we'll have a quick little for Loop that goes through our
+objects and we want this to actually go through all but the last object you'll see why in a second and
+then I'm just going to say the E element of the array we're going to set its next pointer to be equal to
+the address of object pool I +1 okay so this is basically saying we want each node each element each pool
+object in the array its next is going to point just to the object after it in the array so this is how
+we're going to start out it won't stay this way but this is how we'll start out and you notice we didn't
+go all the way to the end because the very last element in the array well it doesn't have a next element
+it's the end of the array so and it's also the end of the list so actually let's come down here and say
+object pool num objects minus one this probably is not necessary because we statically initialized
+everything to zero but it's a good habit to initialize your variables okay the other thing we need to do
+then is also set our free list to point to the beginning of the free list and so the first object is going
+to be the first object in our array so we could just do this because arrays and pointers are almost the
+same thing but I do find this sometimes confuses students so maybe another way to do this is to say free
+list equals the address of the first element of the object pool okay these two are going to do exactly the
+same thing they both work I'm just throwing this in because I find that new programmers often find this a
+little more straightforward than this but use whichever one you prefer okay now we also need to run this
+there are a few different options we could have the test program actually call this code we could add some
+test to borrow and return down here where we basically check to see if it's initialized and if it's not
+then we run it today what I'm going to do is add an attribute I'm going to use gcc's and clang has a two
+Constructor attribute this is going to cause this function to be run sometime before main begins let me
+know down in the comments if you want to see more about Constructors and destructors in C people often
+think that c doesn't have Constructors or destructors and well it's not quite true uh they're interesting
+they're sometimes annoying so that actually sounds like a really good topic for a future video anyway let
+me know if you're interested but anyway now our free list is initialized and this is going to be run at
+the beginning of our program before main ever starts and so now this allows us now we have this in place
+this allows us to come down and change our borrow and return to make them much simpler so first let's look
+at borrow 3 here so borrow Vector3 we don't need a loop anymore okay we're going to have a much simpler
+structure here let's just toss this and say basically we're going to say if the free list is not null okay
+so if if there's anything on the free list right if there is then that means there is some object
+available and we're just going to grab it so then we are just going to remove the first Vector from the
+free list so let's I'm going to make a temporary pointer called result and set that equal to the first
+element of the free list this is the thing that we're actually going to return eventually but we need to
+hold on to that for a second while we while we remove it from the front of the list we then remove it by
+just simply saying free list equals free list Arrow next so this is going to basically just move the
+pointer from free list from the free list object to whatever the next element in the free list is if we're
+at the end that's going to just make it null and then we simply then just return the address of results
+object member so this is the vector that we're actually going to give to the requesting code so the user
+called borrow Vector3 they wanted a vector 3 this object is a vector 3 so we're ret return turning a
+pointer to that Vector3 but notice how much simpler this is this is really nice like all we're doing is
+just popping it off there's no searching it's great and of course if the free list was null then we return
+null right because there's nothing to borrow right our object pool is empty if this was an implementation
+of malloc and free we might go out and call M map or something to get more pages and bring those in so you
+can actually grab more memory again maybe an interesting topic for a future video but so that's our borrow
+function now let's Return take a look at what happens in our return function now before we were doing a
+little bit of address math here to figure out which element in our array we're working with we could also
+use things like the offset of macro here maybe another fun topic for a future video but I think I'm just
+going to keep this here for now I also think I'm going to keep this assert because you know why not sanity
+checks are useful but this doesn't make any sense because we don't have an allocated member and this
+doesn't make sense right because we again don't have an allocated member so instead of marking this object
+as not allocated that's what we did before now all we need to do is add this back to the free list now
+this is where students often over complicate things thinking that you need to insert these objects in the
+order that they come in the array or the order that they originally were and you don't the point is that
+all of these objects are the same size so the list order really doesn't matter so what we're going to do
+is just add it to the front of the list every time because that's simplest and we don't care if this link
+list gets a little convoluted so to do this what we're going to do is come in here and make another
+temporary pool object pointer call it Po and let's set it to the address of the object that we are
+returning so the E pool object remember we computed I right up here and then what we're going to do is
+we're going to set so the object we're returning we're going to set Po's next pointer to be equal to
+whatever the free list currently points to so if the free list is empty then this is going to be null if
+it's not empty it just points to whatever the head of the free list is and then we come in here and set
+the free list to now equal this PO and po isn't a great so let's say something like NE object to add okay
+so I like that a little better so now at this point once we're done the object pool is the same as it was
+before only it has the new returned object at the front of it and that element the one we just added will
+be available on the free list for the next request to borrow Vector3 up here also note that one benefit
+of adding objects to the front of the free list is that it means that frequently accessed memory is going
+to be located near the front of the list with which may in some cases actually help our cache performance
+a bit it's probably not going to make much of a difference but it might make a little okay so that's all
+we have to do to get our object pool to use a free list hopefully things now work let's come down here and
+just compile it all it looks like it at least compiles let's come down here and run our new example well
+let's run the old example just so I get a feel for what it's actually doing okay and then let's run the
+free list one first of all you could tell it did go a bit faster let's time it and just see and you can
+see the that it's not a little faster it's way faster a few seconds didn't seem that bad until we now have
+an implementation that is taking uh you know 20 40 you know just tens of milliseconds like this is a
+blazing fast implementation and that's because it doesn't have to hunt through all those allocated objects
+it literally just has to check the free ones and it always finds the one it wants right at the beginning
+now keep in mind that free lists work best you're going to see the most dramatic Improvement when the
+objects on the list are all the same size if they weren't all the same size we would have to hunt through
+to find one that works for us this is why a lot of allocators a lot of memory allocators try to separate
+objects into different free lists based on object size so if we have a free list because then you can
+always just take the first one so again if they were if you have a free list with objects of different
+sizes you do have to hunt through a little bit but you still don't have to go through all of the allocated
+objects and so it's still going to be faster it's just that in that case the speed up wouldn't be quite as
+dramatic as what we're seeing here so anyway I hope that helps you understand what free lists are how you
+can use them hope you had fun hope you learned something new I hope this helps you in a future project and
+until next time I'll see you later
