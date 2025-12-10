@@ -9,8 +9,8 @@
 #include "objpool.h"
 
 typedef struct PoolObject {
-	Vector3 obj;
 	struct PoolObject *next;
+	Vector3 obj;
 } PoolObject_t;
 
 PoolObject_t objects_pool[NUM_OBJECTS] = {{0}};
