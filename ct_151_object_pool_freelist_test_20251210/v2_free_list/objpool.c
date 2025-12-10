@@ -16,7 +16,7 @@ typedef struct PoolObject_t {
 PoolObject_t objects_pool[NUM_OBJECTS] = {{0}};
 
 Vector3 *BorrowVector3(void) {
-	for (int i=0; i < NUM_OBJECTS; i++) {
+	for (int i=0; i<NUM_OBJECTS; i++) {
 		if (objects_pool[i].allocated == false) {
 			objects_pool[i].allocated = true;
 			return &(objects_pool[i].obj);

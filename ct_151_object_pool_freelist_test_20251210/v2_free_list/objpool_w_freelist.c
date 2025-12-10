@@ -18,7 +18,7 @@ PoolObject_t *freelist = NULL;
 
 // runs automaticly before main!
 __attribute__((constructor)) void InitializePool() {
-	for (int i=0; i < NUM_OBJECTS - 1; i++) {
+	for (int i=0; i<NUM_OBJECTS - 1; i++) {
 		objects_pool[i].next = &(objects_pool[i+1]);
 	}
 	freelist = objects_pool; // ... = objects_pool[0]; (same)
@@ -46,7 +46,7 @@ void ReturnVector3(Vector3 *v) {
 
 	assert(&(objects_pool[i].obj) == v);
 
-	// all object ar of the same size, so add the new one infron of the freelist:
+	// all object are of the same size, so add the new one infront of the freelist:
 	PoolObject_t *object_to_add = &(objects_pool[i]);
 	object_to_add->next = freelist;
 	freelist = object_to_add;

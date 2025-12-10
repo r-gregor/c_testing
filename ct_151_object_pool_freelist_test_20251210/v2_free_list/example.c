@@ -27,13 +27,13 @@ int main(void) {
 		int numobjs = rand() % NUM_OBJECTS;
 		Vector3 *vectors[numobjs]; //variable size array -- not to be used in production code!
 
-		for (int j=0; j < numobjs; j++ ) {
+		for (int j=0; j<numobjs; j++) {
 			vectors[j] = BorrowVector3();
 		}
 
 		printf("round %2d -- got %d vectors\n", i, numobjs);
 
-		for (int j=0; j < numobjs; j++ ) {
+		for (int j=0; j<numobjs; j++) {
 			ReturnVector3(vectors[j]);
 		}
 	}
