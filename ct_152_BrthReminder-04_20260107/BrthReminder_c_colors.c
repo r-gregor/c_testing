@@ -68,7 +68,8 @@ char *abspath(char *argv0);
 /** main */
 int main(int argc, char **argv) {
 	
-	setlocale(LC_ALL, "sl_SI.utf-8");
+	// setlocale(LC_ALL, "sl_SI.utf-8");
+	setlocale(LC_ALL, "");
 
 	char path0[256];                 // v25
 	char path1[256];
