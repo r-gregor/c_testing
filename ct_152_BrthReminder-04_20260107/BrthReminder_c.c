@@ -39,23 +39,26 @@ typedef struct Person {
 const char *fname = "ROJSTNIDNEVI.txt";
 Date *g_curr_date;
 int g_nLines = 0;
+Person_t **persons_unsorted;
 Person_t **persons;
 int np = 0;
 int dups = 0;
+size_t pers_count = 0;
 
 /* ================== FUNCTION DECLARATIONS ============== */
 int getPositionOfDelim(wchar_t, wchar_t *);
 void displayPersonsAll(Person_t **);
 void displayPersonsDiff100(Person_t **persons);
 void displayPersonsIfFound(Person_t **persons, wchar_t *searchp); // v24
-void wcs_to_lower(wchar_t *source, wchar_t *dest);              // v24
+void wcs_to_lower(wchar_t *source, wchar_t *dest);                // v24
 Person_t *makePersonFromLine(wchar_t *);
 void printPerson(Person_t *);
 void freePerson(Person_t *);
 void release_ptr(void *);
 int get_daydiff(Date *, Date *);
 int getNumOfLinesFromFile(const char *);
-int cmpfunc(const void *, const void *);
+int cmpfunc_daysdiff(const void *, const void *);                 // v27
+int cmpfunc_name(const void *, const void *);                     // v27
 void crtc(int n);
 char *abspath(char *argv0);
 
@@ -68,16 +71,14 @@ int main(int argc, char **argv) {
 
 	char path0[256];                           // v25
 	char path1[256];
-	// wchar_t path2[256];
 	realpath(argv[0], path0);                  // v25
 	strcpy(path1, abspath(path0));             // v25 - just path without filename
 	strcat(path1, "/");
 	strcat(path1, fname);
-	// mbstowcs(path2, path1, 256);
-	// wprintf(L"%ls\n", path2);
 
 	g_nLines = getNumOfLinesFromFile(path1);
-	persons = malloc(sizeof(Person_t *) * g_nLines);
+	persons_unsorted = malloc(sizeof(Person_t *) * g_nLines);    // v27
+	
 	today = time(NULL);
 	today_ptr = localtime(&today);
 	g_curr_date = malloc(sizeof(Date));
@@ -96,12 +97,36 @@ int main(int argc, char **argv) {
 
 	while (fgetws(line, 100, fp) != NULL) {
 		line[wcscspn(line, L"\n")] = 0; // Remove '\n' from the line
-		persons[np] = makePersonFromLine(line);
+		  persons_unsorted[np] = makePersonFromLine(line);                 // v27
 		np++;
 	}
 
+	qsort(persons_unsorted, g_nLines, sizeof(Person_t *), cmpfunc_name);   // V27
+
+	// v27
+	for (int i=1; i < g_nLines; i++) {
+		if (wcscmp(persons_unsorted[i]->name, persons_unsorted[i-1]->name) == 0) {
+			continue;
+		} else {
+			pers_count++;
+		}
+	}
+
+	// v27
+	persons = malloc(sizeof(Person_t *) * pers_count);
+	persons[0] = persons_unsorted[0];
+	int k=0;
+	for (int i=1; i < g_nLines; i++) {
+		if (wcscmp(persons_unsorted[i]->name, persons_unsorted[i-1]->name) == 0) {
+			dups++;
+			continue;
+		} else {
+			persons[++k] = persons_unsorted[i];
+		}
+	}
+
 	/* qsort ... */
-	qsort(persons, g_nLines, sizeof(Person_t *), cmpfunc);
+	qsort(persons, pers_count, sizeof(Person_t *), cmpfunc_daysdiff);    // v27
 	
 	if (argc == 2) {
 		wchar_t wans[256] = {L'0'};
@@ -116,13 +141,18 @@ int main(int argc, char **argv) {
 	}
 
 
+
 	release_ptr(line);
 	release_ptr(g_curr_date);
 	fclose(fp);
 
-	if (dups > 0) {
-		wprintf(L"Duplicates found: %d\n\n", dups);
+	// v27
+	for (int i=1; i < g_nLines; i++) {
+		release_ptr(persons_unsorted[i]->name);
+		release_ptr(persons_unsorted[i]);
 	}
+
+	release_ptr(persons_unsorted);    // v27
 
 	return 0;
 } /* end main */
@@ -199,6 +229,7 @@ void printPerson(Person_t *person) {
 /**
  * Display ALL persons sorted by days till BD
  * lowest to heighest
+ * v27: new range 0 --> pers_count
  */
 
 void displayPersonsAll(Person_t **persons) {
@@ -209,22 +240,21 @@ void displayPersonsAll(Person_t **persons) {
 	}
 	wprintf(L"\n");
 
-	for (int i=0; i<g_nLines; i++) {
-		if (i > 0) {
-			if (wcscmp(persons[i]->name, persons[i-1]->name) == 0) {
-				dups++;
-				continue;
-			}
-		}
+	for (int i=0; i < pers_count; i++) {
 		printPerson(persons[i]);
 	}
 	crtc(cols);
+
+	if (dups > 0) {
+		wprintf(L"Duplicates found: %d\n", dups);
+	}
 	wprintf(L"Displaying ALL persons sorted by days till BD\n\n");
 }
 
 
 /**
  * display persons with less than 100 days till BD
+ * v27: new range 0 --> pers_count
  */
 void displayPersonsDiff100(Person_t **persons) {
 	int cols = 30 + 15 + 5 + 10;
@@ -232,23 +262,22 @@ void displayPersonsDiff100(Person_t **persons) {
 	wprintf(L"%-30ls%-15ls%-5ls%10ls\n", L"Name", L"BD", L"Age", L"Days left");
 	crtc(cols);
 
-	for (int i=0; i<g_nLines; i++) {
-		if (i > 0) {
-			if (wcscmp(persons[i]->name, persons[i-1]->name) == 0) {
-				dups++;
-				continue;
-			}
-		}
+	for (int i=0; i < pers_count; i++) {
 		if (persons[i]->day_diff <= 100) {
 			printPerson(persons[i]);
 		}
 	}
 	crtc(cols);
+
+	if (dups > 0) {
+		wprintf(L"Duplicates found: %d\n", dups);
+	}
 	wprintf(L"Displaying persons with less than 100 days till BD\n\n");
 }
 
 /**
  * display persons whose name contains search pattern
+ * v27: new range 0 --> pers_count
  */
 void displayPersonsIfFound(Person_t **persons, wchar_t *searchp) {
 	int cols = 30 + 15 + 5 + 10;
@@ -258,13 +287,7 @@ void displayPersonsIfFound(Person_t **persons, wchar_t *searchp) {
 	wchar_t searchp_lc[256] = {L'\0'};
 	wcs_to_lower(searchp, searchp_lc);
 
-	for (int i=0; i<g_nLines; i++) {
-		if (i > 0) {
-			if (wcscmp(persons[i]->name, persons[i-1]->name) == 0) {
-				dups++;
-				continue;
-			}
-		}
+	for (int i=0; i < pers_count; i++) {
 		wchar_t name_lc[256] = {L'\0'};
 		wcs_to_lower(persons[i]->name, name_lc);
 
@@ -274,6 +297,10 @@ void displayPersonsIfFound(Person_t **persons, wchar_t *searchp) {
 		}
 	}
 	crtc(cols);
+
+	if (dups > 0) {
+		wprintf(L"Duplicates found: %d\n", dups);
+	}
 	wprintf(L"Displaying persons with '%ls' pattern in name\n\n", searchp);
 
 }
@@ -338,9 +365,9 @@ int getNumOfLinesFromFile(const char *filename){
 
 
 /**
- * coparison function fro qsort
+ * coparison function for qsort -- daysdiff
  */
-int cmpfunc(const void *a, const void *b) {
+int cmpfunc_daysdiff(const void *a, const void *b) {
 
     Person_t *pA = *(Person_t **)a;
     Person_t *pB = *(Person_t **)b;
@@ -349,6 +376,17 @@ int cmpfunc(const void *a, const void *b) {
     return (pA->day_diff - pB->day_diff);
 }
 
+/**
+ * coparison function for qsort -- name
+ */
+int cmpfunc_name(const void *a, const void *b) {
+
+    Person_t *pA = *(Person_t **)a;
+    Person_t *pB = *(Person_t **)b;
+
+	// strings compare
+    return wcscmp(pA->name, pB->name);
+}
 // ##############################################################################################
 
 
