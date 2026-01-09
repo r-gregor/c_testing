@@ -190,8 +190,8 @@ Person_t *makePersonFromLine(wchar_t *line) {
 	Person_t *person = malloc(sizeof(Person_t));
 	person->name = malloc(sizeof(wchar_t) * (pos + 1));
 
-	wchar_t* ptr;
-	wchar_t * pEnd;
+	wchar_t *ptr;
+	wchar_t *pEnd;
 	wcscpy(person->name, wcstok(line, L",", &ptr));
 	person->bd_date.d = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
 	person->bd_date.m = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
