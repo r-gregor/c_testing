@@ -40,9 +40,6 @@ typedef struct Person_t {
 	int day_diff;
 } Person_t;
 
-
-
-
 const char *fname = "ROJSTNIDNEVI.txt";
 Date *g_curr_date;
 int g_nLines = 0;
@@ -120,6 +117,10 @@ int main(int argc, char **argv) {
 		displayPersonsDiff100(persons);
 	}
 
+	for (int i=0; i<g_nLines; i++) {
+		freePerson(persons[i]);
+	}
+	release_ptr(persons);
 	release_ptr(line);
 	release_ptr(g_curr_date);
 	fclose(fp);

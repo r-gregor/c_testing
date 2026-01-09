@@ -89,12 +89,14 @@ int main(int argc, char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	wchar_t *line = malloc(sizeof(wchar_t) * 100);
 
+	wchar_t *line = malloc(sizeof(wchar_t) * 100);
 	while (fgetws(line, 100, fp) != NULL) {
 		line[wcscspn(line, L"\n")] = 0; // Remove '\n' from the line
 		persons[np] = makePersonFromLine(line);
 		np++;
+
+
 	}
 
 	/* qsort ... */
@@ -129,6 +131,10 @@ int main(int argc, char **argv) {
 		displayPersonsDiff100(persons);
 	}
 
+	for (int i=0; i<g_nLines; i++) {
+		freePerson(persons[i]);
+	}
+	release_ptr(persons);
 	release_ptr(line);
 	release_ptr(g_curr_date);
 	fclose(fp);
