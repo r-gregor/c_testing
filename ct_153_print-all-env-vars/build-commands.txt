@@ -1,0 +1,8 @@
+# windws:
+$> /c/Users/gregor.redelonghi/majstaf_en/majprogs_en/mingw64/bin/x86_64-w64-mingw32-gcc -o print-all-envs-w print-all-envs.c
+$> ./print-all-envs-w >> output-u.txt
+
+# Cygwin (unix);
+$> gcc -o print-all-envs print-all-envs.c
+$> ./print-all-enws >> output-u.txt
+
