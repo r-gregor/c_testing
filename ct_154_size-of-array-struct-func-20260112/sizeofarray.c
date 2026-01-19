@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef struct arristrc arristrc_t;
+typedef struct arrstrc arrstrc_t;
 
 size_t get_arr_elnum(int *arr, size_t arr_size);
-arristrc_t new_arr(int *arr, size_t arr_size);
+arrstrc_t new_arr(int *arr, size_t arr_size);
 int get_nth_element(int *arr, int n);
-int get_nth_element_str(arristrc_t *arristri, size_t n);
+int get_nth_element_str(arrstrc_t *arrstri, size_t n);
 
-struct arristrc {
+struct arrstrc {
 	int *arr;
 	size_t count;
 };
@@ -19,12 +19,12 @@ int main(int argc, char **argv) {
 	int nums2[] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300};
 
 	/* by hand: BAD */
-	arristrc_t arr1;
+	arrstrc_t arr1;
 	arr1.arr = nums1;
 	arr1.count = get_arr_elnum(nums1, sizeof(nums1));
 
 	/* by func: GOOD */
-	arristrc_t arr2 = new_arr(nums2, sizeof(nums2));
+	arrstrc_t arr2 = new_arr(nums2, sizeof(nums2));
 
 	/* TODO: display n-th element function */
 	printf("arr1 has %ld elements\n", arr1.count);
@@ -43,8 +43,8 @@ size_t get_arr_elnum(int *arr, size_t arr_size) {
 	return arr_size/sizeof(arr[0]);
 }
 
-arristrc_t new_arr(int *arr, size_t arr_size) {
-	arristrc_t newarr;
+arrstrc_t new_arr(int *arr, size_t arr_size) {
+	arrstrc_t newarr;
 	newarr.arr = arr;
 	newarr.count = arr_size/sizeof(arr[0]);
 	return newarr;
@@ -53,17 +53,17 @@ arristrc_t new_arr(int *arr, size_t arr_size) {
 
 int get_nth_element(int *arr, int n) {
 	if (n <= 0) {
-		printf("Index must be al least 1!");
+		printf("Index must be al least 1!\n");
 		return -1;
 	}
 	return arr[n - 1];
 }
 
-int get_nth_element_str(arristrc_t *arristr, size_t n) {
-	if (n <= 0 || n >= arristr->count) {
-		printf("Index must be at least 1 and smaller as array size!");
+int get_nth_element_str(arrstrc_t *arrstr, size_t n) {
+	if (n <= 0 || n >= arrstr->count) {
+		printf("Index must be at least 1 and smaller as array size!\n");
 		return -1;
 	}
-	return arristr->arr[n - 1];
+	return arrstr->arr[n - 1];
 }
 
