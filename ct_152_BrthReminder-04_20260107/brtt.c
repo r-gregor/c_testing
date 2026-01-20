@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
 
 	while (fgetws(line, 100, fp) != NULL) {
 		line[wcscspn(line, L"\n")] = 0; // Remove '\n' from the line
-		  persons_unsorted[np] = makePersonFromLine(line);                 // v27
+		persons_unsorted[np] = makePersonFromLine(line);                 // v27
 		np++;
 	}
 
@@ -163,6 +163,13 @@ int main(int argc, char **argv) {
 		freePerson(persons_unsorted[i]);
 	}
 	release_ptr(persons_unsorted);
+
+	
+	/*
+	for (int i=0; i < pers_count; i++) {
+		release_ptr(persons[i]);
+	}
+	*/
 	// release_ptr(persons);
 
 
@@ -199,42 +206,42 @@ int getPositionOfDelim(wchar_t delim, wchar_t *line) {
 Person_t *makePersonFromLine(wchar_t *line) {
 	int curryear = g_curr_date->y;
 	int pos = getPositionOfDelim(',', line);
-	Person_t *person = malloc(sizeof(Person_t));
-	person->name = malloc(sizeof(wchar_t) * (pos + 1));
+	Person_t *person_ptr = malloc(sizeof(Person_t));
+	person_ptr->name = malloc(sizeof(wchar_t) * (pos + 1));
 
 	wchar_t *ptr;
 	wchar_t *pEnd;
-	wcscpy(person->name, wcstok(line, L",", &ptr));
-	person->bd_date.d = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->bd_date.m = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->bd_date.y = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
-	person->age = curryear - person->bd_date.y;
+	wcscpy(person_ptr->name, wcstok(line, L",", &ptr));
+	person_ptr->bd_date.d = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	person_ptr->bd_date.m = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	person_ptr->bd_date.y = wcstol(wcstok(NULL, L".", &ptr), &pEnd, 10);
+	person_ptr->age = curryear - person_ptr->bd_date.y;
 
-	Date this_year = {person->bd_date.d, person->bd_date.m, g_curr_date->y};
+	Date this_year = {person_ptr->bd_date.d, person_ptr->bd_date.m, g_curr_date->y};
 
 	if (getDifference(g_curr_date, &this_year) < 0) {
 		this_year.y +=1;
 	}
-	person->day_diff = getDifference(g_curr_date, &this_year);
+	person_ptr->day_diff = getDifference(g_curr_date, &this_year);
 	// line = NULL;
 
-	return person;
+	return person_ptr;
 }
 
 /**
  * Prints formated contents of updated person.
  */
-void printPerson(Person_t *person) {
-	wprintf(L"%-30ls", person->name);
-	wprintf(L"%02ld.%02ld.%ld     ", person->bd_date.d, person->bd_date.m, person->bd_date.y);
-	wprintf(L"%-5ld", person->age);
+void printPerson(Person_t *person_ptr) {
+	wprintf(L"%-30ls", person_ptr->name);
+	wprintf(L"%02ld.%02ld.%ld     ", person_ptr->bd_date.d, person_ptr->bd_date.m, person_ptr->bd_date.y);
+	wprintf(L"%-5ld", person_ptr->age);
 
-	wchar_t asap[6] =                                                 L"     ";
-	if (person->day_diff < 3)                            wcscpy(asap, L"  ***");
-	if (person->day_diff >= 3 && person->day_diff <= 8)  wcscpy(asap, L"   **");
-	if (person->day_diff >= 8 && person->day_diff <= 21) wcscpy(asap, L"    *");
+	wchar_t asap[6] =                                                         L"     ";
+	if (person_ptr->day_diff < 3)                                wcscpy(asap, L"  ***");
+	if (person_ptr->day_diff >= 3 && person_ptr->day_diff <= 8)  wcscpy(asap, L"   **");
+	if (person_ptr->day_diff >= 8 && person_ptr->day_diff <= 21) wcscpy(asap, L"    *");
 	
-	wprintf(L"%ls%5ld\n", asap, person->day_diff);
+	wprintf(L"%ls%5ld\n", asap, person_ptr->day_diff);
 }
 
 
