@@ -149,11 +149,12 @@ int main(int argc, char **argv) {
 	release_ptr(line);
 	release_ptr(g_curr_date);
 
-	for (int i=0; i < g_nLines; i++) {
-		freePerson(persons_unsorted[i]);
+	for (int i=1; i < g_nLines; i++) {
+		release_ptr(persons_unsorted[i]->name);
+		release_ptr(persons_unsorted[i]);
 	}
+
 	release_ptr(persons_unsorted);
-	release_ptr(persons);
 
 	return 0;
 } /* end main */
