@@ -124,6 +124,16 @@ int main(int argc, char **argv) {
 			persons[++k] = persons_unsorted[i];
 		}
 	}
+	wprintf(L"address of person:                 %p\n", persons);
+	wprintf(L"address of *person:                %p\n", *persons);
+	wprintf(L"address of person[0]:              %p\n", (persons[0]));
+	wprintf(L"address of *(person[0]):           %p\n", *(persons[0]));
+	wprintf(L"address of persons_unsorted:       %p\n", persons_unsorted);
+	wprintf(L"address of *persons_unsorted:      %p\n", *persons_unsorted);
+	wprintf(L"address of persons_unsorted[0]:    %p\n", (persons_unsorted[0]));
+	wprintf(L"address of *(persons_unsorted[0]): %p\n", *(persons_unsorted[0]));
+
+	getchar();
 
 	/* qsort ... */
 	qsort(persons, pers_count, sizeof(Person_t *), cmpfunc_daysdiff);    // v27
@@ -148,9 +158,9 @@ int main(int argc, char **argv) {
 	release_ptr(g_curr_date);
 
 	for (int i=0; i < g_nLines; i++) {
-		release_ptr(persons_unsorted[i]->name);
+		// release_ptr(persons_unsorted[i]->name);
 		// release_ptr(persons_unsorted[i]);
-		// freePerson(persons_unsorted[i]);
+		freePerson(persons_unsorted[i]);
 	}
 	release_ptr(persons_unsorted);
 	// release_ptr(persons);
