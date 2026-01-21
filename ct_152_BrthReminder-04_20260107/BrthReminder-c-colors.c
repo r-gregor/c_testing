@@ -155,7 +155,10 @@ int main(int argc, char **argv) {
 		freePerson(persons_unsorted[i]);
 	}
 
-	// release_ptr(persons_unsorted);
+	release_ptr(persons_unsorted);
+	/* works on linux --> valgrinde mem test OK
+	release_ptr(persons);
+	*/
 
 	return 0;
 } /* end main */
