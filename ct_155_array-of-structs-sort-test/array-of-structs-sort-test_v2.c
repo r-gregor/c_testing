@@ -19,7 +19,7 @@ typedef struct object {
 
 void print_arr(Object_t *arr, size_t size);
 void print_arr_ptr(Object_t **arr_ptr, size_t size);
-int cmpfunc_name(const void *a, const void *b);
+int cmpfunc_line(const void *a, const void *b);
 
 /* main */
 int main(int argc, char **argv) {
@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 	*/
 
 	/* print sorted array of pointers */
-	qsort(array_of_structs_ptrs, arr_size, sizeof(Object_t *), cmpfunc_name);
+	qsort(array_of_structs_ptrs, arr_size, sizeof(Object_t *), cmpfunc_line);
 	print_arr_ptr(array_of_structs_ptrs, arr_size);
 
 	return 0;
@@ -67,19 +67,41 @@ int main(int argc, char **argv) {
 /* print array of structs */
 void print_arr(Object_t *arr, size_t size) {
 	for (int j=0; j<size; ++j) {
-		printf("%02d: %10s | %4ld | %3.2f\n", arr[j].id, arr[j].line, arr[j].size, arr[j].flag);
+		/*
+		printf("%02d: %10s | %4ld | %3.2f\n",
+				arr[j].id,
+				arr[j].line,
+				arr[j].size,
+				arr[j].flag);
+		... same as ... */
+		printf("%02d: %10s | %4ld | %3.2f\n",
+				(*(arr + j)).id,
+				(*(arr + j)).line,
+				(*(arr + j)).size,
+				(*(arr + j)).flag);
 	}
 }
 
 /* print array of pointers to structs */
 void print_arr_ptr(Object_t **arr_ptr, size_t size) {
 	for (int j=0; j<size; ++j) {
-		printf("%02d: %10s | %4ld | %3.2f\n", arr_ptr[j]->id, arr_ptr[j]->line, arr_ptr[j]->size, arr_ptr[j]->flag);
+		/*
+		printf("%02d: %10s | %4ld | %3.2f\n",
+				arr_ptr[j]->id,
+				arr_ptr[j]->line,
+				arr_ptr[j]->size,
+				arr_ptr[j]->flag);
+		... same as ... */
+		printf("%02d: %10s | %4ld | %3.2f\n",
+				(*(arr_ptr + j))->id,
+				(*(arr_ptr + j))->line,
+				(*(arr_ptr + j))->size,
+				(*(arr_ptr + j))->flag);
 	}
 }
 
 /* coparison function for qsort -- line */
-int cmpfunc_name(const void *a, const void *b) {
+int cmpfunc_line(const void *a, const void *b) {
 	Object_t *pA = *(Object_t **)a;
 	Object_t *pB = *(Object_t **)b;
 
