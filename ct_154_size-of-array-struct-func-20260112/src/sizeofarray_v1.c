@@ -1,3 +1,8 @@
+/*
+ * filename: sizeofarray_v1.c
+ * 20260112 v1 en
+ * last: 20260112
+ */
 #include <stdio.h>
 #include <string.h>
 
