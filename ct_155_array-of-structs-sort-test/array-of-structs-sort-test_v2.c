@@ -17,7 +17,7 @@ typedef struct object {
 	float flag;
 } Object_t ;
 
-void print_arr(Object_t *arr_ptr, size_t size);
+void print_arr(Object_t *arr, size_t size);
 void print_arr_ptr(Object_t **arr_ptr, size_t size);
 int cmpfunc_name(const void *a, const void *b);
 
@@ -65,9 +65,9 @@ int main(int argc, char **argv) {
 } // end main
 
 /* print array of structs */
-void print_arr(Object_t *arr_ptr, size_t size) {
+void print_arr(Object_t *arr, size_t size) {
 	for (int j=0; j<size; ++j) {
-		printf("%02d: %10s | %4ld | %3.2f\n", arr_ptr[j].id, arr_ptr[j].line, arr_ptr[j].size, arr_ptr[j].flag);
+		printf("%02d: %10s | %4ld | %3.2f\n", arr[j].id, arr[j].line, arr[j].size, arr[j].flag);
 	}
 }
 
