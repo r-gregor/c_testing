@@ -61,6 +61,7 @@ int main(int argc, char **argv) {
 	qsort(array_of_structs_ptrs, arr_size, sizeof(Object_t *), cmpfunc_line);
 	print_arr_ptr(array_of_structs_ptrs, arr_size);
 
+
 	return 0;
 } // end main
 
