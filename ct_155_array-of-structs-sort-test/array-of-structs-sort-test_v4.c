@@ -1,11 +1,13 @@
 /*
- * filename: array-of-structs-sort-test_v3.c
+ * filename: array-of-structs-sort-test_v4.c
  * 20260121 v1 en: using pointer to entire struct 'Object_t (*arr)[]'
  * 20260122 v2 en: using array of pointers to structs to print sorted
  *                 array without touching the original array of structs
  * 20260123 v3 en: added sorts by line and by size
  *                 formated print of each array with getchar() to continue
- * last: 20260122
+ * 20260123 v4 en: added print_sorted_arr_ptr() function
+ *                 and enhanced formatting
+ * last: 20260123
  */
 #include <stdio.h>
 #include <string.h>
@@ -19,11 +21,12 @@ typedef struct object {
 	float flag;
 } Object_t ;
 
-void print_header();
+void print_header(); // v3
 void print_arr(Object_t *arr, size_t size);
 void print_arr_ptr(Object_t **arr_ptr, size_t size);
-int cmpfunc_line(const void *a, const void *b);
-int cmpfunc_size(const void *a, const void *b);
+int cmpfunc_line(const void *a, const void *b); // v2
+int cmpfunc_size(const void *a, const void *b); // v3
+void print_sorted_arr_ptr(Object_t **arr_ptr, size_t size, char *sort_by);
 
 /* ========== main ============== */
 int main(int argc, char **argv) {
@@ -51,32 +54,21 @@ int main(int argc, char **argv) {
 		array_of_structs_ptrs[i] = &array_of_structs[i];
 	}
 
-	/* print original array */
 	printf("Original array of structs:\n");
 	print_arr(array_of_structs, arr_size);
 	printf("\n");
 	getchar();
 
-	/* print unsorted array of pointers */
-	/*
-	print_arr_ptr(array_of_structs_ptrs, arr_size);
-	printf("\n");
-	getchar();
-	*/
-
-	/* print array of pointers sorted by line string */
 	printf("Array of structs sorted by line string:\n");
-	qsort(array_of_structs_ptrs, arr_size, sizeof(Object_t *), cmpfunc_line);
-	print_arr_ptr(array_of_structs_ptrs, arr_size);
-	printf("\n");
+	print_sorted_arr_ptr(array_of_structs_ptrs, arr_size, "line");
 	getchar();
 
-	/* print array of pointers sorted by size number */
-	printf("Array of structs sorted by size number:\n");
-	qsort(array_of_structs_ptrs, arr_size, sizeof(Object_t *), cmpfunc_size);
-	print_arr_ptr(array_of_structs_ptrs, arr_size);
-	printf("\n");
+	/* TEST */
+	print_sorted_arr_ptr(array_of_structs_ptrs, arr_size, "id");
+	getchar();
 
+	printf("Array of structs sorted by size number:\n");
+	print_sorted_arr_ptr(array_of_structs_ptrs, arr_size, "size");
 
 	return 0;
 } // end main
@@ -85,8 +77,13 @@ int main(int argc, char **argv) {
 /* ======= FUNCTION DECLARATIONS ============ */
 
 void print_header() {
+	printf("--------------------------------\n");
 	printf("%-3s %10s | %6s | %6s\n", "id:", "line", "size", "flag");
 	printf("================================\n");
+}
+
+void print_footer() {
+	printf("--------------------------------\n");
 }
 
 /* print array of structs */
@@ -106,6 +103,7 @@ void print_arr(Object_t *arr, size_t size) {
 				(*(arr + j)).size,
 				(*(arr + j)).flag);
 	}
+	print_footer();
 }
 
 /* print array of pointers to structs */
@@ -125,6 +123,7 @@ void print_arr_ptr(Object_t **arr_ptr, size_t size) {
 				(*(arr_ptr + j))->size,
 				(*(arr_ptr + j))->flag);
 	}
+	print_footer();
 }
 
 /* coparison function for qsort -- line */
@@ -144,3 +143,17 @@ int cmpfunc_size(const void *a, const void *b) {
 	/* uint numbers compare: smallest to largest */
     return (pA->size - pB->size);
 }
+
+/* print SORTED array of pointers to structs */
+void print_sorted_arr_ptr(Object_t **arr_ptr, size_t size, char *sort_by) {
+	if (strcasecmp(sort_by, "line") == 0) {
+		qsort(arr_ptr, size, sizeof(Object_t *), cmpfunc_line);
+	} else if (strcasecmp(sort_by, "size") == 0) {
+		qsort(arr_ptr, size, sizeof(Object_t *), cmpfunc_size);
+	} else {
+		printf("Wrong parameter to sort by: '%s'\n", sort_by);
+		return;
+	}
+	print_arr_ptr(arr_ptr, size);
+}
+
