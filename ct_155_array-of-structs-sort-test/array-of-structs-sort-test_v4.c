@@ -22,11 +22,12 @@ typedef struct object {
 } Object_t ;
 
 void print_header(); // v3
+void print_footer(); // v4
 void print_arr(Object_t *arr, size_t size);
 void print_arr_ptr(Object_t **arr_ptr, size_t size);
 int cmpfunc_line(const void *a, const void *b); // v2
 int cmpfunc_size(const void *a, const void *b); // v3
-void print_sorted_arr_ptr(Object_t **arr_ptr, size_t size, char *sort_by);
+void print_sorted_arr_ptr(Object_t **arr_ptr, size_t size, char *sort_by); // v4
 
 /* ========== main ============== */
 int main(int argc, char **argv) {
@@ -59,6 +60,7 @@ int main(int argc, char **argv) {
 	printf("\n");
 	getchar();
 
+	/* v4 */
 	printf("Array of structs sorted by line string:\n");
 	print_sorted_arr_ptr(array_of_structs_ptrs, arr_size, "line");
 	getchar();
@@ -67,6 +69,7 @@ int main(int argc, char **argv) {
 	print_sorted_arr_ptr(array_of_structs_ptrs, arr_size, "id");
 	getchar();
 
+	/* v4 */
 	printf("Array of structs sorted by size number:\n");
 	print_sorted_arr_ptr(array_of_structs_ptrs, arr_size, "size");
 
