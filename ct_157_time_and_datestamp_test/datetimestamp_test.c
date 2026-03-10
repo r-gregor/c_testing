@@ -1,5 +1,5 @@
 /*
- * fname: timestmp_and_datestmp_test.c
+ * fname: datetimestamp_test.c
  * 20260310 en v1
  * last: 20260310
  */
