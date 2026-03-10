@@ -2,7 +2,7 @@
 #define _DATESTAMP_H
 #include <time.h>
 
-#define DTSTMP_LEN 11
+#define DTSTMP_LEN 9
 
 char dts[DTSTMP_LEN];
 
