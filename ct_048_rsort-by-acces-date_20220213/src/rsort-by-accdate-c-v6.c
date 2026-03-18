@@ -4,8 +4,6 @@
  * 20240819 v5 en: -  perror --> strerror
  * 20251202 v6 en: - add ERROR if no directory found
  *                 - move everything in main into main driver function
- * 20260318 v7 en: - update putFnameIntoArray() function to add '/' at the end of
- *                   filenames[fcount]->fname if it is ad directory
  */
 
 #include <dirent.h>  
@@ -88,12 +86,9 @@ void putFnameIntoArray(DIR *dir) {
 		}
 
 		filenames[fcount]            = fname_allocate(sizeof(FileName));
-		filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 2)); // v7
+		filenames[fcount]->fname     = string_allocate(sizeof(char) * (strlen(dirent->d_name) + 1));
 		filenames[fcount]->long_date = string_allocate(sizeof(char) * (LONG_DATE + 1));
 		strcpy(filenames[fcount]->fname, dirent->d_name);
-		if ( dirent->d_type == DT_DIR ) {                                                            // v7
-			strcat(filenames[fcount]->fname, "/");
-		}
 		// test
 		//printf("fname:  %s\n", filenames[fcount]->fname);
 		//printf("d_name: %s\n", dirent->d_name);
@@ -102,9 +97,9 @@ void putFnameIntoArray(DIR *dir) {
 		line = malloc(sizeof(fullpath) + sizeof(dirent->d_name) + sizeof(char) * 3);
 		sprintf(line, "%s/%s", fullpath, dirent->d_name);
 		release_ptr(fullpath);
-		// if ( dirent->d_type == DT_DIR ) {                                                         // v7 (remove)
-		// 	strcat(line, "/");
-		// }
+		if ( dirent->d_type == DT_DIR ) {
+			strcat(line, "/");
+		}
 
 		make_long_date(line, filenames[fcount]->long_date);
 		free(line);
