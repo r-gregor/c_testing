@@ -1,7 +1,7 @@
 /*
  * filename: sizeofarray.c
- * 20260112 v1 en
- * 20260122 v2 en: remove unused 'get_nth_element()' function
+ * v1_2026011
+ * v2_20260122: remove unused 'get_nth_element()' function
  *                 update 'get_nth_element_str()' function
  *                 add 'show_nth_element()' function from v1 TODO:
  * last: 20260122

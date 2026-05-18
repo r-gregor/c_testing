@@ -1,12 +1,12 @@
 /*
  * filename: array-of-structs-sort-test_v4.c
- * 20260121 v1 en: using pointer to entire struct 'Object_t (*arr)[]'
- * 20260122 v2 en: using array of pointers to structs to print sorted
- *                 array without touching the original array of structs
- * 20260123 v3 en: added sorts by line and by size
- *                 formated print of each array with getchar() to continue
- * 20260123 v4 en: added print_sorted_arr_ptr() function
- *                 and enhanced formatting
+ * v1_20260121: using pointer to entire struct 'Object_t (*arr)[]'
+ * v2_20260122: using array of pointers to structs to print sorted
+ *              array without touching the original array of structs
+ * v3_20260123: added sorts by line and by size
+ *              formated print of each array with getchar() to continue
+ * v4_20260123: added print_sorted_arr_ptr() function
+ *              and enhanced formatting
  * last: 20260123
  */
 #include <stdio.h>
