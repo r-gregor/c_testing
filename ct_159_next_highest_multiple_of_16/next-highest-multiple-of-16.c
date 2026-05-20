@@ -1,7 +1,7 @@
 /*
  * next highest multiple of 16
  * v1_2060518
- * from: Malloc is NOT Magic: Let's Build it to Learn What's Inside!
+ * from: Malloc is NOT Magic: Let´s Build it to Learn What´s Inside!
  *       https://www.youtube.com/watch?v=mYBxnojY-JA
  */
 #include <stdio.h>
@@ -36,6 +36,10 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
+/*
+ * int result = (n + 15) >> 4 is equivalent to: int result = (int)((n + 15) / 16)
+ * result << 4 is equivalent to: result * 16
+ */
 int next_highes_multiple_of_16(int n) {
 	return ((n + 15) >> 4) << 4;
 }
