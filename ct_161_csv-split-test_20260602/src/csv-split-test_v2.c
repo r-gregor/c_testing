@@ -9,18 +9,18 @@
 #include <stdint.h>
 
 typedef struct CsvStringParts {
-	char *mystring;
+	char *line;
 	uint32_t delim_pos;
 	uint32_t string_len;
 } CsvStringParts;
 
 
 // CsvStringParts get_string_parts(char *string);
-void get_string_parts(CsvStringParts *line, char *string);
+void get_string_parts(CsvStringParts *str_parts, char *string);
 uint32_t get_delim_position(char *line);
-void display_fst_part(CsvStringParts *line);
-void display_scd_part(CsvStringParts *line);
-void csv_string_info(CsvStringParts *line);
+void display_fst_part(CsvStringParts *str_parts);
+void display_scd_part(CsvStringParts *str_parts);
+void csv_string_info(CsvStringParts *str_parts);
 
 int main(int argc, char **argv) {
 
@@ -30,9 +30,9 @@ int main(int argc, char **argv) {
 	};
 
 	for(int j=0; j < 3; j++) {
-		CsvStringParts line1;
-		get_string_parts(&line1, lines[j]);
-		csv_string_info(&line1);
+		CsvStringParts str_parts1;
+		get_string_parts(&str_parts1, lines[j]);
+		csv_string_info(&str_parts1);
 	}
 
 
@@ -42,10 +42,10 @@ int main(int argc, char **argv) {
 }
 
 
-void get_string_parts(CsvStringParts *line, char *string) {
-	line->mystring = string;
-	line->string_len = strlen(string);
-	line->delim_pos = get_delim_position(string);
+void get_string_parts(CsvStringParts *str_parts, char *string) {
+	str_parts->line = string;
+	str_parts->string_len = strlen(string);
+	str_parts->delim_pos = get_delim_position(string);
 }
 
 uint32_t get_delim_position(char *line) {
@@ -66,29 +66,29 @@ uint32_t get_delim_position(char *line) {
 	return 0;
 }
 
-void display_fst_part(CsvStringParts *line) {
+void display_fst_part(CsvStringParts *str_parts) {
 	printf("'");
-	for(int i=0; i < line->delim_pos; i++) {
-		printf("%c", line->mystring[i]);
+	for(int i=0; i < str_parts->delim_pos; i++) {
+		printf("%c", str_parts->line[i]);
 	}
 	printf("'");
 	printf("\n");
 }
 
-void display_scd_part(CsvStringParts *line) {
+void display_scd_part(CsvStringParts *str_parts) {
 	printf("'");
-	for(int i=line->delim_pos + 1; i < line->string_len; i++) {
-		printf("%c", line->mystring[i]);
+	for(int i=str_parts->delim_pos + 1; i < str_parts->string_len; i++) {
+		printf("%c", str_parts->line[i]);
 	}
 	printf("'");
 	printf("\n");
 }
 
-void csv_string_info(CsvStringParts *line) {
-	printf("String: '%s'\n", line->mystring);
-	printf("Delimiter position at: %d\n", line->delim_pos);
-	printf("First part:  "); display_fst_part(line);
-	printf("Second part: "); display_scd_part(line);
+void csv_string_info(CsvStringParts *str_parts) {
+	printf("String: '%s'\n", str_parts->line);
+	printf("Delimiter position at: %d\n", str_parts->delim_pos);
+	printf("First part:  "); display_fst_part(str_parts);
+	printf("Second part: "); display_scd_part(str_parts);
 	printf("---\n");
 }
 
