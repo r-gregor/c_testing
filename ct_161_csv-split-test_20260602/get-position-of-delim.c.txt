@@ -1,0 +1,17 @@
+/**
+ * function that returns the positin of the delimiter in a string
+ */
+unsigned int getPositionOfDelim(char *line, char delim) {
+	unsigned int pos;
+	unsigned int j = 0;
+	while (!line[j] == '\0') {
+		if (line[j] == delim) {
+			pos = j;
+			break;
+		} else {
+			j++;
+		}
+	}
+	return pos;
+}
+
