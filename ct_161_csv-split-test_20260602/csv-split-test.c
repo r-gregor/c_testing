@@ -124,7 +124,7 @@ void get_csv_info_from_array(char *csv_strings[], size_t len) {
 		printf("String: '%s'\n", str_parts1.line);
 		if (str_parts1.delim_pos == -1) {
 			printf("[ERROR] delimiter NOT found\n---\n");
-		} else if (str_parts1.delim_pos == -1 || str_parts1.delim_pos == 0 || str_parts1.delim_pos >= str_parts1.string_len - 1) {
+		} else if (str_parts1.delim_pos == 0 || str_parts1.delim_pos >= str_parts1.string_len - 1) {
 			printf("[ERROR] delimiter NOT in the middle of string\n---\n");
 		} else {
 			print_csv_string_info(&str_parts1);
@@ -142,7 +142,7 @@ void get_csv_info_from_string(char *string) {
 	printf("String: '%s'\n", str_parts1.line);
 	if (str_parts1.delim_pos == -1) {
 		printf("[ERROR] delimiter NOT found\n---\n");
-	} else if (str_parts1.delim_pos == -1 || str_parts1.delim_pos == 0 || str_parts1.delim_pos >= str_parts1.string_len - 1) {
+	} else if (str_parts1.delim_pos == 0 || str_parts1.delim_pos >= str_parts1.string_len - 1) {
 		printf("[ERROR] delimiter NOT in the middle of string\n---\n");
 	} else {
 		print_csv_string_info(&str_parts1);
