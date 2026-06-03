@@ -22,7 +22,7 @@ int get_delim_position(char *line, char delim);
 void display_fst_part(CsvStringParts *str_parts);
 void display_scd_part(CsvStringParts *str_parts);
 void print_csv_string_info(CsvStringParts *str_parts);
-void get_csv_info_from_array(char *csv_strings[], size_t len);
+void get_csv_info_from_array(char *csv_strings[], size_t lines_num);
 void get_csv_info_from_string(char *strings);
 
 /* MAIN */
@@ -39,8 +39,8 @@ int main(int argc, char **argv) {
 
 	/* from array of strings */
 	printf("---\n");
-	size_t len = sizeof(csv_strings) / sizeof(csv_strings[0]);
-	get_csv_info_from_array(csv_strings, len);
+	size_t lines_num = sizeof(csv_strings) / sizeof(csv_strings[0]);
+	get_csv_info_from_array(csv_strings, lines_num);
 
 	/* from single string */
 	get_csv_info_from_string("https://www.edaboard.com/threads/reading-a-csv-file-in-c.380838;Reading a csv file in C");
@@ -106,7 +106,6 @@ void display_scd_part(CsvStringParts *str_parts) {
  * display single line info
  */
 void print_csv_string_info(CsvStringParts *str_parts) {
-	// printf("String: '%s'\n", str_parts->line);
 	printf("Delimiter position at: '%d'\n", str_parts->delim_pos);
 	printf("First part:            "); display_fst_part(str_parts);
 	printf("Second part:           "); display_scd_part(str_parts);
@@ -115,10 +114,10 @@ void print_csv_string_info(CsvStringParts *str_parts) {
 
 /*
  * printout info for each of the lines in a strings array
- * len = number of elements (lines) in an array
+ * lines_num = number of elements (lines) in an array
  */
-void get_csv_info_from_array(char *csv_strings[], size_t len) {
-	for(int j=0; j < len; j++) {
+void get_csv_info_from_array(char *csv_strings[], size_t lines_num) {
+	for(int j=0; j < lines_num; j++) {
 		CsvStringParts str_parts1;
 		init_string_parts(&str_parts1, csv_strings[j]);
 		printf("String: '%s'\n", str_parts1.line);
@@ -134,7 +133,6 @@ void get_csv_info_from_array(char *csv_strings[], size_t len) {
 
 /*
  * printout info for single string
- * len = number of elements (lines) in an array
  */
 void get_csv_info_from_string(char *string) {
 	CsvStringParts str_parts1;
