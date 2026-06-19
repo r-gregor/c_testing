@@ -4,7 +4,7 @@
  *       https://www.youtube.com/watch?v=6xbLgZpOBi8
  * -------------------------------------------------
  * simulating command:
- *      $> ping -c 5 <url> | grep "round"
+ *      $> ping -c 5 <url> | grep "round\|rtt"
  * v1_20260619
  * last: 20260619
  */
@@ -30,8 +30,8 @@ int main(int argc, char **argv) {
 
 	/* child process: for 'ping' command */
 	if (pid1 == 0) {
-		// char *URL1 = "google.com"; // try home
-		char *URL2 = "10.99.10.1";    // EN
+		char *URL1 = "google.com";       // try home
+		// char *URL2 = "10.99.10.1";    // EN
 
 		dup2(fd[1], STDOUT_FILENO);
 
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 		close(fd[0]);
 		close(fd[1]);
 
-		execlp("ping", "ping", "-c", "5", URL2, NULL);
+		execlp("ping", "ping", "-c", "5", URL1, NULL);
 	}
 
 	/* fork/clone the current process for 'grep' comand */
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
 		close(fd[0]);
 		close(fd[1]);
 
-		execlp("grep", "grep", "round", NULL);
+		execlp("grep", "grep", "round\\|rtt", NULL);
 	}
 
 	/*
