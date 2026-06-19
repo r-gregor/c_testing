@@ -1,5 +1,8 @@
 /*
  * fname: pipetest.c
+ * from: Simulating the pipe "|" operator in C
+ *       https://www.youtube.com/watch?v=6xbLgZpOBi8
+ * -------------------------------------------------
  * simulating command:
  *      $> ping -c 5 <url> | grep "round"
  * v1_20260619
@@ -10,7 +13,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-
 
 int main(int argc, char **argv) {
 
