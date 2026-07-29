@@ -6,9 +6,10 @@ CFLAGS = -g -Wall
 RM = rm -v
 BIN = ./bin
 SRC = ./src
+LBRS = 
 
 SRCS = $(wildcard $(SRC)/*.c)
-MAIN = myshinynewprogram
+MAIN = myshinynewprogram2
 
 all: newbindir MAIN
 
@@ -16,7 +17,7 @@ newbindir:
 	@mkdir -p ./bin
 
 MAIN: $(SCRS)
-	gcc -Wall -o bin/$(MAIN) $(SRCS)
+	gcc -Wall -o bin/$(MAIN) $(SRCS) $(LBRS)
 #	$(CC) $(CFLAGS) -o $@ $< -lncurses
 
 clean:
