@@ -5,19 +5,23 @@ CC = gcc
 CFLAGS = -g -Wall
 RM = rm -v
 BIN = ./bin
-SRC = ./src
-LBRS = 
 
-SRCS = $(wildcard $(SRC)/*.c)
-MAIN = myshinynewprogram2
+SRCS = $(wildcard *.c)
+PROGS = $(patsubst %.c,$(BIN)/%,$(SRCS))
 
-all: newbindir MAIN
+
+
+all: newbindir $(PROGS)
 
 newbindir:
 	@mkdir -p ./bin
 
-MAIN: $(SCRS)
-	gcc -Wall -o bin/$(MAIN) $(SRCS) $(LBRS)
+$(BIN)/%: %.c *.h
+	$(CC) $(CFLAGS) -o $@ $<
+#	$(CC) $(CFLAGS) -o $@ $< -lncurses
+
+$(BIN)/%: %.c
+	$(CC) $(CFLAGS) -o $@ $<
 #	$(CC) $(CFLAGS) -o $@ $< -lncurses
 
 clean:
