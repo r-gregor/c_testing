@@ -1,5 +1,5 @@
-/*			20230403
- *			function-ptr-example_1.c
+/* 20230403
+ * function-ptr-example_1.c
  * from:    Understanding and Using Function Pointers in C
  *          https://www.youtube.com/watch?v=axngwDJ79GY&t=4s
  *          ---

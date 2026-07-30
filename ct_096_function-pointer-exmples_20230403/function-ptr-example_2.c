@@ -1,5 +1,5 @@
-/*          20230403
- *          function-ptr-example_2.c
+/* 20230403
+ * function-ptr-example_2.c
  * from:    Why are function pointers useful?
  *          https://www.youtube.com/watch?v=ewBBRaF0oEA
  *          ---
