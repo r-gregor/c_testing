@@ -1,5 +1,5 @@
 /* 20230404
- * func_pointers_test.c
+ * func_pointers_test3.c
  */
 #include <stdio.h>
 #include <string.h>
