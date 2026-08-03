@@ -1,0 +1,11 @@
+from ytb: to test testport program get nameserver addres drbirch uses command (linux):
+$> host -t mx gmail.com
+
+on WIN equivalent command is:
+$> nslookup -q=mx gmail.com
+
+test at home commands in video from: 00:16:06/01:06:25 (STEP 1: port scanning)
+...
+
+
+---
