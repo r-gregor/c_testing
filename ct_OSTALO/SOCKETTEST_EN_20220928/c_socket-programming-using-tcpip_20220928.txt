@@ -25,7 +25,7 @@ TCP (Transmission control protocol)
    The communication over the network in TCP/IP model takes place in form of a client-server
    architecture. ie, the client begins the communication and establishes a connection with a server.
 
-   For more understanding let's create a server that continuously runs and establish the connection
+   For more understanding let´s create a server that continuously runs and establish the connection
    after getting a request from the client.
 
    Note: here I am creating the server and client for Linux.
@@ -99,7 +99,7 @@ Example of Socket programming in C using TCP/IP:
    As we know in socket programming network nodes (sockets) are communicating with each other over the
    network. One socket(node) listens on a particular port at an IP, while the other socket reaches out
    to the other to form a connection. In this example code, we will create two-node, one node for the
-   server and the other for the client. So let's see the example code for client-server socket
+   server and the other for the client. So let´s see the example code for client-server socket
    programming in C.
 
 Example Source code for TCP/IP client in C Linux:

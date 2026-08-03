@@ -4,7 +4,7 @@ https://www.programminglogic.com/example-of-client-server-program-in-c-using-soc
 Example of Client-Server Program in C (Using Sockets and TCP)
 April 22, 2014
 
-   Below you'll find an example of a very simple client-server program in C. Basically the client
+   Below you´ll find an example of a very simple client-server program in C. Basically the client
    connects to the server, the server sends the message "Hello World", and the client prints the
    received message.
 
@@ -125,7 +125,7 @@ https://www.programminglogic.com/sockets-programming-in-c-using-udp-datagrams/
 Sockets Programming in C Using UDP Datagrams
 April 25, 2014
 
-   Below you'll find the code of a simple server-client program in C using UDP sockets for the
+   Below you´ll find the code of a simple server-client program in C using UDP sockets for the
    transmission. Basically the client sends a message to the server, the server converts the message to
    uppercase and returns it to the client.
 
