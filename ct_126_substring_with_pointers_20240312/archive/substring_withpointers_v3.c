@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 
 	show_start_end(begin, subss_len);
 
-	for(int i = 0; i < begin - 1; ++i) printf(" "); // begin - 1 becaise of "'" char
+	for(int i = 0; i < begin - 1; ++i) printf(" "); // begin - 1 because of "'" char
 	print_substring(start, end);
 
 	return 0;

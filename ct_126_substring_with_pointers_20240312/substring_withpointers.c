@@ -1,11 +1,10 @@
 /*
  * substring_withpointers_v3.c
- * 20240312_1_en
- * 20240312_2_en v2: updated to use widechars (UTF-8)
- * 20240313_3_mdb
- * 20240313_3_en
- * 20240313_4_en v3: accept user parameters
- *                   usage function
+ * 20240312 v1
+ * 20240312 v2: updated to use widechars (UTF-8)
+ * 20240313 v3: accept user parameters
+ *              usage function
+ * 20260826 v4: updated usage function
  *
  */
 #include <stdio.h>
@@ -121,12 +120,16 @@ void print_substring(const wchar_t *start, const wchar_t *end) {
 		k++;
 	}
 	printf("' -- substring\n");
+	printf("\n");
  }
 
+// v4
 void usage(char *progname) {
 	printf("\n\tUsage: "
 			"%s <start_pos> <subss_len>\n"
 			"\t\tstart_pos  ... [int], beginning position of substring\n"
-			"\t\tsubss_len  ... [int], length of substring (at least %d chars)\n\n", basename(progname), SUBS_MIN_LEN
+			"\t\tsubss_len  ... [int], length of substring (at least %d chars)\n\n"
+			"\t\tOriginal string:\n"
+			"\t\t'Iz česa je lepota tvoja stkana, da tvoj obraz milijon podob ima?'\n\n", basename(progname), SUBS_MIN_LEN \
 	);
 }
