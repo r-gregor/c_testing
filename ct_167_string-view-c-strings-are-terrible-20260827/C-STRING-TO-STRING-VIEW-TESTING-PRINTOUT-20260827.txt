@@ -1,0 +1,96 @@
+!!THIS IS A PRINTOUT!!
+
+#########################
+# [E1] classic c-string #
+#########################
+printing 's' as string '%s':
+s = 'Hello, World!'
+---
+'s' is a pointer '%p':
+ s = '0x10040404c'
+sizeof(s) = 8
+---
+dereferenced '*s' as '%ld': '72'
+dereferenced '*s' as '%c':  'H'
+('H' is '72' in ASCII table)
+sizeof(*s) = 1 (dereferenced 'char *' is just a pointer to the first char)
+---
+'s' represents just a view of bytes stored somewhere in memory
+    and we can change that view:
+Let's print 's + 1':
+s = 'ello, World!'
+... which is ideal for chopping off chars from left
+but chopping off from right is not possible with string literals
+as we need to 'change' last char of read-only string litteral to '\0'
+if we try to set s[strlen(s) - 1] = '\0', the program will segfault
+because we try to touch memory that we are not supposed to touch
+chopping off from right is possible if we duplicae the string, but 
+that means allocating new memory that need to be freed after use
+---
+duplicating string litteral with: char *sc = strdup("Hello, World");
+sc[n-1] = '\0'
+sc = 'Hello, Worl'
+sizeof(*sc) = 1
+--------------------------------------------------------------------------------
+####################
+# [E2] string-view #
+####################
+c-string is a single pointer to memory address at the beginning of charcter array
+string-view has two integers: 'pointer' at the addres at the beginning of string and 'length'
+it is very easy to convert null-terminated string into string-view because we just ignore the
+'\0' character without allocating any memory or destroying any data
+
+sv2 = 'Hello, World'
+---
+if we want to chop off from right, we need to use special printf format string count:
+printf("%.*s"), sv2.count, sv2.data);
+expression because original printf does not respect our '.count'
+expression is included inside 'sv_print()' function, or
+we can factor out the printf format string count into macro definition, like:
+	#define SV_fmt "%.*s"
+	#define SV_args(sv2) (sv2)->count, (sv2)->data
+
+so 'printf("|%.*s|", sv2.count, sv2.data);' becomes: 'printf("|" SV_fmt "|", SV_args(sv2));'
+this works because you can combine several parts of string literal into single one:
+printf("'First " "part" " and " "second " "part'") ==> 'First part and second part'
+---
+new functions 'sv_chop_(left/right)' to chop off single char:
+sv2 = 'Hello, World'
+
+after chopping off from right 2 times:
+sv2 = 'Hello, Wor'
+
+and after chopping off from left 2 times:
+sv2 = 'llo, Wor'
+---
+new functions 'sv_chop_n_(left/right)' to accept number of characters to chop off
+sv3 = 'Hello, World'
+
+and after chopping off from right 3 times and from left 2 times:
+sv3 = 'llo, Wo'
+---
+new functions 'sv_trim_(left/right)' to trim off leading or trailing spaces from string-view:
+sv4 = |      Hello, World      |
+
+after trimming from left:
+sv4 = |Hello, World      |
+
+and after trimming from right:
+sv4 = |Hello, World|
+---
+new function 'sv_trim()' to trim off leading AND trailing spaces from string-view:
+sv5 = |          Hello, World              |
+
+after trimming:
+sv5 = |Hello, World|
+---
+new function 'sv_chop_by_delim()' to split string-view into two parts by delim:
+sv6 = |Hello, World|
+
+after splitting:
+first part:  |Hello|
+second part: | World|
+
+[INFO] end
+---
+
