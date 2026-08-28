@@ -43,7 +43,7 @@ it is very easy to convert null-terminated string into string-view because we ju
 sv2 = 'Hello, World'
 ---
 if we want to chop off from right, we need to use special printf format string count:
-printf("%.*s"), sv2.count, sv2.data);
+printf("%.*s", sv2.count, sv2.data);
 expression because original printf does not respect our '.count'
 expression is included inside 'sv_print()' function, or
 we can factor out the printf format string count into macro definition, like:
