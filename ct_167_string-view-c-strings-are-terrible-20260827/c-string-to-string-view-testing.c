@@ -2,28 +2,13 @@
  * fname: c-string-to-string-view-testing.c
  * from:  C Strings are Terrible! (Tsoding)
  *        https://www.youtube.com/watch?v=y8PLpDgZc0E
- * 20260826 v1
- * 20260826 v2: '.count' type changed to unsigned int from size_t to avoid compiler warnings
- *              displaying 'char *sv' as '%ld' removed to avoid compiler warnings
- * 20260827 v3: some typos corrections
- *              combined function 'sv_trim()' to trim from right AND left (13:28 / 28:45)
- *              function 'sv_chop_by_delim()'
- *              define 'SV_fmt' and 'SV_args(sv)' for propper string-view formating for chopping from right
- *              define 'NL' for printing newline, end 'GO_ON' to stop & continue
- *              for printout define 'GO_ON' as '{}' (do nothing) and add 'printf("!!THIS IS A PRINTOUT!!\n\n");' at the beginning of 'main()'
- * 20260827 v4: remove 'begin()' function
- *              convert 'crl()' function from system() function to printf with escape codes
- * 20260828 v5: 'printout' version compied if PRINTOUT is defined
- * last: 20260827
+ * 20260828 v5
+ * last: 20260828
  */
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h> // for free()
-
-/* draw line screen width */
-#include <sys/ioctl.h>
-#include <unistd.h>
 
 /* for isspace */
 #include <ctype.h>
@@ -155,6 +140,7 @@ int main(int argc, char **argv) {
 	printf("we can factor out the printf format string count into macro definition, like:\n");
 	printf("\t#define SV_fmt \"%%.*s\"\n");
 	printf("\t#define SV_args(sv2) (sv2)->count, (sv2)->data\n");
+
 	NL
 	printf("so 'printf(\"|%%.*s|\", sv2.count, sv2.data);' becomes: 'printf(\"|\" SV_fmt \"|\", SV_args(sv2));'\n");
 	printf("this works because you can combine several parts of string literal into single one:\n");
@@ -258,18 +244,7 @@ void sep_long() {
 	NL
 }
 
-void draw_line_across() {
-	struct winsize w;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-
-	for (int i = 0; i < w.ws_col; i++) {
-		putchar('-');
-	}
-	putchar('\n');
-}
-
 /* for E2 */
-
 /* convert c-string to String_View sv */
 String_View sv(const char *cstr) {
 	return (String_View) {
@@ -333,14 +308,15 @@ void sv_trim_right(String_View *sv) {
 }
 
 /* v3 */
-/* trim off both leading and trailing spaces - both sv_trim_* functions combined */
-void sv_trim(String_View *sv){
+/* trim off both leading and trailing spaces - both sv_trim_(left/right) functions combined */
+void sv_trim(String_View *sv) {
 	sv_trim_left(sv);
 	sv_trim_right(sv);
 }
 
-/* split string into 2 strings by 'delim', or chop off and return entire string
- * if felimiter NOT found */
+/* split string into 2 strings by 'delim', or
+ * chop off and return entire string if felimiter NOT found
+ */
 String_View sv_chop_by_delim(String_View *sv, char delim) {
 	size_t del_pos = 0;
 	while (del_pos < sv->count && sv->data[del_pos] != delim) {
