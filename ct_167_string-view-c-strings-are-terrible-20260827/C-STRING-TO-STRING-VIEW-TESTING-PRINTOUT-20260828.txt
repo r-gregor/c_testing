@@ -1,4 +1,4 @@
-!!THIS IS A PRINTOUT!!
+[H[J!!THIS IS A PRINTOUT!!
 
 #########################
 # [E1] classic c-string #
@@ -7,7 +7,7 @@ printing 's' as string '%s':
 s = 'Hello, World!'
 ---
 's' is a pointer '%p':
- s = '0x10040404c'
+ s = '0x100404053'
 sizeof(s) = 8
 ---
 dereferenced '*s' as '%ld': '72'
@@ -32,6 +32,8 @@ sc[n-1] = '\0'
 sc = 'Hello, Worl'
 sizeof(*sc) = 1
 --------------------------------------------------------------------------------
+[H[J!!THIS IS A PRINTOUT!!
+
 ####################
 # [E2] string-view #
 ####################
@@ -43,7 +45,7 @@ it is very easy to convert null-terminated string into string-view because we ju
 sv2 = 'Hello, World'
 ---
 if we want to chop off from right, we need to use special printf format string count:
-printf("%.*s", sv2.count, sv2.data);
+printf("%.*s"), sv2.count, sv2.data);
 expression because original printf does not respect our '.count'
 expression is included inside 'sv_print()' function, or
 we can factor out the printf format string count into macro definition, like:
@@ -93,4 +95,3 @@ second part: | World|
 
 [INFO] end
 ---
-

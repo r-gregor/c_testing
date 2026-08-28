@@ -1,5 +1,5 @@
 /*
- * fname: c-string-to-string-view-testing-printout.c
+ * fname: c-string-to-string-view-testing.c
  * from:  C Strings are Terrible! (Tsoding)
  *        https://www.youtube.com/watch?v=y8PLpDgZc0E
  * 20260826 v1
@@ -13,6 +13,7 @@
  *              for printout define 'GO_ON' as '{}' (do nothing) and add 'printf("!!THIS IS A PRINTOUT!!\n\n");' at the beginning of 'main()'
  * 20260827 v4: remove 'begin()' function
  *              convert 'crl()' function from system() function to printf with escape codes
+ * 20260828 v5: 'printout' version compied if PRINTOUT is defined
  * last: 20260827
  */
 
@@ -32,17 +33,16 @@
 #define NL printf("\n");
 #define clr() printf("\033[H\033[J")
 
-/* for PRINTOUT:
-#define GO_ON {              \
-	NL                       \
-	printf("[next ->]");     \
-	getchar();               \
-	clr();                   \
-}
-*/
-
-/* does NOTHING */
-#define GO_ON {}
+#if defined(PRINTOUT)
+	#define GO_ON {}
+#else
+	#define GO_ON {              \
+		NL                       \
+		printf("[next ->]");     \
+		getchar();               \
+		clr();                   \
+	}
+#endif
 
 /* === function and structs initializations === */
 void end();
@@ -76,6 +76,9 @@ int main(int argc, char **argv) {
 
 #if 1
 	clr();
+#if defined(PRINTOUT)
+	printf("!!THIS IS A PRINTOUT!!\n\n");
+#endif
 	/* E1 */
 	/* classic c-string */
 	printf("#########################\n");
@@ -126,6 +129,9 @@ int main(int argc, char **argv) {
 
 #if 1
 	clr();
+#ifdef PRINTOUT
+	printf("!!THIS IS A PRINTOUT!!\n\n");
+#endif
 	/* E2 */
 	/* string-view */
 	printf("####################\n");
