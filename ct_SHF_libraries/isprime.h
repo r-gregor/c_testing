@@ -1,5 +1,5 @@
-#ifndef _ISPRIME_H
-#define _ISPRIME_H
+#ifndef ISPRIME_H_
+#define ISPRIME_H_
 
 #include <stdbool.h>
 
@@ -40,3 +40,4 @@ bool is_prime(size_t n, size_t *dvz) {
 }
 
 #endif
+

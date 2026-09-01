@@ -1,5 +1,5 @@
-#ifndef _DAYSDIFF_H
-#define _DAYSDIFF_H
+#ifndef DAYSDIFF_H_
+#define DAYSDIFF_H_
 /*
  * from: https://www.geeksforgeeks.org/find-number-of-days-between-two-given-dates/
  */
@@ -8,11 +8,11 @@
 
 // To store number of days in 
 // all months from January to Dec.
-const int monthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+const int month_dys[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 // This function counts number of 
 // leap years before the given date
-int countLeapYears(Date *d) {
+int count_leap_yrs(Date *d) {
 	int years = d->y;
 
 	// Check if the current year needs to be
@@ -30,7 +30,7 @@ int countLeapYears(Date *d) {
 
 // This function returns number of 
 // days between two given dates
-int getDifference(Date *dt1, Date *dt2) {
+int get_days_diff(Date *dt1, Date *dt2) {
 	// COUNT TOTAL NUMBER OF DAYS
 	// BEFORE FIRST DATE 'dt1'
 
@@ -39,22 +39,23 @@ int getDifference(Date *dt1, Date *dt2) {
 
 	// Add days for months in given date
 	for (int i = 0; i < dt1->m - 1; i++)
-		n1 += monthDays[i];
+		n1 += month_dys[i];
 
 	// Since every leap year is of 366 days,
 	// Add a day for every leap year
-	n1 += countLeapYears(dt1);
+	n1 += count_leap_yrs(dt1);
 
 	// SIMILARLY, COUNT TOTAL NUMBER OF
 	// DAYS BEFORE 'dt2'
 
 	long int n2 = dt2->y * 365 + dt2->d;
 	for (int i = 0; i < dt2->m - 1; i++)
-		n2 += monthDays[i];
-	n2 += countLeapYears(dt2);
+		n2 += month_dys[i];
+	n2 += count_leap_yrs(dt2);
 
 	// return difference between two counts
 	return (n2 - n1);
 }
 
 #endif
+

@@ -1,17 +1,17 @@
-#ifndef _HEX_TO_BIN_H_
-#define _HEX_TO_BIN_H_
+#ifndef HEX_TO_BIN_H_
+#define HEX_TO_BIN_H_
 
 #include <stdio.h>
 #include <string.h>
 
-void HexToBin(char* hexdec, char *bin, int bits);
-void HexToBin32(char* hexdec, char *bin);
-void HexToBin64(char* hexdec, char *bin);
+void hex_to_bin(char* hexdec, char *bin, int bits);
+void hex_to_bin32(char* hexdec, char *bin);
+void hex_to_bin64(char* hexdec, char *bin);
 
 // function to convert Hexadecimal to Binary Number and display it
 // from: https://www.geeksforgeeks.org/program-to-convert-hexadecimal-number-to-binary
-// void displayHexToBin(char* hexdec) {
-void HexToBin(char* hexdec, char *bin_v, int bits) {
+// void displayhex_to_bin(char* hexdec) {
+void hex_to_bin(char* hexdec, char *bin_v, int bits) {
 
 	if (strlen(hexdec) > bits) {
 		printf("Only 32bit numbers allowed (8bit hex!) ... truncating bits past 32-nd bit.\n");
@@ -86,12 +86,12 @@ void HexToBin(char* hexdec, char *bin_v, int bits) {
 	// printf("\n");
 }
 
-void HexToBin32(char* hexdec, char *bin_v) {
-	HexToBin(hexdec, bin_v, 8);
+void hex_to_bin32(char* hexdec, char *bin_v) {
+	hex_to_bin(hexdec, bin_v, 8);
 }
 
-void HexToBin64(char* hexdec, char *bin_v) {
-	HexToBin(hexdec, bin_v, 16);
+void hex_to_bin64(char* hexdec, char *bin_v) {
+	hex_to_bin(hexdec, bin_v, 16);
 }
 
 #endif
