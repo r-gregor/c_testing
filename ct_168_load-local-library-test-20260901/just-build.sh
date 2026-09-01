@@ -3,6 +3,10 @@
 # 20260901 v1
 # ---
 
+if [ ! -d ./bin ]; then
+	mkdir -v ./bin
+fi
+
 CNAME=include-local-library-test.c
 BNAME=${CNAME%.*}
 

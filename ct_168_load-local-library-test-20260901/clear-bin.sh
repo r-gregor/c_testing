@@ -3,4 +3,10 @@
 # 20260901 v1
 # ---
 
+if [ ! -d ./bin ]; then
+	printf "\n"
+	exit
+fi
+
+
 rm -rv ./bin/*
