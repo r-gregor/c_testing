@@ -7,10 +7,15 @@ if [ ! -d './bin/' ]; then
 	mkdir -v ./bin
 fi
 
-readarray -t APPS < <(ls *.c)
+if [ ! -d './src' ]; then
+	readarray -t APPS < <(ls ./*.c)
+else
+	readarray -t APPS < <(ls ./src/*.c)
+fi
 
 for APP in "${APPS[@]}"; do
-	APPNAME="${APP%.*}"
+	APPNAMEFULL="${APP##*/}"
+ 	APPNAME="${APPNAMEFULL%.*}"
 	gcc -o ./bin/${APPNAME} ${APP}
 done
 

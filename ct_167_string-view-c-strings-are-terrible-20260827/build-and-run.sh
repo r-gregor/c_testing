@@ -8,15 +8,16 @@ if [ ! -d './bin/' ]; then
 fi
 
 if [ $# -ne 1 ]; then
-	printf "[ERROR] no *.c file selected\n"
+	printf "[ERROR] no *.c file selected\n\n"
 	exit
 else
 	APP="${1}"
-	APPNAME="${APP%.*}"
+	APPNAMEFULL="${APP##*/}"
+ 	APPNAME="${APPNAMEFULL%.*}"
 fi
 
 if [ ! -f "${APP}" ]; then
-	printf "[ERROR] no such file: %s\n" "${APP}"
+	printf "[ERROR] no such file: %s\n\n" "${APP}"
 	exit
 fi
 

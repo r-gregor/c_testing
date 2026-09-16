@@ -12,7 +12,8 @@ if [ $# -ne 1 ]; then
 	exit
 else
 	APP="${1}"
-	APPNAME="${APP%.*}"
+	APPNAMEFULL="${APP##*/}"
+ 	APPNAME="${APPNAMEFULL%.*}"
 fi
 
 if [ ! -f "${APP}" ]; then

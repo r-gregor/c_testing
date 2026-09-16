@@ -14,6 +14,7 @@
  * 20260827 v4: remove 'begin()' function
  *              convert 'crl()' function from system() function to printf with escape codes
  * 20260828 v5: 'printout' version compiled if 'PRINTOUT' is defined
- * last: 20260828
+ * 20260916 v6: move *.c files to './src' directory, and update build/run (*.sh) scripts
+ * last: 20260916
  */
 
