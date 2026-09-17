@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
 #if 1
 	clr();
 #if defined(PRINTOUT)
-	printf("!!THIS IS A PRINTOUT!!\n\n");
+	printf("%s\n\n", "!!THIS IS A PRINTOUT!!");
 #endif
 	/* E1 */
 	/* classic c-string */
