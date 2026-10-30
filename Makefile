@@ -17,7 +17,7 @@ newbindir:
 	@mkdir -p ./build
 
 MAIN: $(SCRS)
-	gcc -Wall -o bin/$(MAIN) $(SRCS) $(LBRS)
+	gcc -Wall -o $(BUILD)/$(MAIN) $(SRCS) $(LBRS)
 #	$(CC) $(CFLAGS) -o $@ $< -lncurses
 
 clean:

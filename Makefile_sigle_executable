@@ -4,7 +4,7 @@
 CC = gcc
 CFLAGS = -g -Wall
 RM = rm -v
-BIN = ./bin
+BUILD = ./build
 SRC = ./src
 LBRS = 
 
@@ -14,11 +14,11 @@ MAIN = myshinynewprogram2
 all: newbindir MAIN
 
 newbindir:
-	@mkdir -p ./bin
+	@mkdir -p $(BUILD)
 
 MAIN: $(SCRS)
 	gcc -Wall -o bin/$(MAIN) $(SRCS) $(LBRS)
 #	$(CC) $(CFLAGS) -o $@ $< -lncurses
 
 clean:
-	$(RM) $(BIN)/*
+	$(RM) $(BUILD)/*
