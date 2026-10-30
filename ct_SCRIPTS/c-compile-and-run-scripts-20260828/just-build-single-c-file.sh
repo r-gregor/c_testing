@@ -4,7 +4,7 @@
 # ---
 
 if [ ! -d './build/' ]; then
-	mkdir -v ./bin
+	mkdir -v ./build 
 fi
 
 if [ $# -ne 1 ]; then
@@ -21,5 +21,5 @@ if [ ! -f "${APP}" ]; then
 fi
 
 gcc -o ./build/${APPNAME} ${APP}
-tree ./bin
+tree ./build 
 

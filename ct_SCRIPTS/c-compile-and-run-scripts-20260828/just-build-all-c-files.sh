@@ -4,7 +4,7 @@
 # ---
 
 if [ ! -d './build/' ]; then
-	mkdir -v ./bin
+	mkdir -v ./build 
 fi
 
 readarray -t APPS < <(ls *.c)
@@ -14,4 +14,4 @@ for APP in "${APPS[@]}"; do
 	gcc -o ./build/${APPNAME} ${APP}
 done
 
-tree ./bin
+tree ./build 

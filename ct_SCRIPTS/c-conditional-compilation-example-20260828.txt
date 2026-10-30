@@ -68,10 +68,10 @@ if [ ! -f "${APP}" ]; then
 fi
 
 /* build and run with PRINTOUT set */
-gcc -DPRINTOUT -o ./bin/${APPNAME}-printout ${APP} && ./bin/${APPNAME}-printout /* build AND run, or */
-gcc -DPRINTOUT -o ./bin/${APPNAME}-printout ${APP}                              /* just build        */
+gcc -DPRINTOUT -o ./build /${APPNAME}-printout ${APP} && ./build /${APPNAME}-printout /* build AND run, or */
+gcc -DPRINTOUT -o ./build /${APPNAME}-printout ${APP}                              /* just build        */
 
 /* build and run without PRINTOUT set */
-gcc -o ./bin/${APPNAME} ${APP} && ./bin/${APPNAME} /* build AND run, or */
-gcc -o ./bin/${APPNAME} ${APP}                     /* just build        */
+gcc -o ./build /${APPNAME} ${APP} && ./build /${APPNAME} /* build AND run, or */
+gcc -o ./build /${APPNAME} ${APP}                     /* just build        */
 

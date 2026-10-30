@@ -4,9 +4,9 @@
 # ---
 
 if [ ${PWD##*/} = "src" ];then
-	bindir="../bin"
+	bindir="../build "
 else
-	bindir="./bin"
+	bindir="./build "
 fi
 
 if [ ! -d ${bindir} ]; then

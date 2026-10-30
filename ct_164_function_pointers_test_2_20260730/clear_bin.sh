@@ -3,7 +3,7 @@
 # v1_[]
 # ---
 
-if [ ! -d ./bin ]; then
+if [ ! -d ./build  ]; then
 	printf "\n"
 	exit 0
 fi

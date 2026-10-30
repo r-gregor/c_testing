@@ -4,8 +4,8 @@
 #  - added: rm .bin/run
 # ---
 
-if [ ! -d ./bin ]; then
-	mkdir -v ./bin
+if [ ! -d ./build  ]; then
+	mkdir -v ./build 
 fi
 
 gcc -g -Wall -o bin/run struct_serialization_v1.c

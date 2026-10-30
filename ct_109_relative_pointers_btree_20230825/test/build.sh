@@ -12,9 +12,9 @@ if [ ! -f ${fname} ]; then
 	exit
 fi
 
-if [ ! -d ./bin ]; then
+if [ ! -d ./build  ]; then
 	echo "No 'bin/ directory. Creating one ..."
-	mkdir ./bin
+	mkdir ./build 
 fi
 
 fname_base=${fname//.c/}

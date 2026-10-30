@@ -3,7 +3,7 @@
 
 if [ ! -d bin ]; then
 	echo "No bin directory! Creating one ..."
-	mkdir ./bin
+	mkdir ./build 
 fi
 
 

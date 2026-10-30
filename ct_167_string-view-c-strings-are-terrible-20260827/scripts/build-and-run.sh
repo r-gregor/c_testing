@@ -4,7 +4,7 @@
 # ---
 
 if [ ! -d './build/' ]; then
-	mkdir -v ./bin
+	mkdir -v ./build 
 fi
 
 if [ $# -ne 1 ]; then

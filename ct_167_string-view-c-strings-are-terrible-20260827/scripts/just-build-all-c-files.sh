@@ -4,7 +4,7 @@
 # ---
 
 if [ ! -d './build/' ]; then
-	mkdir -v ./bin
+	mkdir -v ./build 
 fi
 
 if [ ! -d './src' ]; then
@@ -19,4 +19,4 @@ for APP in "${APPS[@]}"; do
 	gcc -o ./build/${APPNAME} ${APP}
 done
 
-tree ./bin
+tree ./build 

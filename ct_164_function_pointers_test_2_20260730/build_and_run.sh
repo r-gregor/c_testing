@@ -3,8 +3,8 @@
 # v1_[]
 # ---
 
-if [ ! -d ./bin ]; then
-	mkdir -v ./bin
+if [ ! -d ./build  ]; then
+	mkdir -v ./build 
 fi
 
 appname="function_pointer_test_2.c"

@@ -3,8 +3,8 @@
 # 20260901 v1
 # ---
 
-if [ ! -d ./bin ]; then
-	mkdir -v ./bin
+if [ ! -d ./build  ]; then
+	mkdir -v ./build 
 fi
 
 CNAME=include-local-library-test.c

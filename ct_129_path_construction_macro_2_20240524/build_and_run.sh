@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-bindir="./bin"
+bindir="./build "
 
 if [ ! -d ${bindir} ]; then
 	echo -e "---\n[INFO] No 'bin' directory found ... creating one"
