@@ -8,17 +8,17 @@ gcc -ggdb -Wall -o bin/wang wang.c -lm
 
 
 if [ $? -eq 0 ]; then
-	echo "[INFO ] - Succesfully built wang.c into ./bin/wang!"
+	echo "[INFO ] - Succesfully built wang.c into ./build/wang!"
 else
-	echo "[ERROR] - Building ./bin/wang failed!"
+	echo "[ERROR] - Building ./build/wang failed!"
 fi
 
-echo "[INFO ] - Running ./bin/wang ..."
-./bin/wang
+echo "[INFO ] - Running ./build/wang ..."
+./build/wang
 
 
 if [ $? -eq 0 ]; then
 	echo "[INFO ] - Succesfully created \"imgs/output.png\""
 else
-	echo "[ERROR] - Running ./bin/wang failed!"
+	echo "[ERROR] - Running ./build/wang failed!"
 fi

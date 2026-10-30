@@ -9,4 +9,4 @@ if [ ! -d ./bin ]; then
 fi
 
 
-rm -rv ./bin/*
+rm -rv ./build/*

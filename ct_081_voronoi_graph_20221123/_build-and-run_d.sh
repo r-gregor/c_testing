@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
 
-./build.sh && ./bin/voronoi-ppm
+./build.sh && ./build/voronoi-ppm
 

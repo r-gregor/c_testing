@@ -3,7 +3,7 @@
 run_gcc() {
 	progname=$1
 	echo -n "Compiling ${progname}.c ... "
-	gcc -Wall -o ./bin/${progname} ./src/${progname}.c
+	gcc -Wall -o ./build/${progname} ./src/${progname}.c
 	echo "OK"
 }
 

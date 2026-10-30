@@ -10,7 +10,7 @@ fi
 
 gcc -g -Wall -o bin/run struct_serialization_v1.c
 
-cmd="./bin/run"
+cmd="./build/run"
 
 ${cmd} && rm ${cmd} 2>/dev/null
 

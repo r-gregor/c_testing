@@ -5,5 +5,5 @@
 
 appname="function_pointer_test_2.c"
 
-./bin/${appname%.*}
+./build/${appname%.*}
 

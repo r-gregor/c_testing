@@ -3,9 +3,9 @@
 # 20260826 v1
 # ---
 
-if [ ! -d './bin/' ]; then
+if [ ! -d './build/' ]; then
 	exit
 fi
 
-rm -rv ./bin/*
+rm -rv ./build/*
 

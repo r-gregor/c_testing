@@ -22,7 +22,7 @@ sl=$3
 
 echo "[INFO] building and running ${fname} ..."
 echo "---"
- # gcc -o && ./bin/${fname//.c/.exe} ${sp} ${sl}
-gcc -Wall -o ./bin/${target} ${path} && ./bin/${target} ${sp} ${sl}
+ # gcc -o && ./build/${fname//.c/.exe} ${sp} ${sl}
+gcc -Wall -o ./build/${target} ${path} && ./build/${target} ${sp} ${sl}
 
 

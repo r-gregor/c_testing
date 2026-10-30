@@ -3,7 +3,7 @@
 # 20260827 v1
 # ---
 
-if [ ! -d './bin/' ]; then
+if [ ! -d './build/' ]; then
 	mkdir -v ./bin
 fi
 
@@ -21,6 +21,6 @@ if [ ! -f "${APP}" ]; then
 	exit
 fi
 
-gcc -o ./bin/${APPNAME} ${APP}
+gcc -o ./build/${APPNAME} ${APP}
 tree ./bin
 

@@ -2,4 +2,4 @@
 # fname: build.sh
 # ---
 
-gcc -Wall -o ./bin/pipetest pipetest.c
+gcc -Wall -o ./build/pipetest pipetest.c

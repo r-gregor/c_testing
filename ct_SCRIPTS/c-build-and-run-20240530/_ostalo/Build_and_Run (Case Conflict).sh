@@ -22,5 +22,5 @@ clang -Wall -Wextra -o bin/${fname_base} ${fname}
 
 # run
 echo "OUTPUT:"
-./bin/${fname_base}
+./build/${fname_base}
 

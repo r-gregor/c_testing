@@ -3,4 +3,4 @@
 # v1_[]
 # ---
 
-gcc -Wall -Wextra -o ./bin/test-compiled-with-cygwin-gcc chec-system.c
+gcc -Wall -Wextra -o ./build/test-compiled-with-cygwin-gcc chec-system.c

@@ -3,7 +3,7 @@
 CC = gcc
 CFLAGS = -g -Wall
 RM = rm -v
-BIN = ./bin
+BUILD = ./build
 SRC = ./src
 
 SRCS = $(wildcard $(SRC)/*.c)
@@ -13,14 +13,14 @@ PROGS = $(SRCS:$(SRC)/%.c=%)
 all: newbindir $(PROGS)
 
 newbindir:
-	@mkdir -p ./bin
+	@mkdir -p ./build
 
 %: $(SRC)/%.c $(SRC)/*.h
-	$(CC) $(CFLAGS) -o $(BIN)/$@ $<
+	$(CC) $(CFLAGS) -o $(BUILD)/$@ $<
 
 %: $(SRC)/%.c
-	$(CC) $(CFLAGS) -o $(BIN)/$@ $<
+	$(CC) $(CFLAGS) -o $(BUILD)/$@ $<
 
 clean:
-	$(RM) $(BIN)/*
+	$(RM) $(BUILD)/*
 

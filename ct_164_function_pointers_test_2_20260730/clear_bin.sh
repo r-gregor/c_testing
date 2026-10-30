@@ -8,6 +8,6 @@ if [ ! -d ./bin ]; then
 	exit 0
 fi
 
-rm -rv ./bin/*
+rm -rv ./build/*
 printf "\n"
 

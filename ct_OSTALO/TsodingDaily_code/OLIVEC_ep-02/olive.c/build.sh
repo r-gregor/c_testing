@@ -2,8 +2,8 @@
 
 set -xe
 
-mkdir -p ./bin/
-cc -Wall -Wextra -ggdb -o ./bin/example example.c
-cc -Wall -Wextra -ggdb -o ./bin/test test.c -lm
-./bin/example
-./bin/test
+mkdir -p ./build/
+cc -Wall -Wextra -ggdb -o ./build/example example.c
+cc -Wall -Wextra -ggdb -o ./build/test test.c -lm
+./build/example
+./build/test

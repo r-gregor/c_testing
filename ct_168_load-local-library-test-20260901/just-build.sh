@@ -10,5 +10,5 @@ fi
 CNAME=include-local-library-test.c
 BNAME=${CNAME%.*}
 
-gcc -o ./bin/${BNAME} ./src/${CNAME} -I ./src
+gcc -o ./build/${BNAME} ./src/${CNAME} -I ./src
 

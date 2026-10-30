@@ -8,17 +8,17 @@ gcc -ggdb -Wall -o bin/main main.c -lm
 
 
 if [ $? -eq 0 ]; then
-	echo "[INFO ] - Succesfully built main.c into ./bin/main!"
+	echo "[INFO ] - Succesfully built main.c into ./build/main!"
 else
-	echo "[ERROR] - Building ./bin/main failed!"
+	echo "[ERROR] - Building ./build/main failed!"
 fi
 
-echo "[INFO ] - Running ./bin/main ..."
-./bin/main
+echo "[INFO ] - Running ./build/main ..."
+./build/main
 
 
 if [ $? -eq 0 ]; then
 	echo "[INFO ] - Succesfully created \"imgs/output.png\""
 else
-	echo "[ERROR] - Running ./bin/main failed!"
+	echo "[ERROR] - Running ./build/main failed!"
 fi

@@ -3,7 +3,7 @@
 # 20260827 v1
 # ---
 
-if [ ! -d './bin/' ]; then
+if [ ! -d './build/' ]; then
 	mkdir -v ./bin
 fi
 
@@ -16,7 +16,7 @@ fi
 for APP in "${APPS[@]}"; do
 	APPNAMEFULL="${APP##*/}"
  	APPNAME="${APPNAMEFULL%.*}"
-	gcc -o ./bin/${APPNAME} ${APP}
+	gcc -o ./build/${APPNAME} ${APP}
 done
 
 tree ./bin

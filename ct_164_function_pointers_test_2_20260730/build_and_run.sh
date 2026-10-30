@@ -9,5 +9,5 @@ fi
 
 appname="function_pointer_test_2.c"
 
-gcc -o ./bin/${appname%.*} ${appname} && ./bin/${appname%.*}
+gcc -o ./build/${appname%.*} ${appname} && ./build/${appname%.*}
 
