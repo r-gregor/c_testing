@@ -5,7 +5,7 @@
 project_name/
 |-- src/        ... sorce code
 |-- include/    ... header files
-|-- bin/        ... compiled binaries
+|-- build/      ... compiled buildaries
 |-- archive/    ... older vessions
 |-- data/       ... external data: images, text files, ...
 |-- doc/        ... documentation
@@ -26,9 +26,9 @@ CFLAGS  := -Wall -Wextra -Werror -std=c11 -Iinclude
 
 # Directories
 SRC_DIR := src
-BIN_DIR := bin
+BUILD_DIR := build
 OBJ_DIR := obj
-TARGET  := bin/app-name
+TARGET  := build/app-name
 
 SRCS    := $(wildcard $(SRC_DIR)/*.c)
 OBJS    := $(SRCS:$SRC_DIR/%.c=$(OBJ_DIR)/%.o)
@@ -36,8 +36,8 @@ OBJS    := $(SRCS:$SRC_DIR/%.c=$(OBJ_DIR)/%.o)
 # Default rule
 all: $(TARGET)
 
-# | $(BIN_DIR): Order only prerequisite: making shure BIN_DIR exists
-$(TARGET): $(OBJS) | $(BIN_DIR)
+# | $(BUILD_DIR): Order only prerequisite: making shure BUILD_DIR exists
+$(TARGET): $(OBJS) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
 
 # | $(OBJ_DIR): Order only prerequisite: making shure OBJ_DIR exists
@@ -46,12 +46,12 @@ $(TARGET): $(OBJS) | $(BIN_DIR)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BIN_DIR) $(OBJ_DIR):
+$(BUILD_DIR) $(OBJ_DIR):
 	mkdir -p $@
 
 clean:
 	@echo "Cleaning up build artifacts ..."
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	rm -rf $(OBJ_DIR) $(BUILD_DIR)
 
 .PHONY: all clean
 

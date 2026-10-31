@@ -1,16 +1,16 @@
 #! /usr/bin/env bash
 
-if [ ! -d ./bin ]; then
-	echo "[INFO] no './bin' directory"
+if [ ! -d ./build ]; then
+	echo "[INFO] no './build' directory"
 	echo -n "[INFO] "
-	mkdir -v ./bin
+	mkdir -v ./build
 fi
 
 fname="generic-stack-test"
 
 echo -n "[INFO] compiling ..."
-gcc -o ./bin/${fname} *.c && \
+gcc -o ./build/${fname} *.c && \
 echo " done."
 echo "[INFO] running ..."
-	./bin/${fname}
+	./build/${fname}
 

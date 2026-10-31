@@ -10,10 +10,10 @@ PROGS = $(patsubst %.c,$(BUILD)/%,$(SRCS))
 
 
 
-all: newbindir $(PROGS)
+all: newbuilddir $(PROGS)
 
-newbindir:
-	@mkdir -p ./bin
+newbuilddir:
+	@mkdir -p ./build
 
 $(BUILD)/%: %.c *.h
 	$(CC) $(CFLAGS) -o $@ $<

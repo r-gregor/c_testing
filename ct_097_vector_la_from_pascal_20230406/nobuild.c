@@ -16,11 +16,11 @@ char const *cc(void) {
 int main(int argc, char **argv) {
 
 	GO_REBUILD_URSELF(argc, argv);
-	CMD(cc(),CFLAGS, "-o", "./bin/wang", "main.c", LIBS);
+	CMD(cc(),CFLAGS, "-o", "./build/wang", "main.c", LIBS);
 
 	if (argc > 1) {
 		if (strcmp(argv[1], "run") == 0) {
-			CMD("./bin/wang");
+			CMD("./build/wang");
 		} else {
 			PANIC("Uknkown subcommand %s", argv[1]);
 		}

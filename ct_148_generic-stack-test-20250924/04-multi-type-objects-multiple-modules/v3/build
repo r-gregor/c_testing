@@ -1,14 +1,14 @@
 #! /usr/bin/env bash
 
-if [ ! -d ./bin ]; then
-	echo "[INFO] no './bin' directory"
+if [ ! -d ./build ]; then
+	echo "[INFO] no './build' directory"
 	echo -n "[INFO] "
-	mkdir -v ./bin
+	mkdir -v ./build
 fi
 
 fname="multy-type-objects-modules-testi"
 
 echo -n "[INFO] compiling ..."
-gcc -o ./bin/${fname} *.c *.h -lm && \
+gcc -o ./build/${fname} *.c *.h -lm && \
 echo " done."
 

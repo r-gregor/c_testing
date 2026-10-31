@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
 
-rm -rv ./bin/*
+rm -rv ./build/*
 echo ""

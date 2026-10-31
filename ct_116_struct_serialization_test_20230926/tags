@@ -4,14 +4,14 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-BIN	Makefile	/^BIN = .\/bin$/;"	m
+BUILD	Makefile	/^BUILD = .\/build$/;"	m
 BUF_SIZE	serialize_v5.h	24;"	d
 CC	Makefile	/^CC = gcc$/;"	m
 CFLAGS	Makefile	/^CFLAGS = -g -Wall$/;"	m
 Element	serialize_v5.h	/^typedef struct Element {$/;"	s
 Element_t	serialize_v5.h	/^} Element_t;$/;"	t	typeref:struct:Element
 FPATH_MAKE_ABSOLUTE_H_	fpath_to_abspath_v2.h	6;"	d
-PROGS	Makefile	/^PROGS = $(patsubst %.c,$(BIN)\/%,$(SRCS))$/;"	m
+PROGS	Makefile	/^PROGS = $(patsubst %.c,$(BUILD)\/%,$(SRCS))$/;"	m
 RM	Makefile	/^RM = rm -v$/;"	m
 SERIALIZE_H_	serialize_v5.h	11;"	d
 SRCS	Makefile	/^SRCS = $(wildcard *.c)$/;"	m

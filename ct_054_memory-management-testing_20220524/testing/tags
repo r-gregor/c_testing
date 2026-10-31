@@ -4,7 +4,7 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-BIN	Makefile	/^BIN = .\/bin$/;"	m
+BUILD	Makefile	/^BUILD = .\/build$/;"	m
 CC	Makefile	/^CC = gcc$/;"	m
 CFLAGS	Makefile	/^CFLAGS = -g -Wall$/;"	m
 LINE_LEN	memtest_v1.c	6;"	d	file:
@@ -17,7 +17,7 @@ NAME_LEN	memtest_v1.c	5;"	d	file:
 NAME_LEN	memtest_v2.c	5;"	d	file:
 NAME_LEN	memtest_v3.c	5;"	d	file:
 NAME_LEN	memtest_v4.c	5;"	d	file:
-PROGS	Makefile	/^PROGS = $(patsubst %.c,$(BIN)\/%,$(SRCS))$/;"	m
+PROGS	Makefile	/^PROGS = $(patsubst %.c,$(BUILD)\/%,$(SRCS))$/;"	m
 Person	memtest_v1.c	/^typedef struct Person {$/;"	s	file:
 Person	memtest_v1.c	/^} Person;$/;"	t	typeref:struct:Person	file:
 Person	memtest_v2.c	/^typedef struct Person {$/;"	s	file:

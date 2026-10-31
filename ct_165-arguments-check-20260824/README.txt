@@ -12,7 +12,7 @@ $> cat data.txt | xargs echo
 line_1 line_2 line_3 line_4 line_5 line_6
 ---
 
-$> cat data.txt | xargs ./bin/arguments-check
+$> cat data.txt | xargs ./build/arguments-check
 [INFO] got 6 arguments:
 arg 01: line_1
 arg 02: line_2
@@ -22,7 +22,7 @@ arg 05: line_5
 arg 06: line_6
 ---
 
-$> ./bin/arguments-check $(cat data.txt | xargs)
+$> ./build/arguments-check $(cat data.txt | xargs)
 [INFO] got 6 arguments:
 arg 01: line_1
 arg 02: line_2
@@ -32,7 +32,7 @@ arg 05: line_5
 arg 06: line_6
 ---
 
-$> cat data.txt | xargs -n3 ./bin/arguments-check
+$> cat data.txt | xargs -n3 ./build/arguments-check
 [INFO] got 3 arguments:
 arg 01: line_1
 arg 02: line_2
@@ -44,7 +44,7 @@ arg 02: line_5
 arg 03: line_6
 ---
 
-$> cat data.txt | xargs -n5 ./bin/arguments-check
+$> cat data.txt | xargs -n5 ./build/arguments-check
 [INFO] got 5 arguments:
 arg 01: line_1
 arg 02: line_2
@@ -56,7 +56,7 @@ arg 05: line_5
 arg 01: line_6
 ---
 
-$> cat data.txt |xargs -n2 ./bin/arguments-check
+$> cat data.txt |xargs -n2 ./build/arguments-check
 [INFO] got 2 arguments:
 arg 01: line_1
 arg 02: line_2

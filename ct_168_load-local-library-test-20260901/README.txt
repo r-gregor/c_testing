@@ -8,11 +8,11 @@ In build-and-run.sh:
     CNAME=main-program-name.c     // main-program-name.c
     BNAME=${CNAME%.*}             // main-program-name
 
-    gcc -o ./bin/${BNAME} ./src/${CNAME} -I ./src && ./bin/${BNAME}
+    gcc -o ./build/${BNAME} ./src/${CNAME} -I ./src && ./build/${BNAME}
                                          ^^^^^^^^
     ... translates to:
 
-    gcc -o ./bin/main-program-name ./src/main-program-name.c -I ./src && ./bin/main-program-name
+    gcc -o ./build/main-program-name ./src/main-program-name.c -I ./src && ./build/main-program-name
 
 
 ---

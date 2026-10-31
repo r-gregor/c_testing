@@ -27,7 +27,7 @@ int main() {
 
 /*
  * OUTPUT:
- * $> echo "HHHHHHHHHHHHHHHHHHHHH12345678" | ./bin/get_input_from_trminal3.exe
+ * $> echo "HHHHHHHHHHHHHHHHHHHHH12345678" | ./build/get_input_from_trminal3.exe
  * String Length: 30
  * HHHHHHHHHHHHHHHHHHHHH12345678
  * Last 8 chars: '12345678'
