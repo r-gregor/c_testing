@@ -1,24 +1,25 @@
 # for win
-# CC=/c/Users/gregor.redelonghi/majstaf/majprogs/mingw./build/x86_64-w64-mingw32-gcc-11.1.0.exe
-CC = gcc
-CFLAGS = -g -Wall
-RM = rm -v
-BUILD = ./build
+# CC=/c/Users/gregor.redelonghi/majstaf/majprogs/mingw./bin/x86_64-w64-mingw32-gcc-11.1.0.exe
+CC       := gcc
+CFLAGS   := -g -Wall
+RM       := rm -v
+SRCDIR   := ./src
+BUILDDIR := ./build
+SRCS     := $(shell find $(SRCDIR) -name *.c)
+PROGS    := $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%,$(SRCS))
 
-SRCS = $(wildcard *.c)
-PROGS = $(patsubst %.c,$(BUILD)/%,$(SRCS))
-
-
-
-all: newbindir $(PROGS)
+all: newbindir main
 
 newbindir:
-	@mkdir -p ./build
-	@cp -vn ROJSTNIDNEVI.txt ./build/
+	@mkdir -p $(BUILDDIR)
+	@cp -vn ROJSTNIDNEVI.txt $(BUILDDIR)
 
-$(BUILD)/%: %.c *.h
-	@cp -vn ROJSTNIDNEVI.txt ./build/
+main: $(PROGS)
+
+$(PROGS): $(SRCS)
+	@cp -vn ROJSTNIDNEVI.txt $(BUILDDIR)
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	$(RM) $(BUILD)/*
+	$(RM) $(BUILDDIR)/*
+

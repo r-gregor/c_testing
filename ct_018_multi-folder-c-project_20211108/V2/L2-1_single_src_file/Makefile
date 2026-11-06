@@ -9,7 +9,7 @@ endef
 CC=gcc
 CFLAGS= -g -Wall
 APP=main
-BUILD=bin
+BUILD=build
 OBJ=obj
 SRC=src
 
@@ -20,9 +20,9 @@ dirs:
 	@$(call makedir,$(OBJ))
 	@$(call makedir,$(SRC))
 
-main: bin/$(APP)
+main: build/$(APP)
 
-bin/$(APP): obj/$(APP).o
+build/$(APP): obj/$(APP).o
 	@$(call tms)
 	@echo "Creating final executable..."
 	@$(call tms)
