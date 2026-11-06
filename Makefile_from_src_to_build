@@ -5,20 +5,18 @@ CFLAGS   := -g -Wall
 RM       := rm -v
 SRCDIR   := ./src
 BUILDDIR := ./build
-SRCS     := $(shell find $(SRCDIR) -name *.c)
-PROGS    := $(patsubst $(SRCDIR)/%.c,$(BUILDDIR)/%,$(SRCS))
+SRCS     := $(wildcard $(SRCDIR)/*.c)
+PROGS    := $(SRCS:$(SRCDIR)/%.c=%)
 
-all: newbindir main
+all: newbindir $(PROGS)
 
 newbindir:
 	@mkdir -p $(BUILDDIR)
 	@cp -vn ROJSTNIDNEVI.txt $(BUILDDIR)
 
-main: $(PROGS)
+%: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -o $(BUILDDIR)/$@ $<
 
-$(PROGS): $(SRCS)
-	@cp -vn ROJSTNIDNEVI.txt $(BUILDDIR)
-	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
 	$(RM) $(BUILDDIR)/*
