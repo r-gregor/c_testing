@@ -1,24 +1,23 @@
 # for win
-# CC=/c/Users/gregor.redelonghi/majstaf_en/majprogs_en/mingw6/bin/x86_64-w64-mingw32-gcc-11.1.0.exe
-# info: comments must not be indented or they get parsed by shell ...
-CC = gcc
-CFLAGS = -g -Wall
-RM = rm -v
-BUILD = ./build
-SRC = ./src
-LBRS = 
+# CC=/c/Users/gregor.redelonghi/majstaf/majprogs/mingw./bin/x86_64-w64-mingw32-gcc-11.1.0.exe
+CC       := gcc
+CFLAGS   := -g -Wall
+RM       := rm -v
+SRCDIR   := ./src
+BUILDDIR := ./build
+SRCS     := $(wildcard $(SRCDIR)/*.c)
+PROGS    := $(SRCS:$(SRCDIR)/%.c=%)
 
-SRCS = $(wildcard $(SRC)/*.c)
-MAIN = myshinynewprogram2
-
-all: newbindir MAIN
+all: newbindir $(PROGS)
 
 newbindir:
-	@mkdir -p ./build
+	@mkdir -p $(BUILDDIR)
+	@cp -vn ROJSTNIDNEVI.txt $(BUILDDIR)
 
-MAIN: $(SCRS)
-	gcc -Wall -o $(BUILD)/$(MAIN) $(SRCS) $(LBRS)
-#	$(CC) $(CFLAGS) -o $@ $< -lncurses
+%: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -o $(BUILDDIR)/$@ $<
+
 
 clean:
-	$(RM) $(BUILD)/*
+	$(RM) $(BUILDDIR)/*
+
