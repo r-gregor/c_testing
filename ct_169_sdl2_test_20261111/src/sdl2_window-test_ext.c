@@ -20,8 +20,8 @@ int main (int argc, char **argv) {
 
 	// Store some colors into variables to make them easier to use.
 	Uint32 white = SDL_MapRGB(windowsurface->format, 255, 255, 255);
-	// Uint32 black = SDL_MapRGB(windowsurface->format, 0, 0, 0);
-	Uint32 gray = SDL_MapRGB(windowsurface->format, 125, 125, 125);
+	Uint32 black = SDL_MapRGB(windowsurface->format, 0, 0, 0);
+	// Uint32 gray = SDL_MapRGB(windowsurface->format, 125, 125, 125);
 
 	// Rectangle position.
 	int x = 0;
@@ -69,7 +69,10 @@ int main (int argc, char **argv) {
 		}
 
 		// Fill the screen with gray (NULL results in a rectangle that fills the entire screen).
-		SDL_FillRect(windowsurface, NULL, gray);
+		// SDL_FillRect(windowsurface, NULL, gray);
+
+		// Fill the screen with black (NULL results in a rectangle that fills the entire screen).
+		SDL_FillRect(windowsurface, NULL, black);
 
 		// Draw rectangle, use the x and y variables as the position.
 		SDL_Rect rect = { .x=x, .y=y, .w=100, .h=100 };

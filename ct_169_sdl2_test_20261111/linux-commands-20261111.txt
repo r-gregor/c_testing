@@ -1,0 +1,5 @@
+  956  2026-11-11 17:55:35 zi c_t
+  958  2026-11-11 17:56:20 cd ct_169_sdl2_test_20261111/
+  965  2026-11-11 17:58:30 sudo apt-cache search sdl2 | grep -i sdl2
+  967  2026-11-11 17:59:12 sudo apt install libsdl2-dev
+
