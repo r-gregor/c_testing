@@ -1,0 +1,24 @@
+# fname: cygwin-commands-20261111-1007.txt
+# sources:
+# 	1 - https://www.cygwin.com/packages/summary/SDL2-src.html
+# 	2 - sdl2_init_test.c:        the simplest test for libSDL2 on windows google search: AI Overview
+# 	3 - sdl2_window_test_ext.c:  https://sundee.neocities.org/c/samplewindow_sdl_linux
+# ---
+# commands:
+$> cygcheck -p sdl2 | grep sdl2
+$> apt-cyg install libSDL2-devel
+$> mkdir sdl2_test
+$> cd sdl2_test/
+$> vim sdl2_init_test.c
+$> gcc -Wall -o sdl2_init_test sdl2_init_test.c -I/usr/include/sdl2 -lsdl2
+$> mkdir build src
+$> mv sdl2_init_test.c src/
+$> vim build_only.sh
+$> vim build_and_run.sh
+$> vim cleanbuild.sh
+$> vim src/sdl2_init_test.c
+$> vim src/sdl2_window_test_ext.c
+$> gcc -Wall -o ./build/sdl2_init_test ./src/sdl2_init_test.c -I/usr/include/sdl2 -lsdl2
+$> gcc -Wall -o ./build/sdl2_window_test_ext ./src/sdl2_window_test_ext.c -I/usr/include/sdl2 -lsdl2
+# ---
+
