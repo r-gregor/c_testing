@@ -83,6 +83,9 @@ int main (int argc, char **argv) {
 		// Make the program wait 16 milliseconds before continuing to the next loop iteration (this causes the loop to run at roughly 60 FPS).
 		SDL_Delay(16);
 	}
+
+	printf("\n");
+
 	return 0;
 }
 

@@ -20,8 +20,9 @@ fi
 
 srcf="${srcf_path##*/}"
 target="${srcf%.*}"
-printf "[?] building: '%s' into '%s' ... " ./src/"${srcf}" ./build/"${target}" 
+printf "[?] compiling: '%s' into '%s' ... " "./src/${srcf}" "./build/${target}" 
 read -r -p "OK?"
 
-gcc -Wall -o ./build/"${target}" ./src/"${srcf}" -I"/usr/include/SDL2" -lSDL2 && ./build/"${target}" &
+printf "[i] running: '%s' ... \n\n" "./build/${target}"
+gcc -Wall -o "./build/${target}" "./src/${srcf}" -I"/usr/include/SDL2" -lSDL2 && "./build/${target}" &
 
