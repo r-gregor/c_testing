@@ -6,10 +6,10 @@
 int main(int argc, char **argv) {
 
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		printf("[e] unable to initialize SDL: '%s'\n\n", SDL_GetError());
+		printf("[e] unable to initialize SDL: '%s'\n", SDL_GetError());
 		return 1;
 	}
-	printf("[+] SDL2 initialized successfully!\n\n");
+	printf("[+] SDL2 initialized successfully!\n");
 	SDL_Quit();
 
 	return 0;

@@ -23,6 +23,7 @@ target="${srcf%.*}"
 printf "[?] compiling: '%s' into '%s' ... " "./src/${srcf}" "./build/${target}" 
 read -r -p "OK?"
 
-printf "[i] running: '%s' ... \n\n" "./build/${target}"
+printf "[i] running: '%s' ... \n" "./build/${target}"
 gcc -Wall -o "./build/${target}" "./src/${srcf}" -I"/usr/include/SDL2" -lSDL2 && "./build/${target}"
 
+printf "\n"
