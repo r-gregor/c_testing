@@ -1,6 +1,9 @@
 #ifndef MY_LIBRARY_
 #define MY_LIBRARY_
 
+#include <stdio.h>
+#include <string.h>
+
 typedef struct {
 	char *contents;
 	unsigned int size;
