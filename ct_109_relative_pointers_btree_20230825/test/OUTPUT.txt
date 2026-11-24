@@ -1,0 +1,31 @@
+0 > Nance
+  1 > Cranberry
+    2 > Guava
+      3 > Raisin
+        4 > Pineapple
+        4 > Miracle fruit
+      3 > Grapefruit
+        4 > Mulberry
+        4 > Quince
+    2 > Pomelo
+      3 > Mango
+        4 > Jabuticaba
+        4 > Quince
+      3 > Grape
+        4 > Mandarine
+        4 > Clementine
+  1 > Durian
+    2 > Kiwifruit
+      3 > Mulberry
+        4 > Yuzu
+        4 > Jambul
+      3 > Cloudberry
+        4 > Date
+        4 > Pomelo
+    2 > Mulberry
+      3 > Persimmon
+        4 > Cherry
+        4 > Lychee
+      3 > Mulberry
+        4 > Blood orange
+        4 > Dragonfruit

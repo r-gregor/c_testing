@@ -13,7 +13,7 @@ if [ ! -f ${fname} ]; then
 fi
 
 if [ ! -d ./build  ]; then
-	echo "No 'bin/ directory. Creating one ..."
+	echo "No './build directory. Creating one ..."
 	mkdir ./build 
 fi
 
@@ -21,6 +21,6 @@ fname_base=${fname//.c/}
 
 set -xe
 
-# gcc -Wall -Wextra -o bin/${fname_base} ${fname}
-clang -Wall -Wextra -o bin/${fname_base} ${fname}
+# gcc -Wall -Wextra -o ./build/${fname_base} ${fname}
+clang -Wall -Wextra -o ./build/${fname_base} ${fname}
 

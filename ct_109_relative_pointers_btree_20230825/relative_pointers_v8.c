@@ -36,7 +36,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <errno.h>
-#include "./fruits.h"
+#include "fruits.h"
 
 #define CRT printf("---\n");
 
@@ -101,6 +101,7 @@ int main(void) {
 	Node *root = random_tree(&global_node_pool, 5);
 	(void)root;
 	// print_tree(stdout, root, 0);
+	print_tree(stdout, root, 0);
 	save_node_poll_to_file(&global_node_pool, FRUITS_BIN_PATH);
 
 #if 1
@@ -161,7 +162,7 @@ Node *node_poll_alloc_with_text(Node_Pool *np, const char *text_cstr) {
 	return result;
 }
 
-#if 0
+#if 1
 /* print out tree to stream (stdout, file ...)
  * If printout to file, it needs FILE *fd - file descriptor
  * using fopen() ...
