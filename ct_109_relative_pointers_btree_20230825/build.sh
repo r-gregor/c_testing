@@ -14,21 +14,15 @@ fi
 
 if [ ! -d ./build  ]; then
 	echo "No './build directory. Creating one ..."
-<<<<<<< HEAD
-	mkdir ./build 
-=======
 	mkdir ./build
->>>>>>> 644dab4 (update 20261124_1828_jbe)
+	mkdir ./build
 fi
 
 fname_base=${fname//.c/}
 
 set -xe
 
-<<<<<<< HEAD
 # gcc -Wall -Wextra -o ./build/${fname_base} ${fname}
-=======
 # gcc -Wall -Wextra -o ./build/${fname_base} ${fname
->>>>>>> 644dab4 (update 20261124_1828_jbe)
 clang -Wall -Wextra -o ./build/${fname_base} ${fname}
 
